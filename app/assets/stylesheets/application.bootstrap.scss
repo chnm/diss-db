@@ -1,2 +1,11 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@import "variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+
+body {
+  padding: 1rem;
+}
+
+.main-container {
+  max-width: 1000px;
+}
