@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 5007
+  name: "Brandeis University"
+
+two:
+  id: 14771
+  name: "University of Nebraska, Lincoln"
