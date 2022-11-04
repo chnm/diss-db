@@ -11,7 +11,7 @@ schools <- raw |>
          school = str_replace_all(school, "Coll.", "College"),
          school = str_replace_all(school, "Can.", "Canada"),
          school = str_replace_all(school, "Inst.", "Institute")) |>
-  rename(id = school_id)
+  rename(id = school_id, name = school)
 
 write_csv(schools, "schools.csv")
 
