@@ -9,7 +9,11 @@
 require 'csv'
 
 schools = []
-CSV.foreach("/Users/lmullen/github/lmullen/diss-db/data-raw/schools.csv", headers: true) do |row|
+CSV.foreach("db/aha-data/schools.csv", headers: true) do |row|
 	schools << School.new(row.to_hash)
 end
 School.import schools
+
+AdminUser.create!(email: ENV.fetch("DISSDB_ADMIN_USER"), 
+									password: ENV.fetch("DISSDB_ADMIN_PASS"),
+									password_confirmation: ENV.fetch("DISSDB_ADMIN_PASS")) if Rails.env.development?
