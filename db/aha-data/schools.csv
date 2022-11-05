@@ -1,205 +1,205 @@
-id,name
-1380,Simon Fraser University
-1381,University of Toronto
-1384,University of Alberta
-1385,"University du Quebec, Montreal"
-1386,University de Montreal
-1392,Wilfrid Laurier University
-1393,Carleton University
-1395,University of Calgary
-1397,University of Ottawa
-1398,McMaster University
-1399,"Memorial University, Newfoundland"
-1400,University of Manitoba
-1404,"Queen's University, Canada"
-1407,"Royal Military College, Canada"
-1408,Dalhousie University
-1411,University of Guelph
-1413,Trent University
-1414,University of Western Ontario (Western University)
-1415,York University
-1416,"Concordia University, Canada"
-1417,University of New Brunswick
-1418,University of Saskatchewan
-1420,University of British Columbia
-1422,University of Victoria
-1423,University of Waterloo
-1424,McGill University
-1432,University Laval
-4881,Duke University
-4894,"University of Maine, Orono"
-4898,"University of South Carolina, Columbia"
-4899,"University of South Florida, Tampa"
-4900,George Washington University
-4901,Florida State University
-4912,American University
-4919,Georgetown University
-4920,"University of Connecticut, Storrs"
-4923,Yale University
-4943,Morgan State University
-4950,Florida International University
-4951,"Saint John's University, NY"
-4955,Georgia State University
-4956,Boston College
-4973,"University of New Hampshire, Durham"
-4987,College of William and Mary
-4991,Tufts University
-5000,Northeastern University
-5007,Brandeis University
-5012,"Rutgers, The State University of NJ"
-5013,Harvard University
-5016,Penn State University
-5034,Providence College
-5045,"University of Maryland, College Park"
-5057,Cornell University
-5084,Boston University
-5087,Harvard University
-5093,Fordham University
-5098,"University of Massachusetts, Amherst"
-5099,"University of North Carolina, Greensboro"
-5101,University of Pennsylvania
-5102,University of Virginia
-5108,Syracuse University
-5109,West Virginia University
-5111,Columbia University
-5121,"Stony Brook University, State University of New York"
-5124,University of Florida
-5125,Georgia Institute of Technology
-5145,University of Pittsburgh
-5149,"Graduate Center, CUNY"
-5150,Brown University
-5153,Princeton University
-5157,"University at Buffalo, State University of New York"
-5158,Emory University
-5162,Massachusetts Institute of Technology
-5165,University of Delaware
-5166,Catholic University of America
-5182,North Carolina State University
-5184,University of Georgia
-5186,Clark University
-5187,Johns Hopkins University
-5205,Bryn Mawr College
-5206,Lehigh University
-5210,"University of North Carolina, Chapel Hill"
-5214,University of Miami
-5217,Carnegie Mellon University
-5232,New School
-5234,Howard University
-5245,Temple University
-5248,"Binghamton University, State University of New York"
-5254,University of Rochester
-5256,Drew University
-5258,"University at Albany, State University of New York"
-5266,New York University
-14770,Texas Tech University
-14771,"University of Nebraska, Lincoln"
-14783,Marquette University
-14788,University of Southern California
-14795,University of North Dakota
-14796,"University of California, San Diego"
-14800,"Texas A&M University, College Station"
-14806,"University of Texas, Austin"
-14808,"University of Minnesota, Twin Cities"
-14812,Brigham Young University
-14814,"University of Tennessee, Knoxville"
-14815,"University of Missouri, Columbia"
-14842,"University of Nevada, Las Vegas"
-14843,University of Southern Mississippi
-14845,"University of Texas, El Paso"
-14850,Central Michigan University
-14851,Purdue University
-14853,University of Iowa
-14854,"California State University, Sacramento"
-14857,Saint Louis University
-14863,Baylor University
-14867,Claremont Graduate University
-14868,Western Michigan University
-14890,"University of Nevada, Reno"
-14893,"University of Colorado, Boulder"
-14900,Oregon State University
-14903,University of Montana
-14905,"University of Wisconsin, Milwaukee"
-14911,Illinois State University
-14912,Tulane University
-14917,"University of California, Riverside"
-14922,University of North Texas
-14923,"Miami University, Ohio"
-14928,Vanderbilt University
-14935,University of Utah
-14943,Auburn University
-14947,Rice University
-14949,University of Mississippi
-14954,University of Kentucky
-14957,"Ohio State University, Columbus"
-14959,Arkansas State University
-14960,"University of California, Irvine"
-14961,University of Memphis
-14968,Indiana University
-14976,"University of Washington, Seattle"
-14979,"Loyola University, Chicago"
-14982,"University of Alabama, Tuscaloosa"
-14987,"University of Illinois, Chicago"
-15002,Wayne State University
-15007,California Institute of Technology
-15011,Kent State University
-15012,University of Cincinnati
-15013,University of Oklahoma
-15015,University of Denver
-15018,"Louisiana State University, Baton Rouge"
-15019,Mississippi State University
-15020,Northern Arizona University
-15029,"University of California, Davis"
-15040,"University of California, Santa Barbara"
-15042,Iowa State University
-15044,Northwestern University
-15046,"University of California, Los Angeles"
-15047,University of Toledo
-15056,"University of California, Santa Cruz"
-15059,University of Notre Dame
-15062,University of Oregon
-15063,University of Wyoming
-15064,"University of Louisiana, Lafayette"
-15067,University of Oklahoma
-15069,Kansas State University
-15075,University of Arizona
-15076,Stanford University
-15078,University of Chicago
-15080,University of Akron
-15083,"University of Hawaii, Manoa"
-15085,Bowling Green State University
-15087,University of Houston
-15090,Southern Methodist University
-15095,North Dakota State University
-15096,Oklahoma State University
-15097,"University of Texas, Arlington"
-15103,University of New Mexico
-15104,"University of Missouri, Kansas City"
-15110,Middle Tennessee State University
-15124,"University of Wisconsin, Madison"
-15133,"Washington State University, Pullman"
-15139,"University of Wisconsin, Madison"
-15144,Michigan State University
-15148,University of Idaho
-15149,Northern Illinois University
-15150,University of Kansas
-15152,Ohio University
-15154,"University of Illinois, Urbana-Champaign"
-15157,"University of Arkansas, Fayetteville"
-15160,Michigan Technological University
-15166,Texas Christian University
-15168,Case Western Reserve University
-15169,"University of Michigan, Ann Arbor"
-15176,"Washington University, St. Louis"
-15178,Arizona State University
-15183,"Southern Illinois University, Carbondale"
-15184,"Montana State University, Bozeman"
-15186,Ball State University
-15196,"University of California, Berkeley"
-34187,Graduate Theological Union
-35221,Niagara University
-54740,George Mason University
-64837,Columbia University
-82967,"University of Minnesota, Twin Cities"
-83369,Johns Hopkins University
-83515,George Peabody College
-83516,Radcliffe College
+id,aha_school_id,school
+1,1380,Simon Fraser University
+2,1381,University of Toronto
+3,1384,University of Alberta
+4,1385,"University du Quebec, Montreal"
+5,1386,University de Montreal
+6,1392,Wilfrid Laurier University
+7,1393,Carleton University
+8,1395,University of Calgary
+9,1397,University of Ottawa
+10,1398,McMaster University
+11,1399,"Memorial University, Newfoundland"
+12,1400,University of Manitoba
+13,1404,"Queen's University, Canada"
+14,1407,"Royal Military College, Canada"
+15,1408,Dalhousie University
+16,1411,University of Guelph
+17,1413,Trent University
+18,1414,University of Western Ontario (Western University)
+19,1415,York University
+20,1416,"Concordia University, Canada"
+21,1417,University of New Brunswick
+22,1418,University of Saskatchewan
+23,1420,University of British Columbia
+24,1422,University of Victoria
+25,1423,University of Waterloo
+26,1424,McGill University
+27,1432,University Laval
+28,4881,Duke University
+29,4894,"University of Maine, Orono"
+30,4898,"University of South Carolina, Columbia"
+31,4899,"University of South Florida, Tampa"
+32,4900,George Washington University
+33,4901,Florida State University
+34,4912,American University
+35,4919,Georgetown University
+36,4920,"University of Connecticut, Storrs"
+37,4923,Yale University
+38,4943,Morgan State University
+39,4950,Florida International University
+40,4951,"Saint John's University, NY"
+41,4955,Georgia State University
+42,4956,Boston College
+43,4973,"University of New Hampshire, Durham"
+44,4987,College of William and Mary
+45,4991,Tufts University
+46,5000,Northeastern University
+47,5007,Brandeis University
+48,5012,"Rutgers, The State University of NJ"
+49,5013,Harvard University
+50,5016,Penn State University
+51,5034,Providence College
+52,5045,"University of Maryland, College Park"
+53,5057,Cornell University
+54,5084,Boston University
+55,5087,Harvard University
+56,5093,Fordham University
+57,5098,"University of Massachusetts, Amherst"
+58,5099,"University of North Carolina, Greensboro"
+59,5101,University of Pennsylvania
+60,5102,University of Virginia
+61,5108,Syracuse University
+62,5109,West Virginia University
+63,5111,Columbia University
+64,5121,"Stony Brook University, State University of New York"
+65,5124,University of Florida
+66,5125,Georgia Institute of Technology
+67,5145,University of Pittsburgh
+68,5149,"Graduate Center, CUNY"
+69,5150,Brown University
+70,5153,Princeton University
+71,5157,"University at Buffalo, State University of New York"
+72,5158,Emory University
+73,5162,Massachusetts Institute of Technology
+74,5165,University of Delaware
+75,5166,Catholic University of America
+76,5182,North Carolina State University
+77,5184,University of Georgia
+78,5186,Clark University
+79,5187,Johns Hopkins University
+80,5205,Bryn Mawr College
+81,5206,Lehigh University
+82,5210,"University of North Carolina, Chapel Hill"
+83,5214,University of Miami
+84,5217,Carnegie Mellon University
+85,5232,New School
+86,5234,Howard University
+87,5245,Temple University
+88,5248,"Binghamton University, State University of New York"
+89,5254,University of Rochester
+90,5256,Drew University
+91,5258,"University at Albany, State University of New York"
+92,5266,New York University
+93,14770,Texas Tech University
+94,14771,"University of Nebraska, Lincoln"
+95,14783,Marquette University
+96,14788,University of Southern California
+97,14795,University of North Dakota
+98,14796,"University of California, San Diego"
+99,14800,"Texas A&M University, College Station"
+100,14806,"University of Texas, Austin"
+101,14808,"University of Minnesota, Twin Cities"
+102,14812,Brigham Young University
+103,14814,"University of Tennessee, Knoxville"
+104,14815,"University of Missouri, Columbia"
+105,14842,"University of Nevada, Las Vegas"
+106,14843,University of Southern Mississippi
+107,14845,"University of Texas, El Paso"
+108,14850,Central Michigan University
+109,14851,Purdue University
+110,14853,University of Iowa
+111,14854,"California State University, Sacramento"
+112,14857,Saint Louis University
+113,14863,Baylor University
+114,14867,Claremont Graduate University
+115,14868,Western Michigan University
+116,14890,"University of Nevada, Reno"
+117,14893,"University of Colorado, Boulder"
+118,14900,Oregon State University
+119,14903,University of Montana
+120,14905,"University of Wisconsin, Milwaukee"
+121,14911,Illinois State University
+122,14912,Tulane University
+123,14917,"University of California, Riverside"
+124,14922,University of North Texas
+125,14923,"Miami University, Ohio"
+126,14928,Vanderbilt University
+127,14935,University of Utah
+128,14943,Auburn University
+129,14947,Rice University
+130,14949,University of Mississippi
+131,14954,University of Kentucky
+132,14957,"Ohio State University, Columbus"
+133,14959,Arkansas State University
+134,14960,"University of California, Irvine"
+135,14961,University of Memphis
+136,14968,Indiana University
+137,14976,"University of Washington, Seattle"
+138,14979,"Loyola University, Chicago"
+139,14982,"University of Alabama, Tuscaloosa"
+140,14987,"University of Illinois, Chicago"
+141,15002,Wayne State University
+142,15007,California Institute of Technology
+143,15011,Kent State University
+144,15012,University of Cincinnati
+145,15013,University of Oklahoma
+146,15015,University of Denver
+147,15018,"Louisiana State University, Baton Rouge"
+148,15019,Mississippi State University
+149,15020,Northern Arizona University
+150,15029,"University of California, Davis"
+151,15040,"University of California, Santa Barbara"
+152,15042,Iowa State University
+153,15044,Northwestern University
+154,15046,"University of California, Los Angeles"
+155,15047,University of Toledo
+156,15056,"University of California, Santa Cruz"
+157,15059,University of Notre Dame
+158,15062,University of Oregon
+159,15063,University of Wyoming
+160,15064,"University of Louisiana, Lafayette"
+161,15067,University of Oklahoma
+162,15069,Kansas State University
+163,15075,University of Arizona
+164,15076,Stanford University
+165,15078,University of Chicago
+166,15080,University of Akron
+167,15083,"University of Hawaii, Manoa"
+168,15085,Bowling Green State University
+169,15087,University of Houston
+170,15090,Southern Methodist University
+171,15095,North Dakota State University
+172,15096,Oklahoma State University
+173,15097,"University of Texas, Arlington"
+174,15103,University of New Mexico
+175,15104,"University of Missouri, Kansas City"
+176,15110,Middle Tennessee State University
+177,15124,"University of Wisconsin, Madison"
+178,15133,"Washington State University, Pullman"
+179,15139,"University of Wisconsin, Madison"
+180,15144,Michigan State University
+181,15148,University of Idaho
+182,15149,Northern Illinois University
+183,15150,University of Kansas
+184,15152,Ohio University
+185,15154,"University of Illinois, Urbana-Champaign"
+186,15157,"University of Arkansas, Fayetteville"
+187,15160,Michigan Technological University
+188,15166,Texas Christian University
+189,15168,Case Western Reserve University
+190,15169,"University of Michigan, Ann Arbor"
+191,15176,"Washington University, St. Louis"
+192,15178,Arizona State University
+193,15183,"Southern Illinois University, Carbondale"
+194,15184,"Montana State University, Bozeman"
+195,15186,Ball State University
+196,15196,"University of California, Berkeley"
+197,34187,Graduate Theological Union
+198,35221,Niagara University
+199,54740,George Mason University
+200,64837,Columbia University
+201,82967,"University of Minnesota, Twin Cities"
+202,83369,Johns Hopkins University
+203,83515,George Peabody College
+204,83516,Radcliffe College
