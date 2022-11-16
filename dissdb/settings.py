@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-lqe%5w#@od6z2ji(uq_s=*qg5*3sp&$kqm_ifpq)%f-xt8k84^"
+secret = os.getenv("DISSDB_SECRET")
+if secret == None:
+    print("exiting because secret key not set")
+    sys.exit(1)
+SECRET_KEY = secret
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Only turn on debugging if the environment variable is set to "true"
+debug_env = os.getenv("DISSDB_DEBUG", "False").lower() == "true"
+DEBUG = debug_env
 
 ALLOWED_HOSTS = []
 
@@ -72,11 +80,14 @@ WSGI_APPLICATION = "dissdb.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("DISSDB_DB_BASE"),
+        "USER": os.getenv("DISSDB_DB_USER"),
+        "PASSWORD": os.getenv("DISSDB_DB_PASS"),
+        "HOST": os.getenv("DISSDB_DB_HOST"),
+        "PORT": os.getenv("DISSDB_DB_PORT"),
     }
 }
 
