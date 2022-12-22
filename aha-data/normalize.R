@@ -20,7 +20,7 @@ schools <- raw |>
   mutate(id = row_number()) |>
   select(id, aha_school_id, school)
 
-write_csv(schools, "schools.csv")
+write_csv(schools, "schools.csv", na="")
 
 replace_na <- function(x) {
   if_else(is.na(x), "", x)
@@ -59,7 +59,7 @@ scholars <- bind_rows(dissertators, committee_members |> select(-aha_dissertatio
   select(id, aha_scholar_id, name, starts_with("name_")) |>
   mutate(orcid = NA_character_)
 
-write_csv(scholars, "scholars.csv")
+write_csv(scholars, "scholars.csv", na = "")
 
 dissertations <- raw |>
   arrange(aha_dissertation_id) |>
@@ -72,7 +72,7 @@ dissertations <- raw |>
   left_join(schools |> select(school_id = id, aha_school_id), by = "aha_school_id") |>
   select(id, aha_dissertation_id, title, year, author_id, aha_author_id, school_id, aha_school_id)
 
-write_csv(dissertations, "dissertations.csv")
+write_csv(dissertations, "dissertations.csv", na = "")
 
 committee_members <- committee_members |>
   left_join(dissertations |> select(dissertation_id = id, aha_dissertation_id), by = "aha_dissertation_id") |>
@@ -80,5 +80,5 @@ committee_members <- committee_members |>
   select(dissertation_id, aha_dissertation_id, scholar_id, aha_scholar_id, role) |>
   arrange(dissertation_id)
 
-write_csv(committee_members, "committee-members.csv")
+write_csv(committee_members, "committee-members.csv", na = "")
 
