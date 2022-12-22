@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+import datetime
 
 # Create your models here.
 class School(models.Model):
@@ -29,7 +30,7 @@ class Scholar(models.Model):
         blank=True,
         null=True,
         verbose_name="AHA scholar ID",
-        help_text="The identifier used by the AHA for a school",
+        help_text="The identifier used by the AHA for a scholar",
     )
     aha_name = models.CharField(
         max_length=200,
@@ -103,3 +104,49 @@ class Scholar(models.Model):
 
     class Meta:
         ordering = ["name_last", "name_first", "name_middle"]
+
+
+class Dissertation(models.Model):
+    id = models.BigAutoField(primary_key=True, verbose_name="ID")
+    aha_dissertation_id = models.BigIntegerField(
+        unique=True,
+        default=None,
+        blank=True,
+        null=True,
+        verbose_name="AHA dissertation ID",
+        help_text="The identifier used by the AHA for a dissertation",
+    )
+    title = models.CharField(max_length=2000, blank=False)
+    year = models.PositiveSmallIntegerField(
+        db_index=True,
+        validators=[
+            MinValueValidator(1700, "The year must be after 1700"),
+            MaxValueValidator(
+                datetime.date.today().year,
+                "The year must be the current year or before",
+            ),
+        ],
+    )
+    author = models.ForeignKey(Scholar, on_delete=models.PROTECT)
+    school = models.ForeignKey(School, on_delete=models.PROTECT)
+    aha_author_id = models.BigIntegerField(
+        verbose_name="AHA author ID",
+        editable=False,
+        blank=True,
+        null=True,
+        default=None,
+    )
+    aha_school_id = models.BigIntegerField(
+        verbose_name="AHA school ID",
+        editable=False,
+        blank=True,
+        null=True,
+        default=None,
+    )
+
+    @property
+    def main_title(self) -> str:
+        return self.title.split(":")[0]
+
+    def __str__(self) -> str:
+        return f"{self.main_title} ({self.author})"

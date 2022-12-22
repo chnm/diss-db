@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import School, Scholar
+from .models import School, Scholar, Dissertation
 
-# Register your models here.
+
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     pass
@@ -16,3 +16,9 @@ class ScholarAdmin(admin.ModelAdmin):
         "orcid_url",
     )
     search_fields = ("name_last__startswith",)
+
+
+@admin.register(Dissertation)
+class DissertationAdmin(admin.ModelAdmin):
+    list_display = ("main_title", "year", "author", "school")
+    pass
