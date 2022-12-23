@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import School, Scholar, Dissertation
+from .models import School, Scholar, Dissertation, CommitteeMember
 
 
 @admin.register(School)
@@ -24,4 +24,14 @@ class DissertationAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "author",
         "school",
+    )
+    search_fields = ("title",)
+
+
+@admin.register(CommitteeMember)
+class CommitteeMemberAdmin(admin.ModelAdmin):
+    list_display = ("scholar", "dissertation")
+    autocomplete_fields = (
+        "scholar",
+        "dissertation",
     )

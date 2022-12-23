@@ -150,3 +150,39 @@ class Dissertation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
+
+
+class CommitteeMember(models.Model):
+    scholar = models.ForeignKey(Scholar, on_delete=models.PROTECT)
+
+    CHAIR = "chair"
+    READER = "reader"
+    COMMITTEE_CHOICES = [
+        (CHAIR, "chair"),
+        (READER, "reader"),
+    ]
+    role = models.CharField(
+        max_length=20,
+        choices=COMMITTEE_CHOICES,
+        default=READER,
+    )
+
+    dissertation = models.ForeignKey(Dissertation, on_delete=models.PROTECT)
+
+    aha_scholar_id = models.BigIntegerField(
+        verbose_name="AHA scholar ID",
+        editable=False,
+        blank=True,
+        null=True,
+        default=None,
+    )
+    aha_dissertation_id = models.BigIntegerField(
+        verbose_name="AHA dissertation ID",
+        editable=False,
+        blank=True,
+        null=True,
+        default=None,
+    )
+
+    def __str__(self) -> str:
+        return self.scholar
