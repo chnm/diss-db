@@ -4,7 +4,7 @@ from .models import School, Scholar, Dissertation
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("name",)
 
 
 @admin.register(Scholar)
@@ -21,4 +21,7 @@ class ScholarAdmin(admin.ModelAdmin):
 @admin.register(Dissertation)
 class DissertationAdmin(admin.ModelAdmin):
     list_display = ("main_title", "year", "author", "school")
-    pass
+    autocomplete_fields = (
+        "author",
+        "school",
+    )
