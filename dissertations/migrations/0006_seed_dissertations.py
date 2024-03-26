@@ -7,7 +7,7 @@ import csv
 def import_dissertations(apps, schema_editor):
     Dissertation = apps.get_model("dissertations", "Dissertation")
     to_import = []
-    with open("aha-data/dissertations.csv") as csvfile:
+    with open("aha-data/dissertations.csv", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             diss = Dissertation(

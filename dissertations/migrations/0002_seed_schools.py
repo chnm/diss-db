@@ -11,7 +11,7 @@ import csv
 def import_schools(apps, schema_editor):
     School = apps.get_model("dissertations", "School")
     to_import = []
-    with open("aha-data/schools.csv") as csvfile:
+    with open("aha-data/schools.csv", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             school = School(

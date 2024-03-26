@@ -7,7 +7,7 @@ import csv
 def import_committees(apps, schema_editor):
     CommitteeMember = apps.get_model("dissertations", "CommitteeMember")
     to_import = []
-    with open("aha-data/committee-members.csv") as csvfile:
+    with open("aha-data/committee-members.csv", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             member = CommitteeMember(

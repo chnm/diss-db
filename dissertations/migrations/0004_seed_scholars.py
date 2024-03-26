@@ -7,7 +7,7 @@ import csv
 def import_scholars(apps, schema_editor):
     Scholar = apps.get_model("dissertations", "Scholar")
     to_import = []
-    with open("aha-data/scholars.csv") as csvfile:
+    with open("aha-data/scholars.csv", encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             scholar = Scholar(

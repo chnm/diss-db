@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.urls import reverse
 import datetime
+
 
 # Create your models here.
 class School(models.Model):
@@ -150,6 +152,9 @@ class Dissertation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
+
+    def get_absolute_url(self):
+        return reverse("diss-detail", args=[self.id])
 
 
 class CommitteeMember(models.Model):
