@@ -2,7 +2,7 @@
 name = "diss-db"
 version = "0.1.0"
 description = ""
-authors = ["Savannah Scott <sscott2@eagles.bridgewater.edu>"]
+authors = ["Savannah Scott <sscott2@eagles.bridgewater.edu>", "Jason Heppler <jheppler@gmu.edu>", "Lincoln Mullen <lmullen@gmu.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
