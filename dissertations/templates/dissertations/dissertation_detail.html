@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+<!doctype html>
+<html>
+
+{% block main %}
+<h1>Title: {{ dissertation.title }}</h1>
+<p>Author: {{dissertation.author}}</p>
+<p>School: {{dissertation.school}}</p>
+<p>Year: {{dissertation.year}}</p>
+<p>Advisor: </p>
+{% endblock main %}
+
+</html>

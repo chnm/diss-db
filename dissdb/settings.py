@@ -50,6 +50,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "dissertations",
+    "django_tables2",
+    "django_filters",
+    "bootstrap3",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
