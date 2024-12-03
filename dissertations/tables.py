@@ -1,10 +1,11 @@
 import django_tables2 as tables
 from django_tables2.utils import A
-from .models import Dissertation, CommitteeMember
+from .models import Dissertation, CommitteeMember, Scholar
 
 
 class DissTable(tables.Table):
     title = tables.Column(linkify=True)
+    author = tables.Column(linkify=True)
 
     class Meta:
         model = Dissertation
@@ -18,6 +19,7 @@ class DissTable(tables.Table):
 
 
 class ComMemTable(tables.Table):
+    scholar = tables.Column(linkify=True)
 
     class Meta:
         model = CommitteeMember

@@ -1,0 +1,536 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+<!doctype html>
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+    </head>
+
+{% block main %}
+<h2>Scholar: {{ scholar_detail.aha_name }}</h2>
+{% if advisor.scholar %}
+<p>Advisor: <a href="{% url 'scholar-detail' advisor.scholar.id %}">{{ advisor.scholar }}</a></p>
+{% else %}
+<p>Advisor: {{advisor}}</p>
+{% endif %}
+<p>Dissertation: "{{ dissertation.title }}", {{ dissertation.school }}, {{dissertation.year}} </p>
+{% if advisees.first != None %}
+<p>Advisees: </p> {% for advisee in advisees %}
+<ul>
+<li><a href="{% url 'scholar-detail' advisee.dissertation.author.id %}">{{ advisee.dissertation.author.name_full }}</a></li>
+</ul>
+{% endfor %}
+{% else %}
+<p>Advisees: {{ advisees.first }}</p>
+{% endif %}
+
+<h3>Immediate tree</h3>
+<div id="simpleTree"></div>
+<br><br>
+<h3>Extended Tree</h3>
+<!--<div id="complexTree"></div>-->
+<div id="complexTree2"></div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+<script type="module">
+    import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    //simple tree viz
+    let objData = [];
+    function findHeight(data) {
+            let h = 0
+            if (data.length <= 15){
+                h = 300
+            }
+            else {
+                h = data.length * 15
+            }
+            return h
+        }
+    fetch("{% url 'get_viz_data' scholar_detail.aha_scholar_id %}")
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            objData = data; 
+        })
+        .then( () => {
+            const simplePlot = Plot.plot({
+                axis: null,
+                height: findHeight(objData),
+                width: 600, 
+                margin: 20,
+                marginLeft: 110,
+                marginRight: 250,
+                marks: [
+                    Plot.tree(objData, {textStroke: "white", curve: "step-before", fontSize: '12'})
+                ]
+            })
+            const div = document.querySelector("#simpleTree");
+            div.append(simplePlot);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+        //complex tree viz
+        let objData2 = [];
+
+        function findWidth(data) {
+            let max = 0;
+            let w = 0;
+            data.forEach(element => {
+                if ( (element.split("/").length - 1) > max){
+                    max = (element.split("/").length - 1)
+                }
+            });
+            if ((max*300) <= 600){
+                w = 700
+            }
+            else {
+                w = max * 320
+            }
+            return w
+        }
+
+        function restructureData(data){
+            const newData = []
+            data.forEach(element => {
+                if (data.indexOf(element) != data.length-1){
+                    const subStringArray = element.split('/')
+                    //newData.push(subStringArray)
+                    subStringArray.forEach(item => {
+                        var newItem = {id: item, parentId: subStringArray[subStringArray.indexOf(item) - 1]}
+                        //inList = contains(newItem, newData)
+                        if (!(newData.some(newData => newData.id === item))){
+                            newData.push(newItem)
+                        }
+                })
+                }
+
+            })
+            return newData
+        }
+
+        function Tree(data, { // data is either tabular (array of objects) or hierarchy (nested objects)
+            path, // as an alternative to id and parentId, returns an array identifier, imputing internal nodes
+            id = Array.isArray(data) ? d => d.id : null, // if tabular data, given a d in data, returns a unique identifier (string)
+            parentId = Array.isArray(data) ? d => d.parentId : null, // if tabular data, given a node d, returns its parent’s identifier
+            children, // if hierarchical data, given a d in data, returns its children
+            tree = d3.tree, // layout algorithm (typically d3.tree or d3.cluster)
+            sort, // how to sort nodes prior to layout (e.g., (a, b) => d3.descending(a.height, b.height))
+            label, // given a node d, returns the display name
+            title, // given a node d, returns its hover text
+            link, // given a node d, its link (if any)
+            linkTarget = "_blank", // the target attribute for links (if any)
+            width = 640, // outer width, in pixels
+            height, // outer height, in pixels
+            r = 3, // radius of nodes
+            padding = 1, // horizontal padding for first and last column
+            fill = "#999", // fill for nodes
+            fillOpacity, // fill opacity for nodes
+            stroke = "#555", // stroke for links
+            strokeWidth = 1.5, // stroke width for links
+            strokeOpacity = 0.4, // stroke opacity for links
+            strokeLinejoin, // stroke line join for links
+            strokeLinecap, // stroke line cap for links
+            halo = "#fff", // color of label halo 
+            haloWidth = 3, // padding around the labels
+            curve = d3.curveBumpX, // curve for the link
+            highlight = () => true
+        } = {}) {
+
+            // If id and parentId options are specified, or the path option, use d3.stratify
+            // to convert tabular data to a hierarchy; otherwise we assume that the data is
+            // specified as an object {children} with nested objects (a.k.a. the “flare.json”
+            // format), and use d3.hierarchy.
+            const root = path != null ? d3.stratify().path(path)(data)
+                : id != null || parentId != null ? d3.stratify().id(id).parentId(parentId)(data)
+                : d3.hierarchy(data, children);
+
+            // Sort the nodes.
+            if (sort != null) root.sort(sort);
+
+            // Compute labels and titles.
+            const descendants = root.descendants();
+            const L = label == null ? null : descendants.map(d => label(d.data, d));
+
+            // Compute the layout.
+            const dx = 10;
+            const dy = width / (root.height + padding);
+            tree().nodeSize([dx, dy])(root);
+
+            // Center the tree.
+            let x0 = Infinity;
+            let x1 = -x0;
+            root.each(d => {
+                if (d.x > x1) x1 = d.x;
+                if (d.x < x0) x0 = d.x;
+            });
+
+            // Compute the default height.
+            if (height === undefined) height = x1 - x0 + dx * 2;
+
+            // Use the required curve
+            if (typeof curve !== "function") throw new Error(`Unsupported curve`);
+
+            const svg = d3.create("svg")
+                .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
+                .attr("width", width)
+                .attr("height", height)
+                .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 10);
+
+            svg.append("g")
+                .attr("fill", "none")
+                .attr("stroke", stroke)
+                .attr("stroke-opacity", strokeOpacity)
+                .attr("stroke-linecap", strokeLinecap)
+                .attr("stroke-linejoin", strokeLinejoin)
+                .attr("stroke-width", strokeWidth)
+            .selectAll("path")
+                .data(root.links())
+                .join("path")
+                    //.attr("stroke", d => highlight(d.source) && highlight(d.target) ? "red" : null)
+                    .attr("stroke-opacity", d => highlight(d.source) && highlight(d.target) ? 1 : null)
+                    .attr("d", d3.link(curve)
+                        .x(d => d.y)
+                        .y(d => d.x));
+
+            const node = svg.append("g")
+                .selectAll("a")
+                .data(root.descendants())
+                .join("a")
+                    .attr("xlink:href", link == null ? null : d => link(d.data, d))
+                    .attr("target", link == null ? null : linkTarget)
+                    .attr("transform", d => `translate(${d.y},${d.x})`);
+
+            node.append("circle")
+                .attr("fill", d => d.children ? stroke : fill)
+                .attr("r", r)
+                .on("click", handleClick)
+                .on("mouseover", handleMouseOver)
+                .on("mouseout", handleMouseOut);
+                //.on("dblclick", handleDblClick)
+                //.on("click", handleClick)
+
+            if (title != null) node.append("title")
+                .text(d => title(d.data, d));
+
+            if (L) node.append("text")
+                //.attr("fill", d => highlight(d) ? "red" : null)
+                .attr("dy", "0.32em")
+                .attr("x", d => d.children ? -6 : 6)
+                .attr("text-anchor", d => d.children ? "end" : "start")
+                .attr("paint-order", "stroke")
+                .attr("stroke", halo)
+                .attr("stroke-width", haloWidth)
+                .text((d, i) => L[i]);
+                d3.selectAll(".node")
+                d3.selectAll(".node")
+                d3.selectAll(".node")
+
+            // Global variable to track current persistent highlight
+            let currentHighlightedPath = null;
+
+            function getPathToRoot(node) {
+                const path = [];
+                let current = node;
+                while (current) {
+                    path.push(current);
+                    current = current.parent;
+                }
+                return path;
+            }
+
+            //on click create fixed highlight
+            function handleClick(event, d) {
+                // If clicking the same node, reset
+                if (currentHighlightedPath && currentHighlightedPath[0] === d) {
+                    // Reset everything
+                    d3.selectAll("circle")
+                        //.property("clicked", false)
+                        .transition()
+                        .duration(200)
+                        .style("fill", "#999")
+                        .attr("r", 3);
+                    // Reset source node with transition
+                    d3.select(event.currentTarget)
+                        .transition()
+                        .duration(200)
+                        .style("fill", function() {
+                            return d3.select(this).property("_prevFill");
+                        })
+                        .attr("r", 3);
+                    // Reset all links with transition
+                    d3.selectAll("path")
+                        //.property("clicked", false)
+                        .transition()
+                        .duration(200)
+                        .style("stroke", "#999")
+                        .style("stroke-width", "1.5px");
+
+                    currentHighlightedPath = null;
+                    return;
+                }
+
+                // Apply persistent highlight
+                currentHighlightedPath = getPathToRoot(d);
+                /// Store the current node for click
+                const node = d3.select(this);
+                //node.property("_prevFill", node.style("fill"));
+
+                // Highlight with transition
+                svg.select(event.currentTarget)
+                    .transition()
+                    .duration(200)
+                    .style("fill", "#FF0000")
+                    .style("opacity", 1)
+                    .attr("r", 8);
+
+                // Highlight nodes in path
+                svg.selectAll("circle")
+                    .filter(n => currentHighlightedPath.some(p => p[1] === n))
+                    //.property("clicked", true)
+                    .transition()
+                    .duration(200)
+                    .style("fill", "#FF0000")
+                    .style("opacity", 1)
+                    .attr("r", 6);
+                
+                // Highlight links in path
+                svg.selectAll("path")
+                    .filter(l => currentHighlightedPath.some(p => p[0] === l.target && p[1] === l.source))
+                    //.property("clicked", true)
+                    .transition()
+                    .duration(200)
+                    .style("stroke", "#FF0000")
+                    .style("opacity", 1)
+                    .style("stroke-width", "4.5px");
+                
+            } 
+            
+            function handleMouseOver(event, d) {
+                if (currentHighlightedPath != null){
+                    return
+                }
+                    /// Store the current node for mouseout
+                    const node = d3.select(this);
+                    node.property("_prevFill", node.style("fill"));
+
+                    // Highlight with transition
+                    d3.select(event.currentTarget)
+                        .transition()
+                        .duration(200)
+                        .style("fill", "#FF0000")
+                        .style("opacity", 1)
+                        .attr("r", 8)
+                    let test = svg.selectAll("text").filter(n => n === d)
+                    console.log(test)
+                    svg.selectAll("text")
+                        .filter(n => n === d)
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 1)
+                        .style("font-weight", "bold")
+                        .attr("stroke-width", 4);
+
+
+                    // Get path to root- working
+                    let path = [];
+                    let current = d;
+                    while (current.parent) {
+                        path.push([current, current.parent]);
+                        current = current.parent;
+                    }
+
+                    //mute nodes
+                    svg.selectAll("circle")
+                        .style("opacity", 0.2);
+                    //mute links
+                    svg.selectAll("path")
+                        .style("opacity", 0.1);
+                    //mute text
+                    svg.selectAll("text")
+                        .style("opacity", 0.2);
+
+                    // Highlight nodes in path
+                    d3.selectAll("circle")
+                        .filter(n => path.some(p => p[1] === n))
+                        .transition()
+                        .duration(200)
+                        .style("fill", "#FF0000")
+                        .style("opacity", 1)
+                        .attr("r", 6);
+                    
+                    // Highlight links in path
+                    d3.selectAll("path")
+                        .filter(l => path.some(p => p[0] === l.target && p[1] === l.source))
+                        .transition()
+                        .duration(200)
+                        .style("stroke", "#FF0000")
+                        .style("opacity", 1)
+                        .style("stroke-width", "4.5px");
+                    
+                    //restore text boldness
+                    d3.selectAll("text")
+                        .filter(n => path.some(p => p[1] === n))
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 1);
+            }
+            
+
+        // Reset highlighting
+            function handleMouseOut() {
+                if (currentHighlightedPath != null){
+                        // Highlight with transition
+                        svg.select(event.currentTarget)
+                            .transition()
+                            .duration(200)
+                            .style("fill", "#FF0000")
+                            .style("opacity", 1)
+                            .attr("r", 8);
+
+                        // Highlight nodes in path
+                        svg.selectAll("circle")
+                            .filter(n => currentHighlightedPath.some(p => p[1] === n))
+                            //.property("clicked", true)
+                            .transition()
+                            .duration(200)
+                            .style("fill", "#FF0000")
+                            .style("opacity", 1)
+                            .attr("r", 6);
+                        
+                        // Highlight links in path
+                        svg.selectAll("path")
+                            .filter(l => currentHighlightedPath.some(p => p[0] === l.target && p[1] === l.source))
+                            //.property("clicked", true)
+                            .transition()
+                            .duration(200)
+                            .style("stroke", "#FF0000")
+                            .style("opacity", 1)
+                            .style("stroke-width", "4.5px");
+                            return
+                    }
+                    const click = d3.select(this).property("clicked")
+                    if (click) {
+                        console.log(click)
+                        return;
+                    }
+                    svg.selectAll("circle")
+                        .style("opacity", 1);
+                    svg.selectAll("path")
+                        .style("opacity", 1);
+                    svg.selectAll("text")
+                        .style("opacity", 1)
+                        .style("font-weight", "normal");
+                    d3.selectAll("circle")
+                        .transition()
+                        .duration(200)
+                        .style("fill", "#999") //changed from #999
+                        .attr("r", 3);
+                    // Reset node with transition
+                    d3.select(event.currentTarget)
+                        .transition()
+                        .duration(200)
+                        .style("fill", function() {
+                            return d3.select(this).property("_prevFill");
+                        })
+                        .attr("r", 3);
+                    // Reset all links with transition
+                    d3.selectAll("path")
+                        .transition()
+                        .duration(200)
+                        .style("stroke", "#999")
+                        .style("stroke-width", "1.5px");
+            }
+            
+            svg.on("click", function(event) {
+            // Check if the click was on the SVG background
+            if (event.target === this) {
+                // Reset everything
+                svg.selectAll("circle")
+                    .style("opacity", 1);
+                svg.selectAll("path")
+                    .style("opacity", 1);
+                svg.selectAll("text")
+                    .style("opacity", 1)
+                    .style("font-weight", "normal");
+                d3.selectAll("circle")
+                    //.property("clicked", false)
+                    .transition()
+                    .duration(200)
+                    .style("fill", "#999")
+                    .attr("r", 3);
+                // Reset source node with transition
+                d3.select(event.currentTarget)
+                    .transition()
+                    .duration(200)
+                    .style("fill", function() {
+                        return d3.select(this).property("_prevFill");
+                    })
+                    .attr("r", 3);
+                // Reset all links with transition
+                d3.selectAll("path")
+                    //.property("clicked", false)
+                    .transition()
+                    .duration(200)
+                    .style("stroke", "#999")
+                    .style("stroke-width", "1.5px");
+                
+                currentHighlightedPath = null;
+            }
+            });
+
+            return svg.node();
+    }
+
+    
+        fetch("{% url 'get_viz_data_complex' scholar_detail.aha_scholar_id %}")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                objData2 = data; 
+            })
+            .then( () => {
+                /*
+                const plot = Plot.plot({
+                    axis: null,
+                    margin: 20,
+                    marginLeft: 100,
+                    marginRight: 130,
+                    width: findWidth(objData2), //1800
+                    height: findHeight(objData2), //9800 
+                    marks: [
+                        Plot.tree(objData2, {textStroke: "white", curve: "step-before"})
+                    ]
+                })
+                const div = document.querySelector("#complexTree");
+                div.append(plot); */
+                const d3Data = restructureData(objData2);
+                const d3Data2 = d3.stratify()(d3Data)
+                const chart = Tree(d3Data2, {
+                    label: d => d.id,
+                    title: (d, n) => `${n.ancestors().reverse().map(d => d.data.id).join(".")}`, // hover text
+                    sort: (a, b) => d3.descending(a.height, b.height), // reduce link crossings
+                    tree: d3.tidy,
+                    width: findWidth(objData2), //1152
+                    margin: 20,
+                    curve: d3.curveStep
+                })
+                const div2 = document.querySelector("#complexTree2");
+                div2.append(chart);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+        });
+</script>
+{% endblock main %}
+
+</html>

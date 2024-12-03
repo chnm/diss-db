@@ -103,6 +103,9 @@ class Scholar(models.Model):
 
     def __str__(self) -> str:
         return self.name_full_rev
+    
+    def get_absolute_url(self):
+        return reverse("scholar-detail", args=[self.id])
 
     class Meta:
         ordering = ["name_last", "name_first", "name_middle"]
