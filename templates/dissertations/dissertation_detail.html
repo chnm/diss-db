@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ dissertation_detail.title }}</h1>
+    
+    <div class="bg-gray-50 p-6 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Author</h3>
+                <p><a href="{% url 'scholar-detail' dissertation_detail.author.id %}" class="text-blue-600 hover:text-blue-800">{{ dissertation_detail.author }}</a></p>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">School</h3>
+                <p class="text-gray-700">{{ dissertation_detail.school }}</p>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Year</h3>
+                <p class="text-gray-700">{{ dissertation_detail.year }}</p>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Advisor</h3>
+                {% if advisor.scholar %}
+                    <p class="text-gray-700">{{ advisor.scholar }}</p>
+                {% else %}
+                    <p class="text-gray-700">{{ advisor }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

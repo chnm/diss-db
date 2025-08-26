@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block title %}
+<title>Committee Members - The History Dissertation Database</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Committee Members & Advisors</h1>
+        <p class="text-xl text-gray-600">
+            Discover scholars who served as dissertation advisors and committee members. 
+            Explore academic networks and mentorship relationships that shaped historical scholarship.
+        </p>
+    </div>
+{% if filter %}
+<form action="" method="get" class="bg-gray-50 p-6 rounded-lg mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+            <label for="{{ filter.form.scholarFirstName.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.scholarFirstName.label }}</label>
+            {{ filter.form.scholarFirstName }}
+        </div>
+        <div>
+            <label for="{{ filter.form.scholarLastName.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.scholarLastName.label }}</label>
+            {{ filter.form.scholarLastName }}
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="{{ filter.form.dissertationTitle.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.dissertationTitle.label }}</label>
+        {{ filter.form.dissertationTitle }}
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Filter</button>
+</form>
+    {% endif %}
+    {% render_table table %}
+</div>
+{% endblock main %}

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  a:not(.btn):not([class*="bg-"]):not([class*="text-white"]) {
+    @apply text-blue-600 hover:text-blue-800 hover:underline;
+  }
+}

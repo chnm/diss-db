@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>About - The History Dissertation Database</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-4xl mx-auto">
+    <div class="prose prose-lg max-w-none">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">About the History Dissertation Database</h1>
+        
+        <div class="bg-blue-50 p-6 mb-8">
+            <p class="text-blue-900">
+                The History Dissertation Database is a comprehensive resource for exploring the landscape of historical scholarship 
+                through doctoral dissertations and the academic networks that shaped them.
+            </p>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">What's in the Database</h2>
+        <p class="text-gray-700 mb-6">
+            This database contains detailed information about history dissertations, including:
+        </p>
+        <ul class="list-disc pl-6 mb-6 text-gray-700 space-y-2">
+            <li><strong>Dissertation metadata:</strong> titles, authors, institutions, and completion years</li>
+            <li><strong>Committee information:</strong> advisors and committee members who guided each project</li>
+            <li><strong>Academic genealogies:</strong> mentor-student relationships across generations of scholars</li>
+            <li><strong>Institutional networks:</strong> connections between universities and their scholarly communities</li>
+        </ul>
+
+        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">How to Use This Resource</h2>
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 border border-gray-200 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Browse Dissertations</h3>
+                <p class="text-gray-700">
+                    Search and filter through dissertations by title, author, institution, or year. 
+                    Click on any dissertation to view detailed information including committee members and advisor relationships.
+                </p>
+            </div>
+            <div class="bg-white p-6 border border-gray-200 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Explore Academic Networks</h3>
+                <p class="text-gray-700">
+                    Discover scholars who served as dissertation advisors and committee members. 
+                    View interactive visualizations showing academic family trees and scholarly genealogies.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Research Applications</h2>
+        <p class="text-gray-700 mb-4">
+            This database supports various research inquiries:
+        </p>
+        <ul class="list-disc pl-6 mb-8 text-gray-700 space-y-2">
+            <li>Tracing the intellectual development of historical fields and subfields</li>
+            <li>Understanding patterns of mentorship and academic influence</li>
+            <li>Analyzing institutional relationships and scholarly networks</li>
+            <li>Exploring the geographic and temporal distribution of historical scholarship</li>
+        </ul>
+
+        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">About the Project</h2>
+        <p class="text-gray-700 mb-6">
+            The History Dissertation Database is developed and maintained by the 
+            <a href="https://rrchnm.org" class="text-blue-600 hover:text-blue-800 font-medium">Roy Rosenzweig Center for History and New Media</a> 
+            at George Mason University. The project aims to provide scholars, students, and researchers with tools to explore 
+            the rich history of historical scholarship and understand the networks that have shaped the discipline.
+        </p>
+
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Technical Information</h3>
+            <p class="text-gray-700 mb-3">
+                The database is built using Django and features interactive visualizations powered by D3.js. 
+                The data is provided by the American Historical Association.
+            </p>
+            <p>The project team is:</p>
+              <ul>
+              <li>Savannah Scott, 2024&mdash;present</li>
+              <li>Jason Heppler, 2024&mdash;present</li>
+              <li>Lincon Mullen, 2024&mdash;present</li>
+              </ul>
+            <p class="text-gray-700">
+                For technical questions or data inquiries, please contact the 
+                <a href="https://rrchnm.org" class="text-blue-600 hover:text-blue-800 font-medium">RRCHNM team</a>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock main %}
