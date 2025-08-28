@@ -24,6 +24,7 @@ psycopg2 = "^2.9.10"
 django-tables2 = "^2.7.5"
 django-filter = "^25.1"
 django-rest-framework = "^0.1.0"
+virtualenv = ">=20.26.6,<20.33.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
@@ -32,4 +33,3 @@ pre-commit = "^4.0.1"
 django-debug-toolbar = "^4.4.6"
 pytest-django = "^4.9.0"
 pylint-django = "^2.6.1"
-
