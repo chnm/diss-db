@@ -1,24 +1,41 @@
-"""dissdb URL Configuration
+from django.urls import path, include
+from rest_framework.urlpatterns import format_suffix_patterns
+from . import views
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+"""urlpatterns = [
+    path("", views.index, name="index"),
+    path(
+        "dissertations/",
+        views.DissListView.as_view(),
+        name="dissertations",
+    ),
+]"""
 
-from django.contrib import admin
-from django.urls import include, path
+# router = routers.DefaultRouter()
+# router.register(r'scholarsapi', views.ScholarViewSet)
 
 urlpatterns = [
-    path("", include("dissertations.urls")),
-    path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls")),
+    path("", views.index, name="index"),
+    path("about/", views.about, name="about"),
+    path(
+        "dissertations/",
+        views.FilteredDissertationListView.as_view(),
+        name="dissertations",
+    ),
+    path(
+        "committeemembers/",
+        views.FilteredComMemListView.as_view(),
+        name="committeemembers",
+    ),
+    path("dissertations/<int:pk>", views.DissDetailView.as_view(), name="diss-detail"),
+    path("scholar/<int:pk>", views.ScholarDetailView.as_view(), name="scholar-detail" ),
+    path('scholars/api/', views.ScholarListAPI.as_view(), name='scholar-list-api'),
+    path('scholars/api/<int:pk>/', views.ScholarDetailAPI.as_view()),
+    path('api/get_viz_data/<int:pk>', views.get_viz_data, name="get_viz_data"),
+    path('api/get_viz_data_complex/<int:pk>', views.get_viz_data_complex, name="get_viz_data_complex")
+    # path("scholarsapi/<int:pk>/", views.ScholarDetail.as_view()),
+    # path('', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

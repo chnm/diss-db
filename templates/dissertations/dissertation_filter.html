@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block title %}
+<title>Dissertations - The History Dissertation Database</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">History Dissertations</h1>
+        <p class="text-xl text-gray-600">
+            Browse and search through a comprehensive collection of history dissertations. 
+            Filter by title, author, institution, or year to discover scholarly works and their creators.
+        </p>
+    </div>
+    
+    {% if filter %}
+<form action="" method="get" class="bg-gray-50 p-6 rounded-lg mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+            <label for="{{ filter.form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.title.label }}</label>
+            {{ filter.form.title }}
+        </div>
+        <div>
+            <label for="{{ filter.form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.school.label }}</label>
+            {{ filter.form.school }}
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+            <label for="{{ filter.form.authorFirstName.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.authorFirstName.label }}</label>
+            {{ filter.form.authorFirstName }}
+        </div>
+        <div>
+            <label for="{{ filter.form.authorLastName.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.authorLastName.label }}</label>
+            {{ filter.form.authorLastName }}
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="{{ filter.form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.year.label }}</label>
+        {{ filter.form.year }}
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Filter</button>
+</form>
+    {% endif %}
+    {% render_table table %}
+</div>
+{% endblock main %}

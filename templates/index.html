@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <p class="text-xl text-gray-600 mb-8">
+            Explore the landscape of history dissertations and the scholarly networks that shaped them.
+        </p>
+        <div class="bg-blue-50 p-6 mb-8">
+            <div class="flex">
+                <div class="ml-3">
+                    <p class="text-sm text-blue-700">
+                        This database contains information about history dissertations, their authors, advisors, and committee members, 
+                        helping researchers understand the evolution of historical scholarship and academic genealogies.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="ml-3 text-lg font-semibold text-gray-900">Browse Dissertations</h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+                Search and filter through a comprehensive collection of history dissertations by title, author, institution, or year.
+            </p>
+            <a href="{% url 'dissertations' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
+                Explore Dissertations
+                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="ml-3 text-lg font-semibold text-gray-900">Committee Members</h3>
+            </div>
+            <p class="text-gray-600 mb-4">
+                Discover the scholars who served as dissertation advisors and committee members, exploring academic networks and mentorship relationships.
+            </p>
+            <a href="{% url 'committeemembers' %}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors">
+                Browse Advisors
+                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="bg-gray-50 rounded-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">What You Can Do</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Advanced Search</h3>
+                <p class="text-gray-600">Filter dissertations by multiple criteria including author, institution, year, and title.</p>
+            </div>
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Academic Networks</h3>
+                <p class="text-gray-600">Explore connections between scholars through advisor-advisee relationships and committee service.</p>
+            </div>
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Interactive Visualizations</h3>
+                <p class="text-gray-600">View scholarly genealogies and academic family trees through detailed visualizations.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

@@ -1,0 +1,67 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block title %}
+	<title>The History Dissertation DB</title>
+	{% endblock title %}
+	{% tailwind_css %}
+</head>
+
+<body>
+
+	<div class="container mx-auto px-4 max-w-6xl" id="all-container">
+
+		<header class="mt-8">
+			<div class="flex items-center justify-between">
+				<h1 class="text-3xl font-bold text-gray-900"><a href="{% url 'index' %}" class="text-blue-600 hover:text-blue-800">The History Dissertation DB</a></h1>
+				<nav class="hidden md:flex space-x-6">
+					<a href="{% url 'dissertations' %}" class="text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
+					<a href="{% url 'committeemembers' %}" class="text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
+					<a href="{% url 'about' %}" class="text-gray-600 hover:text-gray-900 font-medium">About</a>
+				</nav>
+				<div class="md:hidden">
+					<button type="button" class="text-gray-500 hover:text-gray-600" id="mobile-menu-button">
+						<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+						</svg>
+					</button>
+				</div>
+			</div>
+			<div class="md:hidden mt-4 hidden" id="mobile-menu">
+				<div class="space-y-2">
+					<a href="{% url 'dissertations' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
+					<a href="{% url 'committeemembers' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
+					<a href="{% url 'about' %}" class="block text-gray-600 hover:text-gray-900 font-medium">About</a>
+				</div>
+			</div>
+		</header>
+
+		<main class="mt-8">
+			{% block main %}
+			{% endblock main %}
+		</main>
+
+		<footer class="pt-8 my-8 text-gray-500 border-t border-gray-200">
+			<p>
+				Created by the <a href="https://rrchnm.org" class="text-blue-600 hover:text-blue-800">Roy Rosenzweig Center for History and New Media</a>.
+			</p>
+			<img class="h-12 w-auto" src="{% static 'dissertations/rrchnm-logo.svg' %}" alt="RRCHNM logo">
+		</footer>
+
+	</div>
+
+	<script>
+		document.getElementById('mobile-menu-button').addEventListener('click', function() {
+			const mobileMenu = document.getElementById('mobile-menu');
+			mobileMenu.classList.toggle('hidden');
+		});
+	</script>
+
+</body>
+
+</html>

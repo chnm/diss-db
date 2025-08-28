@@ -1,33 +1,52 @@
-version: "3.9"
+---
+name: dissdb
 
 services:
-  db:
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 15s
-        max_attempts: 3
-        window: 120s
-    image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: ${DISSDB_DB_PASS}
-      POSTGRES_USER: ${DISSDB_DB_USER}
-      POSTGRES_DB: ${DISSDB_DB_BASE}
+  app:
+    build: .
+    image: "rrchnm/dissdb"
     ports:
-      - ${DISSDB_DB_PORT}:5432
+      - 8000:8000
     volumes:
-      - dissdb-dbdata:/var/lib/postgresql/data
-
-  adminer:
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 15s
-        max_attempts: 3
-        window: 120s
-    image: adminer
-    ports:
-      - 8888:8080
+      - dj-data:/app
+     #- .:/app
+    environment:
+      - DEBUG=True
+      - DJANGO_SECRET_KEY=thisisnotasecretkey
+      - DJANGO_ALLOWED_HOSTS=localhost
+      - DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=dissdb
+      - DB_USER=dissdb
+      - DB_PASSWORD=password
+      - OBJ_STORAGE=False
+      - OBJ_STORAGE_ACCESS_KEY_ID=PLACEHOLDER
+      - OBJ_STORAGE_SECRET_ACCESS_KEY=PLACEHOLDER
+      - OBJ_STORAGE_BUCKET_NAME=PLACEHOLDER
+      - OBJ_STORAGE_ENDPOINT_URL=https://dev.obj.rrchnm.org
+    command: >
+        sh -c "poetry run python3 manage.py migrate &&
+               poetry run python3 manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:17
+    volumes:
+      #- ./initdb:/docker-entrypoint-initdb.d
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=dissdb
+      - POSTGRES_USER=dissdb
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dissdb"]
+      interval: 2s
+      timeout: 5s
+      retries: 3
 
 volumes:
-  dissdb-dbdata:
+  dj-data:
+  pg-data:
