@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load django_tables2 %}
+{% load pagination_tags %}
 
 <div class="overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
@@ -72,13 +73,39 @@
             {% endif %}
             
             <div class="hidden md:flex ml-2">
-                {% for num in table.page.paginator.page_range %}
+                <!--{% for num in table.page.paginator.page_range %}
                     {% if num == table.page.number %}
                         <span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ num }}</span>
                     {% else %}
                         <a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a>
                     {% endif %}
-                {% endfor %}
+                {% endfor %}-->
+                {% with page_info=table.page|get_page_range:3 %}
+                    <!-- Show first page if not in range -->
+                    {% if page_info.show_first %}
+                        <a href="{% querystring table.prefixed_page_field=1 %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">1</a>
+                        {% if page_info.show_first_ellipsis %}
+                            <span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Show page numbers in range -->
+                    {% for num in page_info.page_range %}
+                        {% if num == table.page.number %}
+                            <span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ num }}</span>
+                        {% else %}
+                            <a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Show last page if not in range -->
+                    {% if page_info.show_last %}
+                        {% if page_info.show_last_ellipsis %}
+                            <span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span>
+                        {% endif %}
+                        <a href="{% querystring table.prefixed_page_field=page_info.total_pages %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ page_info.total_pages }}</a>
+                    {% endif %}
+                {% endwith %}
             </div>
             
             {% if table.page.has_next %}
