@@ -3,7 +3,7 @@
 {% block main %}
 <div class="max-w-6xl mx-auto">
     <header class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ scholar_detail.aha_name }}</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4" id="scholar">{{ scholar_detail.aha_name }}</h1>
         
         <div class="bg-gray-50 p-6 rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -43,6 +43,8 @@
             <div class="bg-white p-4 rounded-lg border border-gray-200">
                 <div id="simpleTree"></div>
             </div>
+            <br>
+            <button id="downloadImmediateTree" class="relative inline-flex items-center px-3 py-2 rounded-lg border-blue-500 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">Download Simple Tree as PNG</button>
         </section>
         
         <section>
@@ -50,6 +52,8 @@
             <div class="bg-white p-4 rounded-lg border border-gray-200">
                 <div id="complexTree2"></div>
             </div>
+            <br>
+            <button id="downloadExtendedTree" class="relative inline-flex items-center px-3 py-2 rounded-lg border-blue-500 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">Download Extended Tree as PNG</button>
         </section>
     </div>
 </div>
@@ -62,9 +66,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/save-svg-as-png/lib/saveSvgAsPng.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="module">
     import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-    //simple tree viz
     let objData = [];
     function findHeight(data) {
             let h = 0
@@ -86,9 +91,9 @@
             const simplePlot = Plot.plot({
                 axis: null,
                 height: findHeight(objData),
-                width: 600, 
+                width: 1000, 
                 margin: 20,
-                marginLeft: 110,
+                marginLeft: 200,
                 marginRight: 250,
                 marks: [
                     Plot.tree(objData, {textStroke: "white", curve: "step-before", fontSize: '12'})
@@ -549,6 +554,66 @@
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
+        });
+</script>
+<script type="module">
+    import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    d3.select("#downloadImmediateTree")
+        .on('click', function(){
+            const svgElement = d3.select("#simpleTree svg").node();
+            const scholarElement = document.getElementById("scholar");
+            let scholarName = scholarElement ? scholarElement.textContent.trim() : "Unknown";
+            
+            // Clean the name for use in filename (remove spaces, special chars)
+            scholarName = scholarName
+                .replace(/\s+/g, '') // Remove all spaces
+                .replace(/[^a-zA-Z0-9]/g, '') // Remove special characters
+                .substring(0, 50); // Limit length
+            
+            // Create filename
+            const filename = `${scholarName}_simpleTree.png`;
+        
+        // Try the save
+        saveSvgAsPng(svgElement, filename, {
+            scale: 2, 
+            backgroundColor: "#FFFFFF"
+        });
+        })
+    d3.select("#downloadExtendedTree")
+        .on('click', function(){
+            const container = document.getElementById("complexTree2");
+
+            const scholarElement = document.getElementById("scholar");
+            let scholarName = scholarElement ? scholarElement.textContent.trim() : "Unknown";
+            
+            // Clean the name for use in filename (remove spaces, special chars)
+            scholarName = scholarName
+                .replace(/\s+/g, '') // Remove all spaces
+                .replace(/[^a-zA-Z0-9]/g, '') // Remove special characters
+                .substring(0, 50); // Limit length
+            
+            // Create filename
+            const filename = `${scholarName}_extendedTree.png`;
+        
+            // Temporarily remove overflow restrictions
+            const originalStyle = container.style.cssText;
+            container.style.overflow = 'visible';
+            container.style.height = 'auto';
+            
+            html2canvas(container, {
+                scale: 2,
+                backgroundColor: '#FFFFFF',
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const link = document.createElement("a");
+                link.download = filename;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // Restore original styles
+                container.style.cssText = originalStyle;
+            });
         });
 </script>
 {% endblock main %}
