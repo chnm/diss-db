@@ -319,8 +319,7 @@
 
                 // Highlight nodes in path
                 svg.selectAll("circle")
-                    .filter(n => currentHighlightedPath.some(p => p[1] === n))
-                    //.property("clicked", true)
+                    .filter((n) => currentHighlightedPath.some(p => p === n))
                     .transition()
                     .duration(200)
                     .style("fill", "#FF0000")
@@ -329,8 +328,7 @@
                 
                 // Highlight links in path
                 svg.selectAll("path")
-                    .filter(l => currentHighlightedPath.some(p => p[0] === l.target && p[1] === l.source))
-                    //.property("clicked", true)
+                    .filter((linkData) => currentHighlightedPath.some(p => linkData.target === p && currentHighlightedPath.includes(linkData.source)))
                     .transition()
                     .duration(200)
                     .style("stroke", "#FF0000")
@@ -384,8 +382,8 @@
                         .style("opacity", 0.2);
 
                     // Highlight nodes in path
-                    d3.selectAll("circle")
-                        .filter(n => path.some(p => p[1] === n))
+                    svg.selectAll("circle")
+                        .filter((n) => path.some(p => p[1] === n))
                         .transition()
                         .duration(200)
                         .style("fill", "#FF0000")
@@ -393,8 +391,8 @@
                         .attr("r", 6);
                     
                     // Highlight links in path
-                    d3.selectAll("path")
-                        .filter(l => path.some(p => p[0] === l.target && p[1] === l.source))
+                    svg.selectAll("path")
+                        .filter((linkData) => path.some(p => p[0] === linkData.target && p[1] === linkData.source))
                         .transition()
                         .duration(200)
                         .style("stroke", "#FF0000")
@@ -423,8 +421,7 @@
 
                         // Highlight nodes in path
                         svg.selectAll("circle")
-                            .filter(n => currentHighlightedPath.some(p => p[1] === n))
-                            //.property("clicked", true)
+                            .filter((n) => currentHighlightedPath.some(p => p === n))
                             .transition()
                             .duration(200)
                             .style("fill", "#FF0000")
@@ -433,14 +430,13 @@
                         
                         // Highlight links in path
                         svg.selectAll("path")
-                            .filter(l => currentHighlightedPath.some(p => p[0] === l.target && p[1] === l.source))
-                            //.property("clicked", true)
+                            .filter((linkData) => currentHighlightedPath.some(p => linkData.target === p && currentHighlightedPath.includes(linkData.source)))
                             .transition()
                             .duration(200)
                             .style("stroke", "#FF0000")
                             .style("opacity", 1)
                             .style("stroke-width", "4.5px");
-                            return
+                        return;
                     }
                     const click = d3.select(this).property("clicked")
                     if (click) {
