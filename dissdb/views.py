@@ -66,8 +66,15 @@ def get_viz_data(request, pk):
     """Plotly format- array of string literals"""
     # get scholar who's we're centering
     scholar = Scholar.objects.get(aha_scholar_id=pk)
+    dissertation = Dissertation.objects.get(
+        aha_author_id=scholar.aha_scholar_id
+    )
     try:
-        advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+        #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+        advisor = CommitteeMember.objects.get(
+            dissertation=dissertation,
+            role="chair"
+        )
     except:
         advisor = None
     advisorData = ""
@@ -112,9 +119,14 @@ def get_viz_data_complex(request, pk):
     path = ""
     # find root (advisor variable)
     scholar = Scholar.objects.get(aha_scholar_id=pk)
+    dissertation = Dissertation.objects.get(aha_author_id=scholar.aha_scholar_id)
     root = ""
     try:
-        advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+        #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+        advisor = CommitteeMember.objects.get(
+            dissertation=dissertation,
+            role="chair"
+        )
     except:
         advisor = None
     while advisor != None:
@@ -187,7 +199,7 @@ class ScholarDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
 
         current_scholar = self.get_object()
-
+        '''
         # get the scholar's advisor
         try:
             context["advisor"] = CommitteeMember.objects.get(
@@ -202,14 +214,32 @@ class ScholarDetailView(generic.DetailView):
                 aha_author_id=current_scholar.aha_scholar_id
             )
         except:
+            context["dissertation"] = "information not available"'''
+        
+        try:
+            dissertation = Dissertation.objects.get(
+                aha_author_id=current_scholar.aha_scholar_id
+            )
+            context["dissertation"] = dissertation
+        except Dissertation.DoesNotExist:
             context["dissertation"] = "information not available"
+            context["advisor"] = "information not available"
+        
+        # NOW get the advisor using the dissertation
+        try:
+            context["advisor"] = CommitteeMember.objects.get(
+                dissertation=dissertation,
+                role="chair"  # Assuming chair = advisor
+            )
+        except CommitteeMember.DoesNotExist:
+            context["advisor"] = "information not available"
+            
 
         # get the scholar's advisees
-        try:
-            context["advisees"] = CommitteeMember.objects.filter(
-                role="chair", aha_scholar_id=current_scholar.aha_scholar_id
-            )
-        except:
-            context["advisees"] = "no advisee data"
+        advisees = CommitteeMember.objects.filter(
+            role="chair", aha_scholar_id=current_scholar.aha_scholar_id
+        )
+        context["advisees"] = advisees if advisees.exists() else None
+
 
         return context
