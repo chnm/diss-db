@@ -81,7 +81,7 @@
             }
             return h
         }
-    fetch("{% url 'get_viz_data' scholar_detail.aha_scholar_id %}")
+    fetch("{% url 'get_viz_data' scholar_detail.id %}") //was {% url 'get_viz_data' scholar_detail.aha_scholar_id %}
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -517,7 +517,7 @@
     }
 
     
-        fetch("{% url 'get_viz_data_complex' scholar_detail.aha_scholar_id %}")
+        fetch("{% url 'get_viz_data_complex' scholar_detail.id %}")
             .then(res => res.json())
             .then(data => {
                 console.log(data)
