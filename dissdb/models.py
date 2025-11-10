@@ -1,7 +1,7 @@
-from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
-from django.urls import reverse
 import datetime
+
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.db import models
 
 
 # Create your models here.
@@ -103,9 +103,6 @@ class Scholar(models.Model):
 
     def __str__(self) -> str:
         return self.name_full_rev
-    
-    def get_absolute_url(self):
-        return reverse("scholar-detail", args=[self.id])
 
     class Meta:
         ordering = ["name_last", "name_first", "name_middle"]
@@ -156,9 +153,6 @@ class Dissertation(models.Model):
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
 
-    def get_absolute_url(self):
-        return reverse("diss-detail", args=[self.id])
-
 
 class CommitteeMember(models.Model):
     scholar = models.ForeignKey(Scholar, on_delete=models.PROTECT)
@@ -193,4 +187,33 @@ class CommitteeMember(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.scholar
+        return str(self.scholar)
+
+
+class DuplicateCandidate(models.Model):
+    """Store potential duplicate scholar pairs for review"""
+
+    scholar_1 = models.ForeignKey(
+        Scholar, on_delete=models.CASCADE, related_name="duplicate_candidate_1"
+    )
+    scholar_2 = models.ForeignKey(
+        Scholar, on_delete=models.CASCADE, related_name="duplicate_candidate_2"
+    )
+    confidence_score = models.FloatField(
+        help_text="Confidence score from dedupe algorithm (0-1)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed = models.BooleanField(default=False)
+    is_duplicate = models.BooleanField(
+        null=True,
+        blank=True,
+        help_text="True if confirmed duplicate, False if not, None if not reviewed",
+    )
+    notes = models.TextField(blank=True, help_text="Review notes")
+
+    class Meta:
+        unique_together = ["scholar_1", "scholar_2"]
+        ordering = ["-confidence_score", "-created_at"]
+
+    def __str__(self):
+        return f"{self.scholar_1.name_full} ~ {self.scholar_2.name_full} ({self.confidence_score:.2f})"
