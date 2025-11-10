@@ -101,6 +101,11 @@ class Scholar(models.Model):
         else:
             return None
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("scholar-detail", kwargs={"pk": self.pk})
+
     def __str__(self) -> str:
         return self.name_full_rev
 
@@ -149,6 +154,11 @@ class Dissertation(models.Model):
     @property
     def main_title(self) -> str:
         return self.title.split(":")[0]
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("diss-detail", kwargs={"pk": self.pk})
 
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
