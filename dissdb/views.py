@@ -65,11 +65,31 @@ def get_viz_data(request, pk):
         data.append(adviseeData)"""
     """Plotly format- array of string literals"""
     # get scholar who's we're centering
-    scholar = Scholar.objects.get(aha_scholar_id=pk)
+    # scholar = Scholar.objects.get(aha_scholar_id=pk)
+    scholar = Scholar.objects.get(id=pk)
+
+    # issue- what if scholar does not have a dissertation (only in Db as a Committee Member)
     try:
-        advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
-    except:
-        advisor = None
+        dissertation = Dissertation.objects.get(
+            author=scholar.id
+        )
+        has_dissertation = True
+    except Dissertation.DoesNotExist:
+        dissertation = None
+        has_dissertation = False 
+
+    # get advisor if scholar has a dissertation
+    advisor = None
+    if has_dissertation:
+        try:
+            #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+            advisor = CommitteeMember.objects.get(
+                dissertation=dissertation,
+                role="chair"
+            )
+        except CommitteeMember.DoesNotExist:
+            advisor = None
+
     advisorData = ""
     # get their advisor
     if advisor != None:
@@ -80,59 +100,85 @@ def get_viz_data(request, pk):
         # advisorData = '/' + scholar.name_full
         advisorData = scholar.name_full + "/"
         data.append(advisorData)
+   
     # get their advisees
-    try:
-        advisees = CommitteeMember.objects.filter(role="chair", aha_scholar_id=pk)
-    except:
-        advisees = None
-    if advisees != None:
+    advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
+    if advisees.exists():
         for advisee in advisees:
             adviseeData = advisorData + advisee.dissertation.author.name_full
             data.append(adviseeData)
+    
     return JsonResponse(data, safe=False)
 
 
 def traverse(pk, path, data):
-    root = Scholar.objects.get(aha_scholar_id=pk)
+    # root = Scholar.objects.get(aha_scholar_id=pk)
+    root = Scholar.objects.get(id=pk)
     path = path + root.name_full + "/"
-    try:
-        advisees = CommitteeMember.objects.filter(role="chair", aha_scholar_id=pk)
-    except:
-        advisees = None
-    if advisees != None:
+    
+    advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
+    
+    if advisees.exists():
         for advisee in advisees:
-            traverse(advisee.dissertation.author.aha_scholar_id, path, data)
+            if advisee.dissertation and advisee.dissertation.author:
+                # traverse(advisee.dissertation.author.aha_scholar_id, path, data)
+                traverse(advisee.dissertation.author.id, path, data)
     data.append(path[0:-1])
 
-    return root.aha_scholar_id, path, data
+    # return root.aha_scholar_id, path, data
+    return root.id, path, data
 
 
 def get_viz_data_complex(request, pk):
     data = []
     path = ""
+    
     # find root (advisor variable)
-    scholar = Scholar.objects.get(aha_scholar_id=pk)
-    root = ""
+    # scholar = Scholar.objects.get(aha_scholar_id=pk)
+    scholar = Scholar.objects.get(id=pk)
+    
     try:
-        advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
-    except:
+        # dissertation = Dissertation.objects.get(aha_author_id=scholar.aha_scholar_id)
+        dissertation = Dissertation.objects.get(author=scholar.id)
+    except Dissertation.DoesNotExist:
+        # If no dissertation, scholar is the root
+        pk, path, data = traverse(scholar.id, path, data)
+        data[-1] = data[-1] + "/"
+        return JsonResponse(data, safe=False)
+    
+    try:
+        #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
+        advisor = CommitteeMember.objects.get(
+            dissertation=dissertation,
+            role="chair"
+        )
+    except CommitteeMember.DoesNotExist:
         advisor = None
+    
+    root = ""
+    
     while advisor != None:
         try:
             root = CommitteeMember.objects.get(
-                dissertation__aha_author_id=advisor.scholar.aha_scholar_id
+                #dissertation__aha_author_id=advisor.scholar.aha_scholar_id
+                dissertation__author=advisor.scholar,
+                role="chair"
             )
-        except:
+        except CommitteeMember.DoesNotExist:
             root = None
+        
         if root != None:
             advisor = root
         else:
             break
+
     # append data here?...no but add to path variable
     if advisor != None:
-        root = advisor.aha_scholar_id
+        # root = advisor.aha_scholar_id
+        root = advisor.scholar.id
     else:
-        root = scholar.aha_scholar_id
+        # root = scholar.aha_scholar_id
+        root = scholar.id
     # call function...how to save data part of return call?
     pk, path, data = traverse(root, path, data)
     data[-1] = data[-1] + "/"
@@ -187,7 +233,7 @@ class ScholarDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
 
         current_scholar = self.get_object()
-
+        '''
         # get the scholar's advisor
         try:
             context["advisor"] = CommitteeMember.objects.get(
@@ -202,14 +248,32 @@ class ScholarDetailView(generic.DetailView):
                 aha_author_id=current_scholar.aha_scholar_id
             )
         except:
+            context["dissertation"] = "information not available"'''
+        
+        try:
+            dissertation = Dissertation.objects.get(
+                author=current_scholar.id
+            )
+            context["dissertation"] = dissertation
+
+            try:
+                context["advisor"] = CommitteeMember.objects.get(
+                    dissertation=dissertation,
+                    role="chair"  # Assuming chair = advisor
+                )
+            except CommitteeMember.DoesNotExist:
+                context["advisor"] = "information not available"
+
+        except Dissertation.DoesNotExist:
             context["dissertation"] = "information not available"
+            context["advisor"] = "information not available"
+                  
 
         # get the scholar's advisees
-        try:
-            context["advisees"] = CommitteeMember.objects.filter(
-                role="chair", aha_scholar_id=current_scholar.aha_scholar_id
-            )
-        except:
-            context["advisees"] = "no advisee data"
+        advisees = CommitteeMember.objects.filter(
+            role="chair", scholar=current_scholar.id
+        )
+        context["advisees"] = advisees if advisees.exists() else None
+
 
         return context
