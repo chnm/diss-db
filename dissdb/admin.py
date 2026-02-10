@@ -1,13 +1,21 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from simple_history.admin import SimpleHistoryAdmin
 
-from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School
+from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source
 
+@admin.register(Source)
+class SourceAdmin(SimpleHistoryAdmin):
+    list_display = ['name', 'source_type', 'date_added']
+    list_filter = ['source_type']
+    search_fields = ['name', 'notes']
+    history_list_display = ['name', 'source_type']
 
 @admin.register(School)
-class SchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(SimpleHistoryAdmin):
     search_fields = ("name",)
+    history_list_display = ['name']
 
 
 class DissertationInline(admin.TabularInline):
@@ -34,7 +42,7 @@ class CommitteeMemberInline(admin.TabularInline):
 
 
 @admin.register(Scholar)
-class ScholarAdmin(admin.ModelAdmin):
+class ScholarAdmin(SimpleHistoryAdmin):
     list_display = (
         "name_last",
         "name_first",
@@ -53,6 +61,8 @@ class ScholarAdmin(admin.ModelAdmin):
     )
     search_fields = ("name_last", "name_first")
     inlines = [DissertationInline, CommitteeMemberInline]
+
+    history_list_display = ['name_last', 'name_first', 'orcid']
 
     def authored_dissertations_count(self, obj):
         count = obj.dissertation_set.count()
@@ -119,7 +129,7 @@ class CommitteeMemberForDissertationInline(admin.TabularInline):
 
 
 @admin.register(Dissertation)
-class DissertationAdmin(admin.ModelAdmin):
+class DissertationAdmin(SimpleHistoryAdmin):
     list_display = ("main_title", "year", "author", "school", "committee_count")
     autocomplete_fields = (
         "author",
@@ -128,6 +138,8 @@ class DissertationAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     inlines = [CommitteeMemberForDissertationInline]
 
+    history_list_display = ['title', 'year', 'author', 'school']
+
     def committee_count(self, obj):
         return obj.committeemember_set.count()
 
@@ -135,12 +147,13 @@ class DissertationAdmin(admin.ModelAdmin):
 
 
 @admin.register(CommitteeMember)
-class CommitteeMemberAdmin(admin.ModelAdmin):
+class CommitteeMemberAdmin(SimpleHistoryAdmin):
     list_display = ("scholar", "dissertation")
     autocomplete_fields = (
         "scholar",
         "dissertation",
     )
+    history_list_display = ['scholar', 'dissertation', 'role']
 
 
 @admin.register(DuplicateCandidate)

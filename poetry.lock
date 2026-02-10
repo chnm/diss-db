@@ -462,6 +462,21 @@ files = [
 djangorestframework = "*"
 
 [[package]]
+name = "django-simple-history"
+version = "3.11.0"
+description = "Store model history and view/revert changes from admin site."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "django_simple_history-3.11.0-py3-none-any.whl", hash = "sha256:f3c298db49e418ffce7fb709a5e83108452ea2179ec5c4b9232484c25427192a"},
+    {file = "django_simple_history-3.11.0.tar.gz", hash = "sha256:2c587479cf2c3071e9aa555d0d11b73676994db4910770958f57659ade2deffe"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+
+[[package]]
 name = "django-tables2"
 version = "2.7.5"
 description = "Table/data-grid framework for Django"
@@ -1265,4 +1280,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "9715a0a8bd5a479d823d54211c3a124d36ae30629701f9691b98fabb0762105a"
+content-hash = "539c80fd8175d21d8b36bdaa3a7c3ece2e04cccc2d2794cf0f0faf030c3d8d3b"

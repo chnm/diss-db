@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "dissdb",
     "django_tables2",
     "django_filters",
+    "simple_history",
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
