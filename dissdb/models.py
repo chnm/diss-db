@@ -2,7 +2,51 @@ import datetime
 
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+from simple_history.models import HistoricalRecords
 
+class Source(models.Model):
+    """Track the source of the data"""
+    
+    id = models.BigAutoField(primary_key=True)
+    
+    name = models.CharField(
+        max_length=200,
+        help_text="Name of the source (organization, department, person, etc.)"
+    )
+    
+    SOURCE_TYPE_CHOICES = [
+        ('organization', 'Organization'),
+        ('department', 'Department'),
+        ('person', 'Person'),
+        ('other', 'Other'),
+    ]
+    source_type = models.CharField(
+        max_length=20,
+        choices=SOURCE_TYPE_CHOICES,
+        help_text="Type of source"
+    )
+
+    contact_info = models.TextField(
+        blank=True,
+        default='',
+        help_text="Contact information or additional details"
+    )
+
+    # Tracking
+    date_added = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(
+        blank=True,
+        default='',
+        help_text="Additional notes about this source"
+    )
+
+    history = HistoricalRecords()
+    
+    class Meta:
+        ordering = ['name']
+    
+    def __str__(self):
+        return f"{self.name} ({self.get_source_type_display()})"
 
 # Create your models here.
 class School(models.Model):
@@ -13,6 +57,15 @@ class School(models.Model):
         help_text="The identifier used by the AHA for a school",
     )
     name = models.CharField(help_text="The name of the school", max_length=200)
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return self.name
@@ -74,6 +127,15 @@ class Scholar(models.Model):
         help_text="ORCID in 0000-0000-0000-0000 format",
         validators=[orcid_validator],
     )
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
 
     @property
     def name_full(self) -> str:
@@ -151,6 +213,15 @@ class Dissertation(models.Model):
         default=None,
     )
 
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
     @property
     def main_title(self) -> str:
         return self.title.split(":")[0]
@@ -196,6 +267,15 @@ class CommitteeMember(models.Model):
         default=None,
     )
 
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
     def __str__(self) -> str:
         return str(self.scholar)
 
@@ -220,6 +300,8 @@ class DuplicateCandidate(models.Model):
         help_text="True if confirmed duplicate, False if not, None if not reviewed",
     )
     notes = models.TextField(blank=True, help_text="Review notes")
+
+    history = HistoricalRecords()
 
     class Meta:
         unique_together = ["scholar_1", "scholar_2"]
