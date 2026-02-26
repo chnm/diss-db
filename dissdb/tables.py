@@ -5,9 +5,9 @@ from .models import Dissertation, CommitteeMember, Scholar
 
 class DissTable(tables.Table):
     title = tables.Column(
-        linkify=True,
-        verbose_name="Dissertation Title",
-        attrs={"td": {"class": "font-medium text-blue-600 hover:text-blue-800"}}
+        #linkify=True,
+        verbose_name="Dissertation Title"
+        # attrs={"td": {"class": "font-medium text-blue-600 hover:text-blue-800"}}
     )
     author = tables.Column(
         linkify=True,

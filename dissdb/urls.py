@@ -27,7 +27,7 @@ urlpatterns = [
         views.FilteredComMemListView.as_view(),
         name="committeemembers",
     ),
-    path("dissertations/<int:pk>", views.DissDetailView.as_view(), name="diss-detail"),
+    # path("dissertations/<int:pk>", views.DissDetailView.as_view(), name="diss-detail"),
     path("scholar/<int:pk>", views.ScholarDetailView.as_view(), name="scholar-detail" ),
     path('scholars/api/', views.ScholarListAPI.as_view(), name='scholar-list-api'),
     path('scholars/api/<int:pk>/', views.ScholarDetailAPI.as_view()),

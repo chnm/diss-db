@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import generic
 from django_tables2 import SingleTableView, SingleTableMixin
-from .models import Dissertation, CommitteeMember, Scholar
+from .models import Dissertation, CommitteeMember, Scholar, DissertationLink, ScholarWebsite
 from .tables import DissTable, ComMemTable
 from .filters import DissertationFilter, ComMemFilter
 from django_filters.views import FilterView
@@ -206,7 +206,7 @@ class FilteredComMemListView(SingleTableMixin, FilterView):
     filterset_class = ComMemFilter
     template_name = 'dissertations/committeemember_filter.html'
 
-
+'''
 class DissDetailView(generic.DetailView):
     model = Dissertation
     context_object_name = "dissertation_detail"
@@ -222,6 +222,7 @@ class DissDetailView(generic.DetailView):
         except:
             context["advisor"] = "information not available"
         return context
+'''
 
 
 class ScholarDetailView(generic.DetailView):
@@ -263,6 +264,13 @@ class ScholarDetailView(generic.DetailView):
                 )
             except CommitteeMember.DoesNotExist:
                 context["advisor"] = "information not available"
+            
+            try:
+                context["dissLink"] = DissertationLink.objects.get(
+                    dissertation=dissertation
+                )
+            except DissertationLink.DoesNotExist:
+                context["dissLink"] = "information not available"
 
         except Dissertation.DoesNotExist:
             context["dissertation"] = "information not available"
@@ -274,6 +282,12 @@ class ScholarDetailView(generic.DetailView):
             role="chair", scholar=current_scholar.id
         )
         context["advisees"] = advisees if advisees.exists() else None
+
+        # get the scholar's websites
+        websites = ScholarWebsite.objects.filter(
+            scholar=current_scholar.id
+        )
+        context["websites"] = websites if websites.exists() else None
 
 
         return context

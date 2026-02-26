@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source
+from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source, ScholarWebsite, DissertationLink
 
 @admin.register(Source)
 class SourceAdmin(SimpleHistoryAdmin):
@@ -40,6 +40,16 @@ class CommitteeMemberInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
+class ScholarWebsiteInline(admin.TabularInline):
+    model = ScholarWebsite
+    extra = 1  # number of empty forms to show
+    fields = ['website_type', 'url', 'label', 'source']
+
+class DissertationLinkInline(admin.TabularInline):
+    model = DissertationLink
+    extra = 1
+    fields = ['link_type', 'url', 'label', 'source']
+
 
 @admin.register(Scholar)
 class ScholarAdmin(SimpleHistoryAdmin):
@@ -60,7 +70,7 @@ class ScholarAdmin(SimpleHistoryAdmin):
         "committee_memberships_links",
     )
     search_fields = ("name_last", "name_first")
-    inlines = [DissertationInline, CommitteeMemberInline]
+    inlines = [DissertationInline, CommitteeMemberInline, ScholarWebsiteInline]
 
     history_list_display = ['name_last', 'name_first', 'orcid']
 
@@ -136,7 +146,7 @@ class DissertationAdmin(SimpleHistoryAdmin):
         "school",
     )
     search_fields = ("title",)
-    inlines = [CommitteeMemberForDissertationInline]
+    inlines = [CommitteeMemberForDissertationInline, DissertationLinkInline]
 
     history_list_display = ['title', 'year', 'author', 'school']
 
@@ -344,3 +354,16 @@ class DuplicateCandidateAdmin(admin.ModelAdmin):
         return format_html("<br>".join(content))
 
     scholar_2_dissertations.short_description = "Scholar 2 Activity"
+
+@admin.register(ScholarWebsite)
+class ScholarWebsiteAdmin(admin.ModelAdmin):
+    list_display = ['scholar', 'website_type', 'url', 'label']
+    search_fields = ['scholar__name_last', 'url']
+    list_filter = ['website_type']
+
+
+@admin.register(DissertationLink)
+class DissertationLinkAdmin(admin.ModelAdmin):
+    list_display = ['dissertation', 'link_type', 'url', 'label']
+    search_fields = ['dissertation__title', 'url']
+    list_filter = ['link_type']
