@@ -128,6 +128,15 @@ class Scholar(models.Model):
         validators=[orcid_validator],
     )
 
+    affiliation = models.CharField(
+        default=None,
+        blank=True,
+        null=True,
+        verbose_name="Current University or other affiliation",
+        help_text="The name of this scholar's current affiliation",
+        max_length=200
+    )
+
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
@@ -174,6 +183,50 @@ class Scholar(models.Model):
     class Meta:
         ordering = ["name_last", "name_first", "name_middle"]
 
+class ScholarWebsite(models.Model):
+    PERSONAL = 'personal'
+    DEPARTMENT = 'department'
+    SOCIAL = 'social media'
+    OTHER = 'other'
+    
+    WEBSITE_TYPE_CHOICES = [
+        (PERSONAL, 'Personal Website'),
+        (DEPARTMENT, 'Department Profile'),
+        (SOCIAL, 'Social Media Profile'),
+        (OTHER, 'Other'),
+    ]
+
+    scholar = models.ForeignKey(
+        Scholar,
+        on_delete=models.CASCADE,
+        related_name='websites'
+    )
+    url = models.URLField(max_length=500)
+    website_type = models.CharField(
+        max_length=20,
+        choices=WEBSITE_TYPE_CHOICES,
+        default=OTHER,
+    )
+    label = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Optional custom label, e.g. 'GMU Faculty Page'"
+    )
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"{self.get_website_type_display()} - {self.url}"
+
+    class Meta:
+        ordering = ['website_type']
 
 class Dissertation(models.Model):
     id = models.BigAutoField(primary_key=True, verbose_name="ID")
@@ -213,6 +266,13 @@ class Dissertation(models.Model):
         default=None,
     )
 
+    abstract = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        help_text="Abstract of the dissertation"
+    )
+
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
@@ -234,6 +294,52 @@ class Dissertation(models.Model):
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
 
+class DissertationLink(models.Model):
+    PROQUEST = 'proquest'
+    INSTITUTIONAL = 'institutional'
+    PDF = 'pdf'
+    OTHER = 'other'
+
+    LINK_TYPE_CHOICES = [
+        (PROQUEST, 'ProQuest'),
+        (INSTITUTIONAL, 'Institutional Repository'),
+        (PDF, 'PDF'),
+        (OTHER, 'Other'),
+    ]
+
+    dissertation = models.ForeignKey(
+        Dissertation,
+        on_delete=models.CASCADE,
+        related_name='links'
+    )
+    url = models.URLField(max_length=500)
+    link_type = models.CharField(
+        max_length=20,
+        choices=LINK_TYPE_CHOICES,
+        default=OTHER,
+    )
+    label = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Optional custom label, e.g. 'GMU Institutional Repository'"
+    )
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"{self.get_link_type_display()} - {self.url}"
+
+    class Meta:
+        ordering = ['link_type']
+        # Prevent storing the same URL twice for the same dissertation
+        unique_together = ['dissertation', 'url']
 
 class CommitteeMember(models.Model):
     scholar = models.ForeignKey(Scholar, on_delete=models.PROTECT)
