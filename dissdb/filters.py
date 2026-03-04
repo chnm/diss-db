@@ -2,7 +2,7 @@ import django_filters
 from django_filters import FilterSet
 from django_filters.widgets import RangeWidget
 from django.forms.widgets import TextInput
-from .models import Dissertation, CommitteeMember
+from .models import Dissertation, CommitteeMember, Scholar
 
 
 class DissertationFilter(FilterSet):
@@ -34,4 +34,26 @@ class ComMemFilter(FilterSet):
     )
 
 
-    
+class ScholarFilter(FilterSet):
+    name_last = django_filters.CharFilter(
+        label="Last Name",
+        field_name="name_last",
+        lookup_expr="icontains",
+        widget=TextInput(attrs={"placeholder": "Smith"}),
+    )
+    name_first = django_filters.CharFilter(
+        label="First Name",
+        field_name="name_first",
+        lookup_expr="icontains",
+        widget=TextInput(attrs={"placeholder": "Jane"}),
+    )
+    affiliation = django_filters.CharFilter(
+        label="Affiliation",
+        field_name="affiliation",
+        lookup_expr="icontains",
+        widget=TextInput(attrs={"placeholder": "Harvard"}),
+    )
+
+    class Meta:
+        model = Scholar
+        fields = []
