@@ -1,23 +1,27 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.text import slugify
 from django.views import generic
-from django_tables2 import SingleTableView, SingleTableMixin
-from .models import Dissertation, CommitteeMember, Scholar, DissertationLink, ScholarWebsite
-from .tables import DissTable, ComMemTable
-from .filters import DissertationFilter, ComMemFilter
+from django.views.generic.edit import UpdateView
 from django_filters.views import FilterView
-from django.http import HttpResponse, JsonResponse
-from django.core import serializers
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from dissdb.serializers import ScholarSerializer
-from rest_framework import permissions, viewsets, status
+from django_tables2 import SingleTableMixin, SingleTableView
+from rest_framework import generics, permissions, renderers, status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import generics, renderers
-from django.http import Http404
-from rest_framework.views import APIView
 from rest_framework.reverse import reverse
+from rest_framework.views import APIView
+
+from django.core import serializers
+from django.http import Http404, HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from dissdb.serializers import ScholarCreateSerializer, ScholarSerializer
+
+from .filters import ComMemFilter, DissertationFilter, ScholarFilter
+from .forms import CommitteeMemberFormSet, DissertationForm, DissertationLinkFormSet, ScholarForm, ScholarWebsiteFormSet
+from .models import CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
+from .tables import ComMemTable, DissTable, ScholarTable
 # import pandas as pd
 
 
@@ -30,8 +34,35 @@ def about(request):
 
 
 class ScholarListAPI(generics.ListAPIView):
-    queryset = Scholar.objects.all()
     serializer_class = ScholarSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        from django.db.models import Q
+        qs = Scholar.objects.all()
+        q = self.request.query_params.get("q", "")
+        if q:
+            for term in q.split():
+                qs = qs.filter(
+                    Q(name_first__icontains=term)
+                    | Q(name_middle__icontains=term)
+                    | Q(name_last__icontains=term)
+                )
+        return qs.order_by("name_last", "name_first")[:50]
+
+
+class ScholarCreateAPI(generics.CreateAPIView):
+    serializer_class = ScholarCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        scholar = serializer.save()
+        return Response(
+            {"id": scholar.pk, "name_full": scholar.name_full},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ScholarDetailAPI(APIView):
@@ -193,6 +224,23 @@ def api_root(request, format=None):
     })"""
 
 
+class FilteredScholarListView(SingleTableMixin, FilterView):
+    table_class = ScholarTable
+    model = Scholar
+    filterset_class = ScholarFilter
+    template_name = "dissertations/scholar_filter.html"
+
+
+class ScholarCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Scholar
+    form_class = ScholarForm
+    template_name = "dissertations/scholar_create.html"
+    login_url = "/admin/login/"
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
 class FilteredDissertationListView(SingleTableMixin, FilterView):
     table_class = DissTable
     model = Dissertation
@@ -230,64 +278,123 @@ class ScholarDetailView(generic.DetailView):
     context_object_name = "scholar_detail"
     template_name = 'dissertations/scholar_detail.html'
 
+    def get_object(self, queryset=None):
+        slug = self.kwargs["slug"]
+        for scholar in Scholar.objects.only("pk", "name_last", "name_first"):
+            if (slugify(f"{scholar.name_last}-{scholar.name_first}") or "scholar") == slug:
+                return Scholar.objects.get(pk=scholar.pk)
+        raise Http404
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        current_scholar = self.get_object()
-        '''
-        # get the scholar's advisor
-        try:
-            context["advisor"] = CommitteeMember.objects.get(
-                dissertation__aha_author_id=current_scholar.aha_scholar_id
-            )
-        except:
-            context["advisor"] = "information not available"
+        scholar = self.object
 
-        # get the scholar's dissertation
         try:
-            context["dissertation"] = Dissertation.objects.get(
-                aha_author_id=current_scholar.aha_scholar_id
-            )
-        except:
-            context["dissertation"] = "information not available"'''
-        
-        try:
-            dissertation = Dissertation.objects.get(
-                author=current_scholar.id
-            )
+            dissertation = Dissertation.objects.get(author=scholar.id)
             context["dissertation"] = dissertation
 
             try:
                 context["advisor"] = CommitteeMember.objects.get(
                     dissertation=dissertation,
-                    role="chair"  # Assuming chair = advisor
+                    role="chair",
                 )
             except CommitteeMember.DoesNotExist:
                 context["advisor"] = "information not available"
-            
-            try:
-                context["dissLink"] = DissertationLink.objects.get(
-                    dissertation=dissertation
-                )
-            except DissertationLink.DoesNotExist:
-                context["dissLink"] = "information not available"
+
+            readers = CommitteeMember.objects.filter(
+                dissertation=dissertation,
+                role="reader",
+            )
+            context["readers"] = readers if readers.exists() else None
+
+            context["dissLinks"] = DissertationLink.objects.filter(
+                dissertation=dissertation
+            )
 
         except Dissertation.DoesNotExist:
             context["dissertation"] = "information not available"
             context["advisor"] = "information not available"
-                  
+            context["readers"] = None
 
-        # get the scholar's advisees
-        advisees = CommitteeMember.objects.filter(
-            role="chair", scholar=current_scholar.id
-        )
+        advisees = CommitteeMember.objects.filter(role="chair", scholar=scholar.id)
         context["advisees"] = advisees if advisees.exists() else None
 
-        # get the scholar's websites
-        websites = ScholarWebsite.objects.filter(
-            scholar=current_scholar.id
-        )
+        websites = ScholarWebsite.objects.filter(scholar=scholar.id)
         context["websites"] = websites if websites.exists() else None
 
 
         return context
+
+
+class ScholarUpdateView(LoginRequiredMixin, UpdateView):
+    model = Scholar
+    form_class = ScholarForm
+    template_name = "dissertations/scholar_edit.html"
+    login_url = "/admin/login/"
+
+    def get_context_data(self, **kwargs):
+        if "website_formset" not in kwargs:
+            kwargs["website_formset"] = ScholarWebsiteFormSet(instance=self.object)
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        website_formset = ScholarWebsiteFormSet(request.POST, instance=self.object)
+        if form.is_valid() and website_formset.is_valid():
+            self.object = form.save()
+            website_formset.instance = self.object
+            website_formset.save()
+            return redirect(self.object.get_absolute_url())
+        return self.render_to_response(
+            self.get_context_data(form=form, website_formset=website_formset)
+        )
+
+
+class DissertationUpdateView(LoginRequiredMixin, UpdateView):
+    model = Dissertation
+    form_class = DissertationForm
+    template_name = "dissertations/dissertation_edit.html"
+    login_url = "/admin/login/"
+
+    def get_context_data(self, **kwargs):
+        if "link_formset" not in kwargs:
+            kwargs["link_formset"] = DissertationLinkFormSet(instance=self.object, prefix="links")
+        if "cm_formset" not in kwargs:
+            kwargs["cm_formset"] = CommitteeMemberFormSet(instance=self.object, prefix="cm")
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        link_formset = DissertationLinkFormSet(request.POST, instance=self.object, prefix="links")
+        cm_formset = CommitteeMemberFormSet(request.POST, instance=self.object, prefix="cm")
+        if form.is_valid() and link_formset.is_valid() and cm_formset.is_valid():
+            self.object = form.save()
+            link_formset.instance = self.object
+            link_formset.save()
+            cm_formset.instance = self.object
+            cm_formset.save()
+            return redirect(self.object.author.get_absolute_url())
+        return self.render_to_response(
+            self.get_context_data(form=form, link_formset=link_formset, cm_formset=cm_formset)
+        )
+
+
+class DissertationCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Dissertation
+    form_class = DissertationForm
+    template_name = "dissertations/dissertation_create.html"
+    login_url = "/admin/login/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["author"] = get_object_or_404(Scholar, pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        author = get_object_or_404(Scholar, pk=self.kwargs["pk"])
+        form.instance.author = author
+        self.object = form.save()
+        return redirect(author.get_absolute_url())
