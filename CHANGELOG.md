@@ -8,6 +8,26 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-03-04
+
+### Added
+
+- **Scholars list page**: New `/scholars/` page with a filterable, sortable table of all scholars. Filter by last name, first name, and current affiliation. Authenticated users see an "+ Add Scholar" button.
+- **Scholar create form**: Dedicated `/scholars/create/` form for adding new scholars directly from the Scholars page.
+- **Committee member management on dissertation edit**: The dissertation edit form now includes a Committee Members section. Each row has a name autocomplete (backed by the scholar search API) and a role selector (chair/reader). Rows can be added, removed, and saved inline. A "+ New Scholar" modal allows creating a scholar on the fly without leaving the page.
+- **Dissertation create from scholar profile**: Authenticated users see an "Add Dissertation" button on a scholar's profile page when no dissertation record exists yet. Submitting the form pre-fills the author and redirects back to the profile.
+- **Scholar search API**: `GET /scholars/api/?q=` now accepts a query string. Terms are split on spaces and matched with `icontains` across first, middle, and last name fields, so queries like "John Smith" return the expected results. Results are capped at 50 and returned without pagination wrapping.
+- **Scholar create API**: `POST /scholars/api/create/` (login required) creates a scholar from name fields and returns `{id, name_full}`, used by the dissertation edit modal.
+- **Readers on scholar profile**: The scholar detail page now shows a Readers section (committee members with `role=reader`) alongside the existing Advisor and Advisees sections.
+- **Footer auth controls**: Footer now shows the current username, an Admin link, and a Log out button (POST form) for authenticated users, or a Log in link pointing back to the current page for anonymous users. The RRCHNM wordmark is now a clickable link.
+
+### Fixed
+
+- **Dissertation table horizontal scroll**: Switched `DissTable` to `table-fixed` with percentage column widths so long dissertation titles wrap rather than pushing the table wider than the viewport.
+- **Committee member formset prefix collision**: `DissertationLinkFormSet` and `CommitteeMemberFormSet` now use explicit prefixes (`links` / `cm`). Previously the JS `+ Add member` button incremented the wrong `TOTAL_FORMS` counter, causing the Links formset to demand an extra required row on every save.
+- **Dissertation edit JS not executing**: The `<script>` block in `dissertation_edit.html` was placed after `{% endblock main %}` and was being silently discarded by Django's template inheritance. Moved inside the block so autocomplete, the add-member button, and the new-scholar modal all work correctly.
+- **Scholar detail page crash for new scholars**: The scholar detail view was calling `self.get_object()` a second time inside `get_context_data`, running the slug-matching loop again over the full scholar table. The loop has no `order_by`, so on a second call it could return a different record, leaving `self.object` stale and `scholar_detail.id` as `None`. Refactored to use `self.object` directly throughout. Added a `{% if scholar_detail.id %}` guard around the visualization fetch URLs to prevent `NoReverseMatch` for scholars without a saved pk.
+
 ## [0.1.0] — 2025-03-03
 
 ### Added
