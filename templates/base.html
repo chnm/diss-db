@@ -21,6 +21,7 @@
 				<h1 class="text-3xl font-bold text-gray-900"><a href="{% url 'index' %}" class="text-blue-600 hover:text-blue-800">The History Dissertation DB</a></h1>
 				<nav class="hidden md:flex space-x-6">
 					<a href="{% url 'dissertations' %}" class="text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
+					<a href="{% url 'scholars' %}" class="text-gray-600 hover:text-gray-900 font-medium">Scholars</a>
 					<a href="{% url 'committeemembers' %}" class="text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
 					<a href="{% url 'about' %}" class="text-gray-600 hover:text-gray-900 font-medium">About</a>
 				</nav>
@@ -35,6 +36,7 @@
 			<div class="md:hidden mt-4 hidden" id="mobile-menu">
 				<div class="space-y-2">
 					<a href="{% url 'dissertations' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
+					<a href="{% url 'scholars' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Scholars</a>
 					<a href="{% url 'committeemembers' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
 					<a href="{% url 'about' %}" class="block text-gray-600 hover:text-gray-900 font-medium">About</a>
 				</div>
@@ -46,11 +48,24 @@
 			{% endblock main %}
 		</main>
 
-		<footer class="pt-8 my-8 text-gray-500 border-t border-gray-200">
-			<p>
-				Created by the <a href="https://rrchnm.org" class="text-blue-600 hover:text-blue-800">Roy Rosenzweig Center for History and New Media</a>.
-			</p>
-			<img class="h-12 w-auto" src="{% static 'dissertations/rrchnm-logo.svg' %}" alt="RRCHNM logo">
+		<footer class="pt-8 my-8 border-t border-gray-200">
+			<div class="flex items-center justify-between">
+				<a href="https://rrchnm.org">
+					<img class="h-10 w-auto" src="{% static 'dissertations/rrchnm-logo.svg' %}" alt="Roy Rosenzweig Center for History and New Media">
+				</a>
+				<div class="text-sm">
+					{% if request.user.is_authenticated %}
+					<span class="text-gray-400 mr-3">{{ request.user.username }}</span>
+					<a href="{% url 'admin:index' %}" class="text-gray-500 hover:text-gray-700 mr-3">Admin</a>
+					<form method="post" action="{% url 'admin:logout' %}" class="inline">
+						{% csrf_token %}
+						<button type="submit" class="text-gray-500 hover:text-gray-700 cursor-pointer">Log out</button>
+					</form>
+					{% else %}
+					<a href="{% url 'admin:login' %}?next={{ request.path }}" class="text-gray-500 hover:text-gray-700">Log in</a>
+					{% endif %}
+				</div>
+			</div>
 		</footer>
 
 	</div>

@@ -2,18 +2,19 @@ import datetime
 
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
 
 class Source(models.Model):
     """Track the source of the data"""
-    
+
     id = models.BigAutoField(primary_key=True)
-    
+
     name = models.CharField(
         max_length=200,
         help_text="Name of the source (organization, department, person, etc.)"
     )
-    
+
     SOURCE_TYPE_CHOICES = [
         ('organization', 'Organization'),
         ('department', 'Department'),
@@ -41,10 +42,10 @@ class Source(models.Model):
     )
 
     history = HistoricalRecords()
-    
+
     class Meta:
         ordering = ['name']
-    
+
     def __str__(self):
         return f"{self.name} ({self.get_source_type_display()})"
 
@@ -105,6 +106,7 @@ class Scholar(models.Model):
         max_length=200,
         default=None,
         blank=True,
+        null=True,
         verbose_name="Middle name",
     )
     name_last = models.CharField(
@@ -116,6 +118,7 @@ class Scholar(models.Model):
         max_length=200,
         default=None,
         blank=True,
+        null=True,
         verbose_name="Suffix",
     )
     orcid = models.CharField(
@@ -175,7 +178,8 @@ class Scholar(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
 
-        return reverse("scholar-detail", kwargs={"pk": self.pk})
+        name_slug = slugify(f"{self.name_last}-{self.name_first}") or "scholar"
+        return reverse("scholar-detail", kwargs={"slug": name_slug})
 
     def __str__(self) -> str:
         return self.name_full_rev
@@ -188,7 +192,7 @@ class ScholarWebsite(models.Model):
     DEPARTMENT = 'department'
     SOCIAL = 'social media'
     OTHER = 'other'
-    
+
     WEBSITE_TYPE_CHOICES = [
         (PERSONAL, 'Personal Website'),
         (DEPARTMENT, 'Department Profile'),

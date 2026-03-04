@@ -3,11 +3,32 @@
 {% block main %}
 <div class="max-w-6xl mx-auto">
     <header class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4" id="scholar">{{ scholar_detail.aha_name }}</h1>
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-gray-900" id="scholar">{{ scholar_detail.name_full }}</h1>
+            {% if request.user.is_authenticated %}
+            <div class="flex items-center gap-2">
+                <a href="{% url 'scholar-edit' scholar_detail.pk %}"
+                   class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Edit Scholar
+                </a>
+                {% if dissertation and dissertation != "information not available" %}
+                <a href="{% url 'dissertation-edit' dissertation.pk %}"
+                   class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Edit Dissertation
+                </a>
+                {% else %}
+                <a href="{% url 'dissertation-create' scholar_detail.pk %}"
+                   class="inline-flex items-center px-4 py-2 rounded-md bg-green-600 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    Add Dissertation
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
 
+        <!-- Scholar info: 2-column grid -->
         <div class="bg-gray-50 p-6 rounded-lg">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Current Affiliation</h3>
                     {% if scholar_detail.affiliation %}
@@ -15,20 +36,20 @@
                     {% else %}
                     <p class="text-gray-700">information not provided</p>
                     {% endif %}
-    
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">ORCID</h3>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ORCID</h3>
                     {% if scholar_detail.orcid %}
-                    <p class="text-gray-700">{{ scholar_detail.orcid }}</p>
+                    <p class="text-gray-700"><a href="{{ scholar_detail.orcid_url }}" target="_blank" class="text-blue-600 hover:text-blue-800">{{ scholar_detail.orcid }}</a></p>
                     {% else %}
                     <p class="text-gray-700">information not provided</p>
                     {% endif %}
-                    
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Websites</h3>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Websites</h3>
                     {% if websites %}
                     <ul class="list-disc list-inside space-y-1">
                         {% for website in websites %}
                         <li><a href="{{ website.url }}" target="_blank"
-                            class="text-blue-600 hover:text-blue-800">{{ website.label }}</a>
+                            class="text-blue-600 hover:text-blue-800">{{ website.label|default:website.get_website_type_display }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -38,55 +59,35 @@
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Dissertation</h2>
-                    <p class="mb-1">
-                        <span class="text-md font-semibold text-gray-900">Title: </span> <span class="text-gray-700">{{ dissertation.title }}</span>
-                    </p>
-                    <p class="mb-1">
-                        <span class="text-md font-semibold text-gray-900 mb-2">Institution: </span> <span
-                            class="text-gray-700">{{ dissertation.school }}</span>
-                    </p>
-                    <p class="mb-1">
-                        <span class="text-md font-semibold text-gray-900 mb-2">Year: </span> <span
-                            class="text-gray-700">{{ dissertation.year }}</span>
-                    </p>
-                    <p class="mb-1">
-                        <span class="text-md font-semibold text-gray-900 mb-2">Abstract: </span>
-                        {% if dissertation.abstract %}
-                        <span class="text-gray-700">{{ dissertation.abstract }}</span>
-                        {% else %}
-                        <span class="text-gray-700">Abstract missing in database</span>
-                        {% endif %}
-                    </p>
-                    <p class="mb-1">
-                        <span class="text-md font-semibold text-gray-900 mb-2">Link: </span>
-                        {% if dissLink %}
-                        <a href="{{ dissLink.url }}" target="_blank"
-                            class="text-blue-600 hover:text-blue-800">{{ dissLink.label }}</a>
-                        {% else %}
-                        <span class="text-gray-700">No links provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-            
-
-                <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Advisor</h3>
                     {% if advisor.scholar %}
-                    <p><a href="{% url 'scholar-detail' advisor.scholar.id %}"
+                    <p><a href="{{ advisor.scholar.get_absolute_url }}"
                             class="text-blue-600 hover:text-blue-800">{{ advisor.scholar }}</a></p>
                     {% else %}
                     <p class="text-gray-700">{{ advisor }}</p>
                     {% endif %}
-                
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2 mt-4">Advisees</h3>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Readers</h3>
+                    {% if readers %}
+                    <ul class="list-disc list-inside space-y-1">
+                        {% for reader in readers %}
+                        <li><a href="{{ reader.scholar.get_absolute_url }}"
+                            class="text-blue-600 hover:text-blue-800">{{ reader.scholar.name_full }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-gray-700">no reader data</p>
+                    {% endif %}
+
+                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Advisees</h3>
                     {% if advisees %}
                     <ul class="list-disc list-inside space-y-1">
-                    {% for advisee in advisees %}
-                        <li><a href="{% url 'scholar-detail' advisee.dissertation.author.id %}"
+                        {% for advisee in advisees %}
+                        <li><a href="{{ advisee.dissertation.author.get_absolute_url }}"
                             class="text-blue-600 hover:text-blue-800">{{ advisee.dissertation.author.name_full }}</a>
                         </li>
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                     {% else %}
                     <p class="text-gray-700">no advisee data</p>
@@ -94,6 +95,41 @@
                 </div>
             </div>
         </div>
+
+        <!-- Dissertation: separate card -->
+        {% if dissertation and dissertation != "information not available" %}
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mt-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">Dissertation</h2>
+            <p class="text-gray-900 font-medium mb-3">{{ dissertation.title }}</p>
+            <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-600 mb-4">
+                <span>{{ dissertation.school }}</span>
+                <span>{{ dissertation.year }}</span>
+            </div>
+            {% if dissLinks %}
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for link in dissLinks %}
+                <a href="{{ link.url }}" target="_blank"
+                   class="inline-flex items-center px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-medium text-blue-700 hover:bg-blue-100">
+                    {{ link.label|default:link.get_link_type_display }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if dissertation.abstract %}
+            <details class="group">
+                <summary class="cursor-pointer list-none flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 select-none">
+                    <svg class="h-4 w-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    Abstract
+                </summary>
+                <p class="mt-3 text-sm text-gray-700 leading-relaxed">{{ dissertation.abstract|linebreaksbr }}</p>
+            </details>
+            {% else %}
+            <p class="text-sm text-gray-400 italic">No abstract in database</p>
+            {% endif %}
+        </div>
+        {% endif %}
     </header>
 
     <div class="space-y-8">
@@ -133,6 +169,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="module">
     import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    const vizUrl = {% if scholar_detail.id %}"{% url 'get_viz_data' scholar_detail.id %}"{% else %}null{% endif %};
+    const vizUrlComplex = {% if scholar_detail.id %}"{% url 'get_viz_data_complex' scholar_detail.id %}"{% else %}null{% endif %};
     let objData = [];
     function findHeight(data) {
         let h = 0
@@ -144,7 +182,8 @@
         }
         return h
     }
-    fetch("{% url 'get_viz_data' scholar_detail.id %}") //was {% url 'get_viz_data' scholar_detail.aha_scholar_id %}
+    if (!vizUrl) { document.querySelector("#simpleTree").textContent = 'No connections in database.'; }
+    else fetch(vizUrl)
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -580,7 +619,8 @@
     }
 
 
-    fetch("{% url 'get_viz_data_complex' scholar_detail.id %}")
+    if (!vizUrlComplex) { document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.'; }
+    else fetch(vizUrlComplex)
         .then(res => res.json())
         .then(data => {
             console.log(data)

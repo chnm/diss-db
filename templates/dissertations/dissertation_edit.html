@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Edit Dissertation – {{ object.main_title }}</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-3xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Edit Dissertation</h1>
+        <a href="{{ object.author.get_absolute_url }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="mb-4 p-4 rounded-md bg-red-50 text-red-700 text-sm">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Dissertation fields -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}<p class="mt-1 text-sm text-red-600">{{ form.title.errors.as_text }}</p>{% endif %}
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="{{ form.year.id_for_label }}" class="block text-sm font-medium text-gray-700">Year</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}<p class="mt-1 text-sm text-red-600">{{ form.year.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.school.id_for_label }}" class="block text-sm font-medium text-gray-700">Institution</label>
+                    {{ form.school }}
+                    {% if form.school.errors %}<p class="mt-1 text-sm text-red-600">{{ form.school.errors.as_text }}</p>{% endif %}
+                </div>
+            </div>
+            <div>
+                <label for="{{ form.abstract.id_for_label }}" class="block text-sm font-medium text-gray-700">Abstract</label>
+                {{ form.abstract }}
+                {% if form.abstract.errors %}<p class="mt-1 text-sm text-red-600">{{ form.abstract.errors.as_text }}</p>{% endif %}
+            </div>
+        </div>
+
+        <!-- Links inline formset -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Links</h2>
+            {{ link_formset.management_form }}
+            {% for link_form in link_formset %}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 pb-4 {% if not forloop.last %}border-b border-gray-100{% endif %}">
+                {{ link_form.id }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Type</label>
+                    {{ link_form.link_type }}
+                    {% if link_form.link_type.errors %}<p class="mt-1 text-sm text-red-600">{{ link_form.link_type.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">URL</label>
+                    {{ link_form.url }}
+                    {% if link_form.url.errors %}<p class="mt-1 text-sm text-red-600">{{ link_form.url.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Label <span class="text-gray-400 font-normal">(optional)</span></label>
+                    {{ link_form.label }}
+                </div>
+                {% if link_form.instance.pk %}
+                <div class="sm:col-span-3 flex items-center gap-2">
+                    <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+                        {{ link_form.DELETE }}
+                        Remove this link
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Committee Members inline formset -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Committee Members</h2>
+                <div class="flex items-center gap-3">
+                    <button type="button" id="open-scholar-modal"
+                        class="text-sm text-green-600 hover:text-green-800 font-medium">+ New scholar</button>
+                    <button type="button" id="add-cm-row"
+                        class="text-sm text-blue-600 hover:text-blue-800 font-medium">+ Add member</button>
+                </div>
+            </div>
+            {{ cm_formset.management_form }}
+            <div id="cm-rows">
+                {% for cm_form in cm_formset %}
+                <div class="cm-row grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 pb-4 {% if not forloop.last %}border-b border-gray-100{% endif %}">
+                    {{ cm_form.id }}
+                    {{ cm_form.scholar }}
+                    <div class="sm:col-span-2 relative">
+                        <label class="block text-sm font-medium text-gray-700">Scholar</label>
+                        <input type="text" class="scholar-search mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                               placeholder="Search by name..."
+                               autocomplete="off"
+                               value="{% if cm_form.instance.pk %}{{ cm_form.instance.scholar.name_full }}{% endif %}">
+                        <ul class="scholar-results hidden absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 max-h-48 overflow-y-auto"></ul>
+                        {% if cm_form.scholar.errors %}<p class="mt-1 text-sm text-red-600">{{ cm_form.scholar.errors.as_text }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Role</label>
+                        {{ cm_form.role }}
+                        {% if cm_form.role.errors %}<p class="mt-1 text-sm text-red-600">{{ cm_form.role.errors.as_text }}</p>{% endif %}
+                    </div>
+                    {% if cm_form.instance.pk %}
+                    <div class="sm:col-span-3">
+                        <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+                            {{ cm_form.DELETE }} Remove
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Add New Scholar modal -->
+        <div id="scholar-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Add Scholar</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">First name <span class="text-red-500">*</span></label>
+                        <input id="modal-first" type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            placeholder="First name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Middle name</label>
+                        <input id="modal-middle" type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            placeholder="Middle name (optional)">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Last name <span class="text-red-500">*</span></label>
+                        <input id="modal-last" type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            placeholder="Last name">
+                    </div>
+                    <p id="modal-error" class="hidden text-sm text-red-600"></p>
+                </div>
+                <div class="flex justify-end gap-3 mt-5">
+                    <button type="button" id="modal-cancel"
+                        class="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="button" id="modal-submit"
+                        class="inline-flex items-center px-4 py-2 rounded-md bg-green-600 text-sm font-medium text-white hover:bg-green-700">
+                        Create
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button type="submit"
+                class="inline-flex items-center px-5 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Save changes
+            </button>
+            <a href="{{ object.author.get_absolute_url }}"
+                class="inline-flex items-center px-5 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    // --- CSRF helper ---
+    function getCsrfToken() {
+        const input = document.querySelector('[name=csrfmiddlewaretoken]');
+        return input ? input.value : '';
+    }
+
+    // --- Track which row the user is working in for the modal ---
+    let currentFocusedRow = null;
+
+    // --- Autocomplete setup ---
+    function setupRowAutocomplete(row) {
+        const searchInput = row.querySelector('.scholar-search');
+        const resultsList = row.querySelector('.scholar-results');
+        const hiddenInput = row.querySelector('input[type="hidden"][name$="-scholar"]');
+        let debounceTimer = null;
+
+        searchInput.addEventListener('focus', function () {
+            currentFocusedRow = row;
+        });
+
+        searchInput.addEventListener('keyup', function () {
+            const q = this.value.trim();
+            clearTimeout(debounceTimer);
+            if (q.length < 2) {
+                resultsList.classList.add('hidden');
+                resultsList.innerHTML = '';
+                return;
+            }
+            debounceTimer = setTimeout(function () {
+                fetch('/scholars/api/?q=' + encodeURIComponent(q))
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        resultsList.innerHTML = '';
+                        if (!data.length) {
+                            resultsList.classList.add('hidden');
+                            return;
+                        }
+                        data.forEach(function (scholar) {
+                            const li = document.createElement('li');
+                            li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm';
+                            li.textContent = scholar.name_full;
+                            li.addEventListener('mousedown', function (e) {
+                                e.preventDefault(); // prevent blur before click
+                                selectScholar(row, scholar.id, scholar.name_full);
+                            });
+                            resultsList.appendChild(li);
+                        });
+                        resultsList.classList.remove('hidden');
+                    })
+                    .catch(function () {
+                        resultsList.classList.add('hidden');
+                    });
+            }, 300);
+        });
+
+        searchInput.addEventListener('blur', function () {
+            // Small delay so mousedown on result fires first
+            setTimeout(function () {
+                resultsList.classList.add('hidden');
+            }, 150);
+        });
+    }
+
+    function selectScholar(row, id, name) {
+        const hiddenInput = row.querySelector('input[type="hidden"][name$="-scholar"]');
+        const searchInput = row.querySelector('.scholar-search');
+        const resultsList = row.querySelector('.scholar-results');
+        if (hiddenInput) hiddenInput.value = id;
+        if (searchInput) searchInput.value = name;
+        if (resultsList) resultsList.classList.add('hidden');
+    }
+
+    // Setup autocomplete on all existing rows
+    document.querySelectorAll('.cm-row').forEach(function (row) {
+        setupRowAutocomplete(row);
+    });
+
+    // --- Add member row ---
+    document.getElementById('add-cm-row').addEventListener('click', function () {
+        const container = document.getElementById('cm-rows');
+        const totalFormsInput = document.querySelector('[name="cm-TOTAL_FORMS"]');
+        const totalForms = parseInt(totalFormsInput.value, 10);
+
+        // Clone the last row (which should be the empty extra row)
+        const rows = container.querySelectorAll('.cm-row');
+        const templateRow = rows[rows.length - 1];
+        const newRow = templateRow.cloneNode(true);
+
+        // Update form index in field names and ids
+        newRow.querySelectorAll('input, select').forEach(function (el) {
+            ['name', 'id'].forEach(function (attr) {
+                const val = el.getAttribute(attr);
+                if (val) {
+                    el.setAttribute(attr, val.replace(/-\d+-/, '-' + totalForms + '-'));
+                }
+            });
+            // Clear values
+            if (el.type !== 'hidden' || el.name.endsWith('-id')) {
+                el.value = '';
+            }
+            if (el.name && el.name.endsWith('-scholar')) {
+                el.value = '';
+            }
+        });
+
+        // Clear the search text input
+        const searchInput = newRow.querySelector('.scholar-search');
+        if (searchInput) searchInput.value = '';
+
+        // Clear results dropdown
+        const results = newRow.querySelector('.scholar-results');
+        if (results) {
+            results.innerHTML = '';
+            results.classList.add('hidden');
+        }
+
+        // Remove the DELETE checkbox section if present (extra rows don't have it)
+        const deleteSection = newRow.querySelector('[name$="-DELETE"]');
+        if (deleteSection) {
+            const wrapper = deleteSection.closest('div');
+            if (wrapper) wrapper.remove();
+        }
+
+        // Add border separator to previous last row if needed
+        templateRow.classList.add('border-b', 'border-gray-100');
+
+        container.appendChild(newRow);
+        totalFormsInput.value = totalForms + 1;
+
+        // Wire up autocomplete on the new row
+        setupRowAutocomplete(newRow);
+        newRow.querySelector('.scholar-search').focus();
+        currentFocusedRow = newRow;
+    });
+
+    // --- Modal ---
+    const modal = document.getElementById('scholar-modal');
+    const modalError = document.getElementById('modal-error');
+
+    document.getElementById('open-scholar-modal').addEventListener('click', function () {
+        document.getElementById('modal-first').value = '';
+        document.getElementById('modal-middle').value = '';
+        document.getElementById('modal-last').value = '';
+        modalError.classList.add('hidden');
+        modalError.textContent = '';
+        modal.classList.remove('hidden');
+        document.getElementById('modal-first').focus();
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', function () {
+        modal.classList.add('hidden');
+    });
+
+    // Close modal on backdrop click
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('modal-submit').addEventListener('click', function () {
+        const first = document.getElementById('modal-first').value.trim();
+        const middle = document.getElementById('modal-middle').value.trim();
+        const last = document.getElementById('modal-last').value.trim();
+
+        if (!first || !last) {
+            modalError.textContent = 'First name and last name are required.';
+            modalError.classList.remove('hidden');
+            return;
+        }
+
+        const payload = { name_first: first, name_last: last };
+        if (middle) payload.name_middle = middle;
+
+        fetch('/scholars/api/create/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(function (res) {
+                if (!res.ok) {
+                    return res.json().then(function (err) { throw err; });
+                }
+                return res.json();
+            })
+            .then(function (scholar) {
+                modal.classList.add('hidden');
+                // Populate the currently-focused row, or the last row
+                const targetRow = currentFocusedRow || document.querySelector('#cm-rows .cm-row:last-child');
+                if (targetRow) {
+                    selectScholar(targetRow, scholar.id, scholar.name_full);
+                }
+            })
+            .catch(function (err) {
+                const msg = (err && typeof err === 'object')
+                    ? Object.values(err).flat().join(' ')
+                    : 'An error occurred. Please try again.';
+                modalError.textContent = msg;
+                modalError.classList.remove('hidden');
+            });
+    });
+}());
+</script>
+{% endblock main %}

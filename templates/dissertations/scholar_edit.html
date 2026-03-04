@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Edit Scholar – {{ object.name_full }}</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-3xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Edit Scholar: {{ object.name_full }}</h1>
+        <a href="{{ object.get_absolute_url }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="mb-4 p-4 rounded-md bg-red-50 text-red-700 text-sm">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Scholar fields -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Name</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.name_first.id_for_label }}" class="block text-sm font-medium text-gray-700">First name</label>
+                    {{ form.name_first }}
+                    {% if form.name_first.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_first.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.name_middle.id_for_label }}" class="block text-sm font-medium text-gray-700">Middle name</label>
+                    {{ form.name_middle }}
+                    {% if form.name_middle.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_middle.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.name_last.id_for_label }}" class="block text-sm font-medium text-gray-700">Last name</label>
+                    {{ form.name_last }}
+                    {% if form.name_last.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_last.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.name_suffix.id_for_label }}" class="block text-sm font-medium text-gray-700">Suffix</label>
+                    {{ form.name_suffix }}
+                    {% if form.name_suffix.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_suffix.errors.as_text }}</p>{% endif %}
+                </div>
+            </div>
+
+            <h2 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Affiliation &amp; Identifier</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.affiliation.id_for_label }}" class="block text-sm font-medium text-gray-700">Current affiliation</label>
+                    {{ form.affiliation }}
+                    {% if form.affiliation.errors %}<p class="mt-1 text-sm text-red-600">{{ form.affiliation.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.orcid.id_for_label }}" class="block text-sm font-medium text-gray-700">ORCID</label>
+                    {{ form.orcid }}
+                    {% if form.orcid.errors %}<p class="mt-1 text-sm text-red-600">{{ form.orcid.errors.as_text }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Websites inline formset -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Websites</h2>
+            {{ website_formset.management_form }}
+            {% for website_form in website_formset %}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 pb-4 {% if not forloop.last %}border-b border-gray-100{% endif %}">
+                {{ website_form.id }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Type</label>
+                    {{ website_form.website_type }}
+                    {% if website_form.website_type.errors %}<p class="mt-1 text-sm text-red-600">{{ website_form.website_type.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">URL</label>
+                    {{ website_form.url }}
+                    {% if website_form.url.errors %}<p class="mt-1 text-sm text-red-600">{{ website_form.url.errors.as_text }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Label <span class="text-gray-400 font-normal">(optional)</span></label>
+                    {{ website_form.label }}
+                </div>
+                {% if website_form.instance.pk %}
+                <div class="sm:col-span-3 flex items-center gap-2">
+                    <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+                        {{ website_form.DELETE }}
+                        Remove this website
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="flex gap-3">
+            <button type="submit"
+                class="inline-flex items-center px-5 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Save changes
+            </button>
+            <a href="{{ object.get_absolute_url }}"
+                class="inline-flex items-center px-5 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock main %}
