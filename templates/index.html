@@ -7,15 +7,12 @@
         <p class="text-xl text-gray-600 mb-8">
             Explore the landscape of history dissertations and the scholarly networks that shaped them.
         </p>
-        <div class="bg-blue-50 p-6 mb-8">
-            <div class="flex">
-                <div class="ml-3">
-                    <p class="text-sm text-blue-700">
-                        This database contains information about history dissertations, their authors, advisors, and committee members, 
-                        helping researchers understand the evolution of historical scholarship and academic genealogies.
-                    </p>
-                </div>
-            </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8 text-center">
+            <p class="text-green-800 font-medium mb-2">Help us build a more complete picture of historical scholarship.</p>
+            <p class="text-sm text-green-700 mb-4">Add new scholars, dissertations, and committee information or update existing records.</p>
+            <a href="{% url 'contributing' %}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700">
+                Learn how to contribute →
+            </a>
         </div>
     </div>
 
@@ -65,7 +62,7 @@
     <!-- Features Section -->
     <div class="bg-gray-50 rounded-lg p-8">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">What You Can Do</h2>
-        <div class="grid md:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-6">
             <div class="text-center">
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Advanced Search</h3>
                 <p class="text-gray-600">Filter dissertations by multiple criteria including author, institution, year, and title.</p>
@@ -77,6 +74,10 @@
             <div class="text-center">
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Interactive Visualizations</h3>
                 <p class="text-gray-600">View scholarly genealogies and academic family trees through detailed visualizations.</p>
+            </div>
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Edit or Add Data</h3>
+                <p class="text-gray-600">Contribute to the database by adding new scholars, dissertations, and committee information or updating existing records.</p>
             </div>
         </div>
     </div>
