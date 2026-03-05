@@ -5,7 +5,23 @@
 {% endblock title %}
 
 {% block main %}
-<div class="max-w-3xl mx-auto">
+<div class="max-w-3xl mx-auto"
+     x-data="{
+         firstName: '',
+         lastName: '',
+         matches: [],
+         _timeout: null,
+         search() {
+             clearTimeout(this._timeout);
+             if (this.lastName.length < 2) { this.matches = []; return; }
+             this._timeout = setTimeout(() => {
+                 let q = (this.lastName + ' ' + this.firstName).trim();
+                 fetch('/scholars/api/?q=' + encodeURIComponent(q))
+                     .then(r => r.json())
+                     .then(data => { this.matches = data; });
+             }, 300);
+         }
+     }">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Add Scholar</h1>
         <a href="{% url 'scholars' %}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
@@ -24,7 +40,7 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Name</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="{{ form.name_first.id_for_label }}" class="block text-sm font-medium text-gray-700">First name</label>
+                    <label for="{{ form.name_first.id_for_label }}" class="block text-sm font-medium text-gray-700">First name <span class="text-red-500">*</span></label>
                     {{ form.name_first }}
                     {% if form.name_first.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_first.errors.as_text }}</p>{% endif %}
                 </div>
@@ -34,7 +50,7 @@
                     {% if form.name_middle.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_middle.errors.as_text }}</p>{% endif %}
                 </div>
                 <div>
-                    <label for="{{ form.name_last.id_for_label }}" class="block text-sm font-medium text-gray-700">Last name</label>
+                    <label for="{{ form.name_last.id_for_label }}" class="block text-sm font-medium text-gray-700">Last name <span class="text-red-500">*</span></label>
                     {{ form.name_last }}
                     {% if form.name_last.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_last.errors.as_text }}</p>{% endif %}
                 </div>
@@ -43,6 +59,26 @@
                     {{ form.name_suffix }}
                     {% if form.name_suffix.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_suffix.errors.as_text }}</p>{% endif %}
                 </div>
+            </div>
+
+            <div x-show="matches.length > 0" x-cloak
+                 class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4">
+                <p class="text-sm font-medium text-amber-800 mb-2">
+                    Possible existing scholars:
+                </p>
+                <ul class="space-y-1">
+                    <template x-for="match in matches" :key="match.id">
+                        <li>
+                            <a :href="match.url"
+                               class="text-sm text-blue-600 hover:text-blue-800 underline"
+                               x-text="match.name_full"></a>
+                        </li>
+                    </template>
+                </ul>
+                <p class="text-xs text-amber-600 mt-2">
+                    If the scholar you're adding is listed above,
+                    click their name instead of creating a duplicate.
+                </p>
             </div>
 
             <h2 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Affiliation &amp; Identifier</h2>
@@ -72,4 +108,26 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const firstInput = document.getElementById('{{ form.name_first.id_for_label }}');
+    const lastInput = document.getElementById('{{ form.name_last.id_for_label }}');
+
+    if (firstInput) {
+        firstInput.addEventListener('input', (e) => {
+            const comp = Alpine.$data(firstInput.closest('[x-data]'));
+            comp.firstName = e.target.value;
+            comp.search();
+        });
+    }
+    if (lastInput) {
+        lastInput.addEventListener('input', (e) => {
+            const comp = Alpine.$data(lastInput.closest('[x-data]'));
+            comp.lastName = e.target.value;
+            comp.search();
+        });
+    }
+});
+</script>
 {% endblock main %}
