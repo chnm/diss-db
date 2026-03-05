@@ -6,6 +6,7 @@ class ScholarSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     aha_scholar_id = serializers.IntegerField(read_only=True)
     name_full = serializers.CharField(read_only=True)
+    url = serializers.CharField(source="get_absolute_url", read_only=True)
 
 
 class ScholarCreateSerializer(serializers.ModelSerializer):

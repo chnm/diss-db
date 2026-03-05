@@ -33,22 +33,40 @@ def about(request):
     return render(request, "about.html")
 
 
+def contributing(request):
+    return render(request, "contributing.html")
+
+
 class ScholarListAPI(generics.ListAPIView):
     serializer_class = ScholarSerializer
     pagination_class = None
 
     def get_queryset(self):
+        from django.contrib.postgres.search import TrigramSimilarity
         from django.db.models import Q
+        from django.db.models.functions import Greatest
+
         qs = Scholar.objects.all()
         q = self.request.query_params.get("q", "")
         if q:
-            for term in q.split():
-                qs = qs.filter(
-                    Q(name_first__icontains=term)
-                    | Q(name_middle__icontains=term)
-                    | Q(name_last__icontains=term)
+            qs = (
+                qs.annotate(
+                    similarity=Greatest(
+                        TrigramSimilarity("name_first", q),
+                        TrigramSimilarity("name_last", q),
+                    )
                 )
-        return qs.order_by("name_last", "name_first")[:50]
+                .filter(
+                    Q(name_first__icontains=q)
+                    | Q(name_last__icontains=q)
+                    | Q(name_middle__icontains=q)
+                    | Q(similarity__gte=0.3)
+                )
+                .order_by("-similarity", "name_last", "name_first")
+            )
+        else:
+            qs = qs.order_by("name_last", "name_first")
+        return qs[:50]
 
 
 class ScholarCreateAPI(generics.CreateAPIView):
