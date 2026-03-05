@@ -182,12 +182,13 @@
         }
         return h
     }
+    let simpleUrls = {};
     if (!vizUrl) { document.querySelector("#simpleTree").textContent = 'No connections in database.'; }
     else fetch(vizUrl)
         .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            objData = data;
+        .then(json => {
+            objData = json.paths;
+            simpleUrls = json.urls;
         })
         .then(() => {
             const simplePlot = Plot.plot({
@@ -203,6 +204,25 @@
             })
             const div = document.querySelector("#simpleTree");
             div.append(simplePlot);
+
+            // Make names clickable by wrapping text elements in <a> links
+            const svgEl = div.querySelector("svg");
+            if (svgEl) {
+                svgEl.querySelectorAll("text").forEach(textEl => {
+                    const name = textEl.textContent.trim();
+                    const url = simpleUrls[name];
+                    if (url) {
+                        const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
+                        a.setAttribute("href", url);
+                        a.style.cursor = "pointer";
+                        textEl.parentNode.insertBefore(a, textEl);
+                        a.appendChild(textEl);
+                        textEl.style.fill = "#2563eb";
+                        textEl.addEventListener("mouseenter", () => { textEl.style.textDecoration = "underline"; });
+                        textEl.addEventListener("mouseleave", () => { textEl.style.textDecoration = "none"; });
+                    }
+                });
+            }
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -210,6 +230,7 @@
 
     //complex tree viz
     let objData2 = [];
+    let complexUrls = {};
 
     function findWidth(data) {
         let max = 0;
@@ -354,13 +375,14 @@
             .text(d => title(d.data, d));
 
         if (L) node.append("text")
-            //.attr("fill", d => highlight(d) ? "red" : null)
             .attr("dy", "0.32em")
             .attr("x", d => d.children ? -6 : 6)
             .attr("text-anchor", d => d.children ? "end" : "start")
             .attr("paint-order", "stroke")
             .attr("stroke", halo)
             .attr("stroke-width", haloWidth)
+            .attr("fill", (d, i) => link && link(d.data, d) ? "#2563eb" : null)
+            .style("cursor", (d, i) => link && link(d.data, d) ? "pointer" : null)
             .text((d, i) => L[i]);
         d3.selectAll(".node")
         d3.selectAll(".node")
@@ -622,33 +644,21 @@
     if (!vizUrlComplex) { document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.'; }
     else fetch(vizUrlComplex)
         .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            objData2 = data;
+        .then(json => {
+            objData2 = json.paths;
+            complexUrls = json.urls;
         })
         .then(() => {
-            /*
-            const plot = Plot.plot({
-                axis: null,
-                margin: 20,
-                marginLeft: 100,
-                marginRight: 130,
-                width: findWidth(objData2), //1800
-                height: findHeight(objData2), //9800 
-                marks: [
-                    Plot.tree(objData2, {textStroke: "white", curve: "step-before"})
-                ]
-            })
-            const div = document.querySelector("#complexTree");
-            div.append(plot); */
             const d3Data = restructureData(objData2);
             const d3Data2 = d3.stratify()(d3Data)
             const chart = Tree(d3Data2, {
                 label: d => d.id,
                 title: (d, n) => `${n.ancestors().reverse().map(d => d.data.id).join(".")}`, // hover text
+                link: (d) => complexUrls[d.id] || null,
+                linkTarget: "_self",
                 sort: (a, b) => d3.descending(a.height, b.height), // reduce link crossings
                 tree: d3.tidy,
-                width: findWidth(objData2), //1152
+                width: findWidth(objData2),
                 margin: 20,
                 curve: d3.curveStep
             })
