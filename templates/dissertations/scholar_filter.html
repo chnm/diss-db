@@ -11,7 +11,7 @@
         <div>
             <h1 class="text-3xl font-bold text-gray-900 mb-4">Scholars</h1>
             <p class="text-xl text-gray-600">
-                Browse and search historians in the database. Filter by name or affiliation,
+                Browse and search historians in the database. Filter by name or institution,
                 or click a scholar's name to view their profile and scholarly genealogy.
             </p>
         </div>
@@ -25,21 +25,20 @@
 
     {% if filter %}
     <form action="" method="get" class="bg-gray-50 p-6 rounded-lg mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-                <label for="{{ filter.form.name_last.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.name_last.label }}</label>
-                {{ filter.form.name_last }}
+                <label for="{{ filter.form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.name.label }}</label>
+                {{ filter.form.name }}
             </div>
             <div>
-                <label for="{{ filter.form.name_first.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.name_first.label }}</label>
-                {{ filter.form.name_first }}
-            </div>
-            <div>
-                <label for="{{ filter.form.affiliation.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.affiliation.label }}</label>
-                {{ filter.form.affiliation }}
+                <label for="{{ filter.form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ filter.form.school.label }}</label>
+                {{ filter.form.school }}
             </div>
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Filter</button>
+        <div class="flex gap-3">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Filter</button>
+            <a href="{{ request.path }}" class="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">Reset</a>
+        </div>
     </form>
     {% endif %}
 
