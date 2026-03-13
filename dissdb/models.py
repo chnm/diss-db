@@ -74,9 +74,13 @@ class School(models.Model):
     class Meta:
         ordering = ["name"]
 
+class Department(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(help_text="The name of the department", max_length=200)
+    school = models.ForeignKey(School, on_delete=models.PROTECT)
 
 # Ensure that the ORCID is in the correct format
-orcid_validator = RegexValidator("\d{4}-\d{4}-\d{4}-\d{4}")
+orcid_validator = RegexValidator(r"\d{4}-\d{4}-\d{4}-\d{4}")
 
 
 class Scholar(models.Model):
@@ -255,6 +259,7 @@ class Dissertation(models.Model):
     )
     author = models.ForeignKey(Scholar, on_delete=models.PROTECT)
     school = models.ForeignKey(School, on_delete=models.PROTECT)
+    department = models.ForeignKey(Department, on_delete=models.PROTECT, null=True, blank=True)
     aha_author_id = models.BigIntegerField(
         verbose_name="AHA author ID",
         editable=False,

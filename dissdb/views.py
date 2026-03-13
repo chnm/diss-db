@@ -33,22 +33,40 @@ def about(request):
     return render(request, "about.html")
 
 
+def contributing(request):
+    return render(request, "contributing.html")
+
+
 class ScholarListAPI(generics.ListAPIView):
     serializer_class = ScholarSerializer
     pagination_class = None
 
     def get_queryset(self):
+        from django.contrib.postgres.search import TrigramSimilarity
         from django.db.models import Q
+        from django.db.models.functions import Greatest
+
         qs = Scholar.objects.all()
         q = self.request.query_params.get("q", "")
         if q:
-            for term in q.split():
-                qs = qs.filter(
-                    Q(name_first__icontains=term)
-                    | Q(name_middle__icontains=term)
-                    | Q(name_last__icontains=term)
+            qs = (
+                qs.annotate(
+                    similarity=Greatest(
+                        TrigramSimilarity("name_first", q),
+                        TrigramSimilarity("name_last", q),
+                    )
                 )
-        return qs.order_by("name_last", "name_first")[:50]
+                .filter(
+                    Q(name_first__icontains=q)
+                    | Q(name_last__icontains=q)
+                    | Q(name_middle__icontains=q)
+                    | Q(similarity__gte=0.3)
+                )
+                .order_by("-similarity", "name_last", "name_first")
+            )
+        else:
+            qs = qs.order_by("name_last", "name_first")
+        return qs[:50]
 
 
 class ScholarCreateAPI(generics.CreateAPIView):
@@ -78,42 +96,30 @@ class ScholarDetailAPI(APIView):
         return Response(serializer.data)
 
 
+
+def _collect_url(urls, scholar):
+    """Add a scholar's name_full → absolute URL to the urls dict."""
+    urls[scholar.name_full] = scholar.get_absolute_url()
+
+
 def get_viz_data(request, pk):
     data = []
-    """stratify format- array of json objects
-    # get scholar who's we're centering
-    scholar = Scholar.objects.get(aha_scholar_id=pk)
-    # get their advisor
-    advisor = CommitteeMember.objects.get(dissertation__aha_author_id = pk)
-    advisorRoot = {"name": advisor.scholar.name_full, "parent": ""}
-    data.append(advisorRoot)
-    advisorData = {"name": scholar.name_full, "parent": advisor.scholar.name_full }
-    data.append(advisorData)
-    #get their advisees
-    advisees = CommitteeMember.objects.filter(aha_scholar_id = pk)
-    for advisee in advisees:
-        adviseeData = {"name": advisee.dissertation.author.name_full, "parent": scholar.name_full}
-        data.append(adviseeData)"""
-    """Plotly format- array of string literals"""
-    # get scholar who's we're centering
-    # scholar = Scholar.objects.get(aha_scholar_id=pk)
+    urls = {}
     scholar = Scholar.objects.get(id=pk)
+    _collect_url(urls, scholar)
 
     # issue- what if scholar does not have a dissertation (only in Db as a Committee Member)
     try:
-        dissertation = Dissertation.objects.get(
-            author=scholar.id
-        )
+        dissertation = Dissertation.objects.get(author=scholar.id)
         has_dissertation = True
     except Dissertation.DoesNotExist:
         dissertation = None
-        has_dissertation = False 
+        has_dissertation = False
 
     # get advisor if scholar has a dissertation
     advisor = None
     if has_dissertation:
         try:
-            #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
             advisor = CommitteeMember.objects.get(
                 dissertation=dissertation,
                 role="chair"
@@ -124,97 +130,88 @@ def get_viz_data(request, pk):
     advisorData = ""
     # get their advisor
     if advisor != None:
+        _collect_url(urls, advisor.scholar)
         data.append(advisor.scholar.name_full + "/")
         advisorData = advisor.scholar.name_full + "/" + scholar.name_full + "/"
         data.append(advisorData)
     else:
-        # advisorData = '/' + scholar.name_full
         advisorData = scholar.name_full + "/"
         data.append(advisorData)
-   
+
     # get their advisees
     advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
     if advisees.exists():
         for advisee in advisees:
+            _collect_url(urls, advisee.dissertation.author)
             adviseeData = advisorData + advisee.dissertation.author.name_full
             data.append(adviseeData)
-    
-    return JsonResponse(data, safe=False)
+
+    return JsonResponse({"paths": data, "urls": urls})
 
 
-def traverse(pk, path, data):
-    # root = Scholar.objects.get(aha_scholar_id=pk)
+def traverse(pk, path, data, urls):
     root = Scholar.objects.get(id=pk)
+    _collect_url(urls, root)
     path = path + root.name_full + "/"
-    
+
     advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
-    
+
     if advisees.exists():
         for advisee in advisees:
             if advisee.dissertation and advisee.dissertation.author:
-                # traverse(advisee.dissertation.author.aha_scholar_id, path, data)
-                traverse(advisee.dissertation.author.id, path, data)
+                traverse(advisee.dissertation.author.id, path, data, urls)
     data.append(path[0:-1])
 
-    # return root.aha_scholar_id, path, data
     return root.id, path, data
 
 
 def get_viz_data_complex(request, pk):
     data = []
+    urls = {}
     path = ""
-    
-    # find root (advisor variable)
-    # scholar = Scholar.objects.get(aha_scholar_id=pk)
+
     scholar = Scholar.objects.get(id=pk)
-    
+
     try:
-        # dissertation = Dissertation.objects.get(aha_author_id=scholar.aha_scholar_id)
         dissertation = Dissertation.objects.get(author=scholar.id)
     except Dissertation.DoesNotExist:
         # If no dissertation, scholar is the root
-        pk, path, data = traverse(scholar.id, path, data)
+        pk, path, data = traverse(scholar.id, path, data, urls)
         data[-1] = data[-1] + "/"
-        return JsonResponse(data, safe=False)
-    
+        return JsonResponse({"paths": data, "urls": urls})
+
     try:
-        #advisor = CommitteeMember.objects.get(dissertation__aha_author_id=pk)
         advisor = CommitteeMember.objects.get(
             dissertation=dissertation,
             role="chair"
         )
     except CommitteeMember.DoesNotExist:
         advisor = None
-    
+
     root = ""
-    
+
     while advisor != None:
         try:
             root = CommitteeMember.objects.get(
-                #dissertation__aha_author_id=advisor.scholar.aha_scholar_id
                 dissertation__author=advisor.scholar,
                 role="chair"
             )
         except CommitteeMember.DoesNotExist:
             root = None
-        
+
         if root != None:
             advisor = root
         else:
             break
 
-    # append data here?...no but add to path variable
     if advisor != None:
-        # root = advisor.aha_scholar_id
         root = advisor.scholar.id
     else:
-        # root = scholar.aha_scholar_id
         root = scholar.id
-    # call function...how to save data part of return call?
-    pk, path, data = traverse(root, path, data)
+    pk, path, data = traverse(root, path, data, urls)
     data[-1] = data[-1] + "/"
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse({"paths": data, "urls": urls})
 
 
 """@api_view(['GET'])

@@ -1,58 +1,151 @@
 import django_filters
 from django_filters import FilterSet
 from django_filters.widgets import RangeWidget
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import F, Q
+from django.db.models.functions import Greatest
 from django.forms.widgets import TextInput
 from .models import Dissertation, CommitteeMember, Scholar
 
 
+def _filter_name(queryset, value, prefix=""):
+    """Shared fuzzy name filter. prefix is e.g. 'author__' or 'scholar__'."""
+    terms = value.split()
+    qs = queryset
+    for term in terms:
+        qs = qs.filter(
+            Q(**{f"{prefix}name_first__icontains": term})
+            | Q(**{f"{prefix}name_last__icontains": term})
+            | Q(**{f"{prefix}name_middle__icontains": term})
+        )
+    return qs
+
+
 class DissertationFilter(FilterSet):
     title = django_filters.CharFilter(
-        label="Dissertation Title", field_name="title", lookup_expr="icontains", widget=TextInput(attrs={'placeholder': 'Colonial Virgina'})
+        label="Dissertation Title",
+        method="filter_title",
+        widget=TextInput(attrs={"placeholder": "Colonial Virginia"}),
     )
-    authorLastName = django_filters.CharFilter(
-        label="Author's Last Name", field_name="author__name_last", lookup_expr="icontains", widget=TextInput(attrs={'placeholder': 'Smith'})
+    author = django_filters.CharFilter(
+        label="Author",
+        method="filter_author",
+        widget=TextInput(attrs={"placeholder": "Jane Smith"}),
     )
-    authorFirstName = django_filters.CharFilter(
-        label="Author's First Name", field_name="author__name_first", lookup_expr="icontains", widget=TextInput(attrs={'placeholder': 'John'})
+    school = django_filters.CharFilter(
+        label="Institution",
+        method="filter_school",
+        widget=TextInput(attrs={"placeholder": "George Mason University"}),
     )
-    year = django_filters.RangeFilter(field_name="year", lookup_expr="exact", widget=RangeWidget(attrs={'placeholder': 'YYYY'}))
+    year = django_filters.RangeFilter(
+        field_name="year",
+        widget=RangeWidget(attrs={"placeholder": "YYYY"}),
+    )
+
+    def filter_title(self, queryset, name, value):
+        return queryset.annotate(
+            _title_sim=TrigramSimilarity("title", value),
+        ).filter(Q(title__icontains=value) | Q(_title_sim__gte=0.3))
+
+    def filter_author(self, queryset, name, value):
+        return _filter_name(queryset, value, prefix="author__")
+
+    def filter_school(self, queryset, name, value):
+        return queryset.annotate(
+            _school_sim=TrigramSimilarity("school__name", value),
+        ).filter(
+            Q(school__name__icontains=value) | Q(_school_sim__gte=0.3)
+        )
 
     class Meta:
         model = Dissertation
-        fields = {"school": ["exact"]}
+        fields = []
 
 
 class ComMemFilter(FilterSet):
-    scholarLastName = django_filters.CharFilter(
-        label="Scholar's Last Name", field_name="scholar__name_last", lookup_expr="exact", widget=TextInput(attrs={'placeholder': 'Smith'})
+    scholar = django_filters.CharFilter(
+        label="Scholar",
+        method="filter_scholar",
+        widget=TextInput(attrs={"placeholder": "Jane Smith"}),
     )
-    scholarFirstName = django_filters.CharFilter(
-        label="Scholar's First Name", field_name="scholar__name_first", lookup_expr="exact", widget=TextInput(attrs={'placeholder': 'John'})
+    dissertation = django_filters.CharFilter(
+        label="Dissertation Title",
+        method="filter_dissertation",
+        widget=TextInput(attrs={"placeholder": "Colonial Virginia"}),
     )
-    dissertationTitle = django_filters.CharFilter(
-        label="Dissertation Advised", field_name="dissertation__title", lookup_expr="icontains", widget=TextInput(attrs={'placeholder': 'Colonial Virgina'})
-    )
+
+    def filter_scholar(self, queryset, name, value):
+        return _filter_name(queryset, value, prefix="scholar__")
+
+    def filter_dissertation(self, queryset, name, value):
+        return queryset.annotate(
+            _diss_sim=TrigramSimilarity("dissertation__title", value),
+        ).filter(
+            Q(dissertation__title__icontains=value) | Q(_diss_sim__gte=0.3)
+        )
+
+    class Meta:
+        model = CommitteeMember
+        fields = []
 
 
 class ScholarFilter(FilterSet):
-    name_last = django_filters.CharFilter(
-        label="Last Name",
-        field_name="name_last",
-        lookup_expr="icontains",
-        widget=TextInput(attrs={"placeholder": "Smith"}),
+    name = django_filters.CharFilter(
+        label="Name",
+        method="filter_name",
+        widget=TextInput(attrs={"placeholder": "Jane Smith"}),
     )
-    name_first = django_filters.CharFilter(
-        label="First Name",
-        field_name="name_first",
-        lookup_expr="icontains",
-        widget=TextInput(attrs={"placeholder": "Jane"}),
+    school = django_filters.CharFilter(
+        label="Dissertation Institution",
+        method="filter_school",
+        widget=TextInput(attrs={"placeholder": "George Mason University"}),
     )
-    affiliation = django_filters.CharFilter(
-        label="Affiliation",
-        field_name="affiliation",
-        lookup_expr="icontains",
-        widget=TextInput(attrs={"placeholder": "Harvard"}),
-    )
+
+    def filter_name(self, queryset, name, value):
+        terms = value.split()
+        qs = queryset
+        if len(terms) == 1:
+            term = terms[0]
+            qs = qs.annotate(
+                _name_sim=Greatest(
+                    TrigramSimilarity("name_last", term),
+                    TrigramSimilarity("name_first", term),
+                )
+            ).filter(
+                Q(name_first__icontains=term)
+                | Q(name_last__icontains=term)
+                | Q(name_middle__icontains=term)
+                | Q(_name_sim__gte=0.3)
+            )
+        else:
+            qs = _filter_name(qs, value)
+        return qs
+
+    def filter_school(self, queryset, name, value):
+        return queryset.annotate(
+            _school_sim=TrigramSimilarity("dissertation__school__name", value),
+        ).filter(
+            Q(dissertation__school__name__icontains=value) | Q(_school_sim__gte=0.3)
+        )
+
+    @property
+    def qs(self):
+        qs = super().qs
+        if not self.form.is_valid():
+            return qs
+        data = self.form.cleaned_data
+        # Order by relevance when filters are active
+        parts = []
+        if data.get("name") and len(data["name"].split()) == 1:
+            parts.append(F("_name_sim") * 3)
+        if data.get("school"):
+            parts.append(F("_school_sim") * 2)
+        if parts:
+            relevance = parts[0]
+            for p in parts[1:]:
+                relevance = relevance + p
+            qs = qs.annotate(relevance=relevance).order_by("-relevance")
+        return qs
 
     class Meta:
         model = Scholar

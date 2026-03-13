@@ -33,6 +33,7 @@ class DissTable(tables.Table):
         template_name = "django_tables2/tailwind.html"
         fields = ("title", "author", "school", "year")
         attrs = {"class": "w-full table-fixed divide-y divide-gray-200"}
+        empty_text = "No dissertations found matching your filters."
 
 
 class ScholarTable(tables.Table):
@@ -42,26 +43,43 @@ class ScholarTable(tables.Table):
         linkify=lambda record: record.get_absolute_url(),
         order_by=("name_last", "name_first", "name_middle"),
         attrs={
-            "th": {"class": "w-1/3"},
+            "th": {"class": "w-1/4"},
             "td": {"class": "text-blue-600 hover:text-blue-800 font-medium"},
         },
     )
-    affiliation = tables.Column(
-        verbose_name="Affiliation",
+    school = tables.Column(
+        verbose_name="Institution",
+        empty_values=(),
+        orderable=False,
         attrs={
-            "th": {"class": "w-1/3"},
+            "th": {"class": "w-1/4"},
+            "td": {"class": "text-gray-700"},
+        },
+    )
+    department = tables.Column(
+        verbose_name="Department",
+        empty_values=(),
+        orderable=False,
+        attrs={
+            "th": {"class": "w-1/4"},
             "td": {"class": "text-gray-700"},
         },
     )
 
-    def render_affiliation(self, value):
-        return value or "—"
+    def render_school(self, record):
+        diss = Dissertation.objects.filter(author=record).select_related("school").first()
+        return diss.school.name if diss else "—"
+
+    def render_department(self, record):
+        diss = Dissertation.objects.filter(author=record).select_related("department").first()
+        return diss.department.name if diss and diss.department else "—"
 
     class Meta:
         model = Scholar
         template_name = "django_tables2/tailwind.html"
-        fields = ("name", "affiliation")
+        fields = ("name", "school", "department")
         attrs = {"class": "w-full table-fixed divide-y divide-gray-200"}
+        empty_text = "No scholars found matching your filters."
 
 
 class ComMemTable(tables.Table):
@@ -75,9 +93,16 @@ class ComMemTable(tables.Table):
         verbose_name="Dissertation",
         attrs={"td": {"class": "max-w-xs truncate"}}
     )
+    author = tables.Column(
+        accessor="dissertation__author",
+        verbose_name="Author",
+        linkify=lambda record: record.dissertation.author.get_absolute_url(),
+        attrs={"td": {"class": "text-blue-600 hover:text-blue-800"}},
+    )
 
     class Meta:
         model = CommitteeMember
         template_name = "django_tables2/tailwind.html"
-        fields = ("scholar", "role", "dissertation")
+        fields = ("scholar", "role", "dissertation", "author")
         attrs = {"class": "min-w-full divide-y divide-gray-200"}
+        empty_text = "No committee members found matching your filters."
