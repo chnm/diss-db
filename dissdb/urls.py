@@ -40,6 +40,11 @@ urlpatterns = [
     path('scholar/<int:pk>/edit/', views.ScholarUpdateView.as_view(), name='scholar-edit'),
     path('dissertation/<int:pk>/edit/', views.DissertationUpdateView.as_view(), name='dissertation-edit'),
     path('scholar/<int:pk>/add-dissertation/', views.DissertationCreateView.as_view(), name='dissertation-create'),
+    # Auth
+    path('request-account/', views.request_account, name='request-account'),
+    path('login/', views.magic_link_login_request, name='login'),
+    path('auth/login/<str:token>/', views.magic_link_verify, name='magic-link-verify'),
+    path('logout/', views.logout_view, name='logout'),
     # path("scholarsapi/<int:pk>/", views.ScholarDetail.as_view()),
     # path('', include(router.urls)),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

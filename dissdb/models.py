@@ -1,7 +1,9 @@
 import datetime
 
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
 
@@ -424,3 +426,97 @@ class DuplicateCandidate(models.Model):
 
     def __str__(self):
         return f"{self.scholar_1.name_full} ~ {self.scholar_2.name_full} ({self.confidence_score:.2f})"
+
+
+class AccountRequest(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    STATUS_CHOICES = [
+        (PENDING, "Pending"),
+        (APPROVED, "Approved"),
+        (REJECTED, "Rejected"),
+    ]
+
+    email = models.EmailField(help_text="Email address for the requested account")
+    name = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        help_text="Full name (optional)",
+    )
+    reason = models.TextField(
+        blank=True,
+        default="",
+        help_text="Why you'd like an account (optional)",
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=PENDING,
+    )
+    ip_address = models.GenericIPAddressField(
+        null=True,
+        blank=True,
+        help_text="IP address of the requester (used for rate limiting)",
+    )
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reviewed_account_requests",
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record",
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.email} ({self.get_status_display()})"
+
+
+class MagicLink(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    token = models.CharField(max_length=96, unique=True, db_index=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="magic_links",
+    )
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+    used_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record",
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"MagicLink for {self.user.email} (used={self.used})"
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at

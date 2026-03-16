@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Log In - The History Dissertation DB</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-lg mx-auto">
+	<h1 class="text-2xl font-bold text-gray-900 mb-6">Log In</h1>
+	<p class="text-gray-600 mb-6">
+		Enter your email address and we'll send you a login link.
+		The link will expire in {{ MAGIC_LINK_EXPIRY_MINUTES }} minutes.
+	</p>
+
+	<form method="post">
+		{% csrf_token %}
+		<div class="space-y-4">
+			<div>
+				<label for="id_email" class="block text-sm font-medium text-gray-700">Email address</label>
+				{{ form.email }}
+				{% if form.email.errors %}
+				<p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+				{% endif %}
+			</div>
+			<button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+				Send Login Link
+			</button>
+		</div>
+	</form>
+
+	<p class="mt-6 text-sm text-gray-500 text-center">
+		Don't have an account? <a href="{% url 'request-account' %}" class="text-blue-600 hover:text-blue-800">Request access</a>
+	</p>
+</div>
+{% endblock main %}

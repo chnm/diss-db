@@ -1,9 +1,13 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source, ScholarWebsite, DissertationLink
+from .models import AccountRequest, CommitteeMember, Dissertation, DissertationLink, DuplicateCandidate, MagicLink, Scholar, ScholarWebsite, School, Source
+
+User = get_user_model()
 
 @admin.register(Source)
 class SourceAdmin(SimpleHistoryAdmin):
@@ -367,3 +371,64 @@ class DissertationLinkAdmin(admin.ModelAdmin):
     list_display = ['dissertation', 'link_type', 'url', 'label']
     search_fields = ['dissertation__title', 'url']
     list_filter = ['link_type']
+
+
+@admin.register(AccountRequest)
+class AccountRequestAdmin(SimpleHistoryAdmin):
+    list_display = ['email', 'name', 'status', 'created_at', 'reviewed_by', 'reviewed_at']
+    list_filter = ['status', 'created_at']
+    search_fields = ['email', 'name']
+    readonly_fields = ['created_at', 'updated_at', 'reviewed_by', 'reviewed_at']
+    actions = ['approve_requests', 'reject_requests']
+
+    @admin.action(description="Approve selected requests and create user accounts")
+    def approve_requests(self, request, queryset):
+        from .views import _create_and_send_magic_link
+
+        approved = 0
+        for acct_request in queryset.filter(status=AccountRequest.PENDING):
+            user, created = User.objects.get_or_create(
+                email=acct_request.email,
+                defaults={
+                    "username": acct_request.email,
+                    "first_name": acct_request.name.split()[0] if acct_request.name else "",
+                    "last_name": " ".join(acct_request.name.split()[1:]) if acct_request.name else "",
+                },
+            )
+            if created:
+                user.set_unusable_password()
+                user.save()
+
+            _create_and_send_magic_link(request, user)
+
+            acct_request.status = AccountRequest.APPROVED
+            acct_request.reviewed_by = request.user
+            acct_request.reviewed_at = timezone.now()
+            acct_request.save()
+            approved += 1
+
+        self.message_user(
+            request,
+            f"{approved} request(s) approved. Login links have been sent.",
+            messages.SUCCESS,
+        )
+
+    @admin.action(description="Reject selected requests")
+    def reject_requests(self, request, queryset):
+        updated = queryset.filter(status=AccountRequest.PENDING).update(
+            status=AccountRequest.REJECTED,
+            reviewed_by=request.user,
+            reviewed_at=timezone.now(),
+        )
+        self.message_user(request, f"{updated} request(s) rejected.", messages.SUCCESS)
+
+
+@admin.register(MagicLink)
+class MagicLinkAdmin(admin.ModelAdmin):
+    list_display = ['user', 'created_at', 'expires_at', 'used', 'used_at']
+    list_filter = ['used', 'created_at']
+    search_fields = ['user__email', 'user__username']
+    readonly_fields = ['token', 'user', 'expires_at', 'used', 'used_at', 'created_at']
+
+    def has_add_permission(self, request):
+        return False

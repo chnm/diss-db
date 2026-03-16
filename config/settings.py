@@ -97,6 +97,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "dissdb.context_processors.magic_link_settings",
             ],
         },
     },
@@ -143,6 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
+    "dissdb.backends.MagicLinkBackend",
 ]
 
 
@@ -194,3 +196,28 @@ else:
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Email
+# In development, emails are printed to the console.
+# In production, use the custom SMTP backend that fixes EHLO inside Docker.
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=25)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_LOCAL_HOSTNAME = env("EMAIL_LOCAL_HOSTNAME", default="dissdb.rrchnm.org")
+DEFAULT_FROM_EMAIL = env(
+    "DEFAULT_FROM_EMAIL", default="History Dissertation DB <noreply@dissdb.rrchnm.org>"
+)
+
+# Magic link authentication
+MAGIC_LINK_EXPIRY_MINUTES = env.int("MAGIC_LINK_EXPIRY_MINUTES", default=30)
+MAGIC_LINK_SESSION_EXPIRY_DAYS = env.int("MAGIC_LINK_SESSION_EXPIRY_DAYS", default=7)
+
+# Auth URLs
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

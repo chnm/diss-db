@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Invalid Login Link - The History Dissertation DB</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-lg mx-auto text-center">
+	<h1 class="text-2xl font-bold text-gray-900 mb-4">Invalid or Expired Link</h1>
+	<p class="text-gray-600 mb-6">
+		This login link is invalid, has already been used, or has expired.
+		Please request a new login link.
+	</p>
+	<a href="{% url 'login' %}" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+		Request New Link
+	</a>
+</div>
+{% endblock main %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Check Your Email - The History Dissertation DB</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-lg mx-auto text-center">
+	<h1 class="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h1>
+	<p class="text-gray-600 mb-6">
+		If an account exists for that email address, we've sent a login link.
+		Please check your inbox (and spam folder) and click the link to log in.
+	</p>
+	<a href="{% url 'index' %}" class="text-blue-600 hover:text-blue-800 font-medium">Return to home page</a>
+</div>
+{% endblock main %}

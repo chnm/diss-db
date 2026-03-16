@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
+from .models import AccountRequest, CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
 
 INPUT_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 TEXTAREA_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -73,3 +73,20 @@ DissertationLinkFormSet = inlineformset_factory(
         "label": forms.TextInput(attrs={"class": INPUT_CLASSES, "placeholder": "Optional display label"}),
     },
 )
+
+
+class AccountRequestForm(forms.ModelForm):
+    class Meta:
+        model = AccountRequest
+        fields = ["email", "name", "reason"]
+        widgets = {
+            "email": forms.EmailInput(attrs={"class": INPUT_CLASSES}),
+            "name": forms.TextInput(attrs={"class": INPUT_CLASSES}),
+            "reason": forms.Textarea(attrs={"class": TEXTAREA_CLASSES, "rows": 4}),
+        }
+
+
+class MagicLinkRequestForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": INPUT_CLASSES}),
+    )

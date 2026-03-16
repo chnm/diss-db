@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Request an Account - The History Dissertation DB</title>
+{% endblock title %}
+
+{% block main %}
+<div class="max-w-lg mx-auto">
+	<h1 class="text-2xl font-bold text-gray-900 mb-6">Request an Account</h1>
+	<p class="text-gray-600 mb-6">
+		Fill out the form below to request access to the History Dissertation Database.
+		An administrator will review your request and send you a login link via email.
+	</p>
+
+	<form method="post">
+		{% csrf_token %}
+		<div class="space-y-4">
+			<div>
+				<label for="id_email" class="block text-sm font-medium text-gray-700">Email address</label>
+				{{ form.email }}
+				{% if form.email.errors %}
+				<p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+				{% endif %}
+			</div>
+			<div>
+				<label for="id_name" class="block text-sm font-medium text-gray-700">Name <span class="text-gray-400">(optional)</span></label>
+				{{ form.name }}
+				{% if form.name.errors %}
+				<p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+				{% endif %}
+			</div>
+			<div>
+				<label for="id_reason" class="block text-sm font-medium text-gray-700">Why would you like an account? <span class="text-gray-400">(optional)</span></label>
+				{{ form.reason }}
+				{% if form.reason.errors %}
+				<p class="mt-1 text-sm text-red-600">{{ form.reason.errors.0 }}</p>
+				{% endif %}
+			</div>
+			<button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+				Submit Request
+			</button>
+		</div>
+	</form>
+</div>
+{% endblock main %}

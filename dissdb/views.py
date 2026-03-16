@@ -1,5 +1,13 @@
+import secrets
+from datetime import timedelta
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.text import slugify
 from django.views import generic
 from django.views.generic.edit import UpdateView
@@ -19,9 +27,11 @@ from django.views.decorators.csrf import csrf_exempt
 from dissdb.serializers import ScholarCreateSerializer, ScholarSerializer
 
 from .filters import ComMemFilter, DissertationFilter, ScholarFilter
-from .forms import CommitteeMemberFormSet, DissertationForm, DissertationLinkFormSet, ScholarForm, ScholarWebsiteFormSet
-from .models import CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
+from .forms import AccountRequestForm, CommitteeMemberFormSet, DissertationForm, DissertationLinkFormSet, MagicLinkRequestForm, ScholarForm, ScholarWebsiteFormSet
+from .models import AccountRequest, CommitteeMember, Dissertation, DissertationLink, MagicLink, Scholar, ScholarWebsite
 from .tables import ComMemTable, DissTable, ScholarTable
+
+User = get_user_model()
 # import pandas as pd
 
 
@@ -232,7 +242,6 @@ class ScholarCreateView(LoginRequiredMixin, generic.CreateView):
     model = Scholar
     form_class = ScholarForm
     template_name = "dissertations/scholar_create.html"
-    login_url = "/admin/login/"
 
     def get_success_url(self):
         return self.object.get_absolute_url()
@@ -328,7 +337,6 @@ class ScholarUpdateView(LoginRequiredMixin, UpdateView):
     model = Scholar
     form_class = ScholarForm
     template_name = "dissertations/scholar_edit.html"
-    login_url = "/admin/login/"
 
     def get_context_data(self, **kwargs):
         if "website_formset" not in kwargs:
@@ -353,7 +361,6 @@ class DissertationUpdateView(LoginRequiredMixin, UpdateView):
     model = Dissertation
     form_class = DissertationForm
     template_name = "dissertations/dissertation_edit.html"
-    login_url = "/admin/login/"
 
     def get_context_data(self, **kwargs):
         if "link_formset" not in kwargs:
@@ -383,7 +390,6 @@ class DissertationCreateView(LoginRequiredMixin, generic.CreateView):
     model = Dissertation
     form_class = DissertationForm
     template_name = "dissertations/dissertation_create.html"
-    login_url = "/admin/login/"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -395,3 +401,122 @@ class DissertationCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = author
         self.object = form.save()
         return redirect(author.get_absolute_url())
+
+
+# ---------------------------------------------------------------------------
+# Auth views
+# ---------------------------------------------------------------------------
+
+
+def _create_and_send_magic_link(request, user):
+    """Create a magic link token and email it to the user."""
+    token = secrets.token_hex(48)
+    expires_at = timezone.now() + timedelta(
+        minutes=settings.MAGIC_LINK_EXPIRY_MINUTES
+    )
+    MagicLink.objects.create(token=token, user=user, expires_at=expires_at)
+
+    login_url = request.build_absolute_uri(
+        f"/auth/login/{token}/"
+    )
+    send_mail(
+        subject="Your login link for the History Dissertation DB",
+        message=f"Click the link below to log in. This link expires in {settings.MAGIC_LINK_EXPIRY_MINUTES} minutes.\n\n{login_url}\n\nIf you did not request this link, you can ignore this email.\n",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )
+
+
+def _get_client_ip(request):
+    """Extract client IP, respecting X-Forwarded-For behind a reverse proxy."""
+    xff = request.META.get("HTTP_X_FORWARDED_FOR")
+    if xff:
+        return xff.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR")
+
+
+def request_account(request):
+    if request.method == "POST":
+        # Rate limit: 3 requests per hour per IP
+        client_ip = _get_client_ip(request)
+        one_hour_ago = timezone.now() - timedelta(hours=1)
+        recent_count = AccountRequest.objects.filter(
+            created_at__gte=one_hour_ago,
+            ip_address=client_ip,
+        ).count()
+        if recent_count >= 3:
+            return render(request, "auth/request_account_done.html")
+
+        form = AccountRequestForm(request.POST)
+        if form.is_valid():
+            acct_request = form.save(commit=False)
+            acct_request.ip_address = client_ip
+            acct_request.save()
+
+            # Notify superusers
+            superuser_emails = list(
+                User.objects.filter(is_superuser=True)
+                .values_list("email", flat=True)
+                .exclude(email="")
+            )
+            if superuser_emails:
+                send_mail(
+                    subject="New account request for the History Dissertation DB",
+                    message=(
+                        f"A new account request has been submitted.\n\n"
+                        f"Email: {acct_request.email}\n"
+                        f"Name: {acct_request.name or '(not provided)'}\n"
+                        f"Reason: {acct_request.reason or '(not provided)'}\n\n"
+                        f"Review it in the admin: {request.build_absolute_uri('/admin/dissdb/accountrequest/')}\n"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=superuser_emails,
+                )
+
+            return render(request, "auth/request_account_done.html")
+    else:
+        form = AccountRequestForm()
+    return render(request, "auth/request_account.html", {"form": form})
+
+
+def magic_link_login_request(request):
+    if request.method == "POST":
+        form = MagicLinkRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            try:
+                user = User.objects.get(email=email)
+                _create_and_send_magic_link(request, user)
+            except User.DoesNotExist:
+                pass  # No enumeration — always show the same page
+            return render(request, "auth/login_link_sent.html")
+    else:
+        form = MagicLinkRequestForm()
+    return render(request, "auth/login.html", {"form": form})
+
+
+def magic_link_verify(request, token):
+    try:
+        link = MagicLink.objects.get(token=token)
+    except MagicLink.DoesNotExist:
+        return render(request, "auth/login_invalid.html", status=400)
+
+    if link.used or link.is_expired:
+        return render(request, "auth/login_invalid.html", status=400)
+
+    link.used = True
+    link.used_at = timezone.now()
+    link.save()
+
+    login(request, link.user, backend="dissdb.backends.MagicLinkBackend")
+    request.session.set_expiry(
+        settings.MAGIC_LINK_SESSION_EXPIRY_DAYS * 86400
+    )
+    messages.success(request, "Welcome back, you're now logged in!")
+    return redirect(settings.LOGIN_REDIRECT_URL)
+
+
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+    return redirect(settings.LOGOUT_REDIRECT_URL)
