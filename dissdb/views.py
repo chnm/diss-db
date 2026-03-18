@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.text import slugify
 from django.views import generic
 from django.views.generic.edit import UpdateView
 from django_filters.views import FilterView
@@ -287,13 +286,6 @@ class ScholarDetailView(generic.DetailView):
     model = Scholar
     context_object_name = "scholar_detail"
     template_name = 'dissertations/scholar_detail.html'
-
-    def get_object(self, queryset=None):
-        slug = self.kwargs["slug"]
-        for scholar in Scholar.objects.only("pk", "name_last", "name_first"):
-            if (slugify(f"{scholar.name_last}-{scholar.name_first}") or "scholar") == slug:
-                return Scholar.objects.get(pk=scholar.pk)
-        raise Http404
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
