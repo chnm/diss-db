@@ -391,6 +391,12 @@ class CommitteeMember(models.Model):
 
     history = HistoricalRecords()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['role', 'scholar'], name='idx_cm_role_scholar'),
+            models.Index(fields=['role', 'dissertation'], name='idx_cm_role_diss'),
+        ]
+
     def __str__(self) -> str:
         return str(self.scholar)
 

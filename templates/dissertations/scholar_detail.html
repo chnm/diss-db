@@ -59,12 +59,17 @@
                 </div>
 
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Advisor</h3>
-                    {% if advisor.scholar %}
-                    <p><a href="{{ advisor.scholar.get_absolute_url }}"
-                            class="text-blue-600 hover:text-blue-800">{{ advisor.scholar }}</a></p>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Advisor{{ advisors|length|pluralize }}</h3>
+                    {% if advisors %}
+                    <ul class="list-disc list-inside space-y-1">
+                        {% for advisor in advisors %}
+                        <li><a href="{{ advisor.scholar.get_absolute_url }}"
+                            class="text-blue-600 hover:text-blue-800">{{ advisor.scholar.name_full }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% else %}
-                    <p class="text-gray-700">{{ advisor }}</p>
+                    <p class="text-gray-700">information not available</p>
                     {% endif %}
 
                     <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Readers</h3>
