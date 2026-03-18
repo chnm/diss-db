@@ -16,6 +16,8 @@ from django.core import serializers
 from django.http import Http404, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from collections import defaultdict
+
 from dissdb.serializers import ScholarCreateSerializer, ScholarSerializer
 
 from .filters import ComMemFilter, DissertationFilter, ScholarFilter
@@ -116,30 +118,34 @@ def get_viz_data(request, pk):
         dissertation = None
         has_dissertation = False
 
-    # get advisor if scholar has a dissertation
-    advisor = None
+    # get advisors (co-chairs) if scholar has a dissertation
+    advisors = []
     if has_dissertation:
-        try:
-            advisor = CommitteeMember.objects.get(
-                dissertation=dissertation,
-                role="chair"
-            )
-        except CommitteeMember.DoesNotExist:
-            advisor = None
+        advisors = list(CommitteeMember.objects.filter(
+            dissertation=dissertation,
+            role="chair"
+        ).select_related('scholar'))
 
     advisorData = ""
-    # get their advisor
-    if advisor != None:
-        _collect_url(urls, advisor.scholar)
-        data.append(advisor.scholar.name_full + "/")
-        advisorData = advisor.scholar.name_full + "/" + scholar.name_full + "/"
+    if advisors:
+        for adv in advisors:
+            _collect_url(urls, adv.scholar)
+            data.append(adv.scholar.name_full + "/")
+        # Use first advisor as the path prefix for the tree structure
+        advisorData = advisors[0].scholar.name_full + "/" + scholar.name_full + "/"
         data.append(advisorData)
+        # Add co-chairs as additional parent paths
+        for adv in advisors[1:]:
+            coAdvisorData = adv.scholar.name_full + "/" + scholar.name_full + "/"
+            data.append(coAdvisorData)
     else:
         advisorData = scholar.name_full + "/"
         data.append(advisorData)
 
     # get their advisees
-    advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
+    advisees = CommitteeMember.objects.filter(
+        role="chair", scholar=pk
+    ).select_related('dissertation__author')
     if advisees.exists():
         for advisee in advisees:
             _collect_url(urls, advisee.dissertation.author)
@@ -149,67 +155,74 @@ def get_viz_data(request, pk):
     return JsonResponse({"paths": data, "urls": urls})
 
 
-def traverse(pk, path, data, urls):
-    root = Scholar.objects.get(id=pk)
-    _collect_url(urls, root)
-    path = path + root.name_full + "/"
-
-    advisees = CommitteeMember.objects.filter(role="chair", scholar=pk)
-
-    if advisees.exists():
-        for advisee in advisees:
-            if advisee.dissertation and advisee.dissertation.author:
-                traverse(advisee.dissertation.author.id, path, data, urls)
-    data.append(path[0:-1])
-
-    return root.id, path, data
-
-
 def get_viz_data_complex(request, pk):
+    """Build the full genealogy tree for a scholar.
+
+    Loads all chair records in a single query, then traverses in memory
+    to avoid the N+1 query problem that caused production timeouts.
+    """
     data = []
     urls = {}
-    path = ""
 
-    scholar = Scholar.objects.get(id=pk)
+    # Load all chair records with related scholars in ONE query
+    all_chairs = list(
+        CommitteeMember.objects.filter(role="chair")
+        .select_related('scholar', 'dissertation__author')
+    )
 
-    try:
-        dissertation = Dissertation.objects.get(author=scholar.id)
-    except Dissertation.DoesNotExist:
-        # If no dissertation, scholar is the root
-        pk, path, data = traverse(scholar.id, path, data, urls)
-        data[-1] = data[-1] + "/"
-        return JsonResponse({"paths": data, "urls": urls})
+    # Build lookup maps
+    # advisor_of: author_id -> advisor's Scholar object
+    advisor_of = {}
+    # advisees_of: scholar_id -> list of advisee Scholar objects
+    advisees_of = defaultdict(list)
+    # All scholars we've seen
+    scholars = {}
 
-    try:
-        advisor = CommitteeMember.objects.get(
-            dissertation=dissertation,
-            role="chair"
-        )
-    except CommitteeMember.DoesNotExist:
-        advisor = None
+    for cm in all_chairs:
+        if cm.dissertation and cm.dissertation.author_id:
+            author_id = cm.dissertation.author_id
+            # Store first advisor only (handles multiple chairs gracefully)
+            if author_id not in advisor_of:
+                advisor_of[author_id] = cm.scholar
+            advisees_of[cm.scholar_id].append(cm.dissertation.author)
+            scholars[cm.scholar_id] = cm.scholar
+            scholars[cm.dissertation.author_id] = cm.dissertation.author
 
-    root = ""
-
-    while advisor != None:
+    # Get the target scholar
+    scholar = scholars.get(pk)
+    if not scholar:
         try:
-            root = CommitteeMember.objects.get(
-                dissertation__author=advisor.scholar,
-                role="chair"
-            )
-        except CommitteeMember.DoesNotExist:
-            root = None
+            scholar = Scholar.objects.get(id=pk)
+            scholars[pk] = scholar
+        except Scholar.DoesNotExist:
+            return JsonResponse({"paths": [], "urls": {}})
 
-        if root != None:
-            advisor = root
-        else:
-            break
+    # Walk up to root ancestor (with cycle detection)
+    current_id = pk
+    visited = set()
+    while current_id in advisor_of and current_id not in visited:
+        visited.add(current_id)
+        current_id = advisor_of[current_id].id
+    root_id = current_id
 
-    if advisor != None:
-        root = advisor.scholar.id
-    else:
-        root = scholar.id
-    pk, path, data = traverse(root, path, data, urls)
-    data[-1] = data[-1] + "/"
+    # Traverse downward in memory (no DB queries)
+    def traverse(scholar_id, path, visited_down):
+        s = scholars.get(scholar_id)
+        if not s or scholar_id in visited_down:
+            return
+        visited_down.add(scholar_id)
+        _collect_url(urls, s)
+        path = path + s.name_full + "/"
+
+        children = advisees_of.get(scholar_id, [])
+        if children:
+            for child in children:
+                traverse(child.id, path, visited_down)
+        data.append(path[0:-1])
+
+    traverse(root_id, "", set())
+    if data:
+        data[-1] = data[-1] + "/"
 
     return JsonResponse({"paths": data, "urls": urls})
 
@@ -291,18 +304,16 @@ class ScholarDetailView(generic.DetailView):
             dissertation = Dissertation.objects.get(author=scholar.id)
             context["dissertation"] = dissertation
 
-            try:
-                context["advisor"] = CommitteeMember.objects.get(
-                    dissertation=dissertation,
-                    role="chair",
-                )
-            except CommitteeMember.DoesNotExist:
-                context["advisor"] = "information not available"
+            advisors = CommitteeMember.objects.filter(
+                dissertation=dissertation,
+                role="chair",
+            ).select_related('scholar')
+            context["advisors"] = advisors if advisors.exists() else None
 
             readers = CommitteeMember.objects.filter(
                 dissertation=dissertation,
                 role="reader",
-            )
+            ).select_related('scholar')
             context["readers"] = readers if readers.exists() else None
 
             context["dissLinks"] = DissertationLink.objects.filter(
@@ -311,10 +322,12 @@ class ScholarDetailView(generic.DetailView):
 
         except Dissertation.DoesNotExist:
             context["dissertation"] = "information not available"
-            context["advisor"] = "information not available"
+            context["advisors"] = None
             context["readers"] = None
 
-        advisees = CommitteeMember.objects.filter(role="chair", scholar=scholar.id)
+        advisees = CommitteeMember.objects.filter(
+            role="chair", scholar=scholar.id
+        ).select_related('dissertation__author')
         context["advisees"] = advisees if advisees.exists() else None
 
         websites = ScholarWebsite.objects.filter(scholar=scholar.id)
