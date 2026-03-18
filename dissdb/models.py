@@ -183,7 +183,7 @@ class Scholar(models.Model):
         from django.urls import reverse
 
         name_slug = slugify(f"{self.name_last}-{self.name_first}") or "scholar"
-        return reverse("scholar-detail", kwargs={"slug": name_slug})
+        return reverse("scholar-detail", kwargs={"pk": self.pk, "slug": name_slug})
 
     def __str__(self) -> str:
         return self.name_full_rev

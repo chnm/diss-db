@@ -29,7 +29,7 @@ urlpatterns = [
         name="committeemembers",
     ),
     # path("dissertations/<int:pk>", views.DissDetailView.as_view(), name="diss-detail"),
-    path("scholar/<slug:slug>/", views.ScholarDetailView.as_view(), name="scholar-detail"),
+    path("scholar/<int:pk>/<slug:slug>/", views.ScholarDetailView.as_view(), name="scholar-detail"),
     path('scholars/', views.FilteredScholarListView.as_view(), name='scholars'),
     path('scholars/create/', views.ScholarCreateView.as_view(), name='scholar-create'),
     path('scholars/api/', views.ScholarListAPI.as_view(), name='scholar-list-api'),
