@@ -343,6 +343,51 @@
             .attr("font-family", "sans-serif")
             .attr("font-size", 10);
 
+        // Draw generation bands behind the tree
+        const depthGroups = d3.group(descendants, d => d.depth);
+        const depthKeys = [...depthGroups.keys()].sort((a, b) => a - b);
+        const bandColors = ["#eef2ff", "transparent"];
+        const bandTop = x0 - dx;
+        const viewLeft = -dy * padding / 2;
+        const bandG = svg.append("g").attr("class", "generation-bands");
+
+        depthKeys.forEach((depth, i) => {
+            const nodeY = depthGroups.get(depth)[0].y;
+            const left = i === 0
+                ? viewLeft
+                : (depthGroups.get(depthKeys[i - 1])[0].y + nodeY) / 2;
+            const right = i === depthKeys.length - 1
+                ? viewLeft + width
+                : (nodeY + depthGroups.get(depthKeys[i + 1])[0].y) / 2;
+            const bandWidth = right - left;
+            const genLabel = `Gen ${depth + 1}`;
+
+            bandG.append("rect")
+                .attr("x", left)
+                .attr("y", bandTop)
+                .attr("width", bandWidth)
+                .attr("height", height)
+                .attr("fill", bandColors[i % 2]);
+
+            // Label at upper-right of band
+            bandG.append("text")
+                .attr("x", right - 4)
+                .attr("y", bandTop + 11)
+                .attr("text-anchor", "end")
+                .attr("font-size", 8)
+                .attr("fill", "#94a3b8")
+                .text(genLabel);
+
+            // Label at lower-right of band
+            bandG.append("text")
+                .attr("x", right - 4)
+                .attr("y", bandTop + height - 4)
+                .attr("text-anchor", "end")
+                .attr("font-size", 8)
+                .attr("fill", "#94a3b8")
+                .text(genLabel);
+        });
+
         svg.append("g")
             .attr("fill", "none")
             .attr("stroke", stroke)
