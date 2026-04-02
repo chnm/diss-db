@@ -20,40 +20,42 @@
 		<header class="mt-8">
 			<div class="flex items-center justify-between">
 				<h1 class="text-3xl font-bold text-gray-900"><a href="{% url 'index' %}" class="text-blue-600 hover:text-blue-800">The History Dissertation DB</a></h1>
-				<nav class="hidden md:flex items-center space-x-6">
-					<a href="{% url 'dissertations' %}" class="text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
-					<a href="{% url 'scholars' %}" class="text-gray-600 hover:text-gray-900 font-medium">Scholars</a>
-					<a href="{% url 'committeemembers' %}" class="text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
-					<div class="relative" x-data="{ open: false }" @click.away="open = false">
-						<button @click="open = !open" class="text-gray-600 hover:text-gray-900 font-medium inline-flex items-center">
-							About
-							<svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-							</svg>
-						</button>
-						<div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
-							<a href="{% url 'about' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">About</a>
-							<a href="{% url 'contributing' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Contributing</a>
-						</div>
-					</div>
+				<nav class="hidden md:flex items-center" aria-label="Main navigation">
+					<ul class="flex items-center space-x-6 list-none">
+						<li><a href="{% url 'dissertations' %}" class="text-gray-600 hover:text-gray-900 font-medium">Dissertations</a></li>
+						<li><a href="{% url 'scholars' %}" class="text-gray-600 hover:text-gray-900 font-medium">Scholars</a></li>
+						<li><a href="{% url 'committeemembers' %}" class="text-gray-600 hover:text-gray-900 font-medium">Committee Members</a></li>
+						<li class="relative" x-data="{ open: false }" @click.away="open = false">
+							<button @click="open = !open" class="text-gray-600 hover:text-gray-900 font-medium inline-flex items-center">
+								About
+								<svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+								</svg>
+							</button>
+							<div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+								<a href="{% url 'about' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">About</a>
+								<a href="{% url 'contributing' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Contributing</a>
+							</div>
+						</li>
+					</ul>
 				</nav>
 				<div class="md:hidden">
-					<button type="button" class="text-gray-500 hover:text-gray-600" x-data @click="$dispatch('toggle-mobile-menu')">
+					<button type="button" class="text-gray-500 hover:text-gray-600" aria-label="Toggle mobile menu" x-data @click="$dispatch('toggle-mobile-menu')">
 						<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
 						</svg>
 					</button>
 				</div>
 			</div>
-			<div class="md:hidden mt-4" x-data="{ open: false }" @toggle-mobile-menu.window="open = !open" x-show="open" x-transition>
-				<div class="space-y-2">
-					<a href="{% url 'dissertations' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Dissertations</a>
-					<a href="{% url 'scholars' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Scholars</a>
-					<a href="{% url 'committeemembers' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Committee Members</a>
-					<a href="{% url 'about' %}" class="block text-gray-600 hover:text-gray-900 font-medium">About</a>
-					<a href="{% url 'contributing' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Contributing</a>
-				</div>
-			</div>
+			<nav class="md:hidden mt-4" x-data="{ open: false }" @toggle-mobile-menu.window="open = !open" x-show="open" x-transition aria-label="Mobile navigation">
+				<ul class="space-y-2 list-none">
+					<li><a href="{% url 'dissertations' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Dissertations</a></li>
+					<li><a href="{% url 'scholars' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Scholars</a></li>
+					<li><a href="{% url 'committeemembers' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Committee Members</a></li>
+					<li><a href="{% url 'about' %}" class="block text-gray-600 hover:text-gray-900 font-medium">About</a></li>
+					<li><a href="{% url 'contributing' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Contributing</a></li>
+				</ul>
+			</nav>
 		</header>
 
 		<main class="mt-8">
@@ -69,21 +71,21 @@
 					</a>
 					<p class="text-sm text-gray-500">Original dissertation data provided by the <a href="https://historians.org" class="text-gray-600 hover:text-gray-800">American Historical Association</a>.</p>
 				</div>
-				<div>
-					<h3 class="text-sm font-semibold text-gray-900 mb-3">Explore</h3>
+				<nav aria-label="Explore">
+					<h2 class="text-sm font-semibold text-gray-900 mb-3">Explore</h2>
 					<ul class="space-y-2 text-sm">
 						<li><a href="{% url 'dissertations' %}" class="text-gray-500 hover:text-gray-700">Dissertations</a></li>
 						<li><a href="{% url 'scholars' %}" class="text-gray-500 hover:text-gray-700">Scholars</a></li>
 						<li><a href="{% url 'committeemembers' %}" class="text-gray-500 hover:text-gray-700">Committee Members</a></li>
 					</ul>
-				</div>
-				<div>
-					<h3 class="text-sm font-semibold text-gray-900 mb-3">About</h3>
+				</nav>
+				<nav aria-label="About">
+					<h2 class="text-sm font-semibold text-gray-900 mb-3">About</h2>
 					<ul class="space-y-2 text-sm">
 						<li><a href="{% url 'about' %}" class="text-gray-500 hover:text-gray-700">About</a></li>
 						<li><a href="{% url 'contributing' %}" class="text-gray-500 hover:text-gray-700">Contributing</a></li>
 					</ul>
-				</div>
+				</nav>
 				<div class="text-sm md:text-right">
 					{% if request.user.is_authenticated %}
 					<span class="text-gray-400 mr-3">{{ request.user.username }}</span>

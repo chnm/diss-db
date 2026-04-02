@@ -30,21 +30,21 @@
         <div class="bg-gray-50 p-6 rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Current Affiliation</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Current Affiliation</h2>
                     {% if scholar_detail.affiliation %}
                     <p class="text-gray-700">{{ scholar_detail.affiliation }}</p>
                     {% else %}
                     <p class="text-gray-700">information not provided</p>
                     {% endif %}
 
-                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ORCID</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ORCID</h2>
                     {% if scholar_detail.orcid %}
                     <p class="text-gray-700"><a href="{{ scholar_detail.orcid_url }}" target="_blank" class="text-blue-600 hover:text-blue-800">{{ scholar_detail.orcid }}</a></p>
                     {% else %}
                     <p class="text-gray-700">information not provided</p>
                     {% endif %}
 
-                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Websites</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Websites</h2>
                     {% if websites %}
                     <ul class="list-disc list-inside space-y-1">
                         {% for website in websites %}
@@ -59,7 +59,7 @@
                 </div>
 
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Advisor{{ advisors|length|pluralize }}</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Advisor{{ advisors|length|pluralize }}</h2>
                     {% if advisors %}
                     <ul class="list-disc list-inside space-y-1">
                         {% for advisor in advisors %}
@@ -72,7 +72,7 @@
                     <p class="text-gray-700">information not available</p>
                     {% endif %}
 
-                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Readers</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Readers</h2>
                     {% if readers %}
                     <ul class="list-disc list-inside space-y-1">
                         {% for reader in readers %}
@@ -85,7 +85,7 @@
                     <p class="text-gray-700">no reader data</p>
                     {% endif %}
 
-                    <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Advisees</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Advisees</h2>
                     {% if advisees %}
                     <ul class="list-disc list-inside space-y-1">
                         {% for advisee in advisees %}
@@ -131,7 +131,7 @@
                 <p class="mt-3 text-sm text-gray-700 leading-relaxed">{{ dissertation.abstract|linebreaksbr }}</p>
             </details>
             {% else %}
-            <p class="text-sm text-gray-400 italic">No abstract in database</p>
+            <p class="text-sm text-gray-500 italic">No abstract in database</p>
             {% endif %}
         </div>
         {% endif %}

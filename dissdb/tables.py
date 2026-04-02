@@ -4,6 +4,8 @@ from .models import Dissertation, CommitteeMember, Scholar
 
 
 class DissTable(tables.Table):
+    caption = "History dissertations"
+
     title = tables.Column(
         verbose_name="Dissertation Title",
         attrs={
@@ -37,6 +39,8 @@ class DissTable(tables.Table):
 
 
 class ScholarTable(tables.Table):
+    caption = "Scholars"
+
     name = tables.Column(
         accessor="name_full_rev",
         verbose_name="Name",
@@ -83,6 +87,8 @@ class ScholarTable(tables.Table):
 
 
 class ComMemTable(tables.Table):
+    caption = "Committee members"
+
     scholar = tables.Column(
         linkify=True,
         verbose_name="Scholar",

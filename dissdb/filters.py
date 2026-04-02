@@ -8,6 +8,17 @@ from django.forms.widgets import TextInput
 from .models import Dissertation, CommitteeMember, Scholar
 
 
+class LabeledRangeWidget(RangeWidget):
+    """RangeWidget that adds distinct aria-labels to each sub-input."""
+
+    def __init__(self, attrs=None):
+        widgets = (
+            TextInput(attrs={"placeholder": "YYYY", "aria-label": "Year from"}),
+            TextInput(attrs={"placeholder": "YYYY", "aria-label": "Year to"}),
+        )
+        super(RangeWidget, self).__init__(widgets, attrs)
+
+
 def _filter_name(queryset, value, prefix=""):
     """Shared fuzzy name filter. prefix is e.g. 'author__' or 'scholar__'."""
     terms = value.split()
@@ -39,7 +50,7 @@ class DissertationFilter(FilterSet):
     )
     year = django_filters.RangeFilter(
         field_name="year",
-        widget=RangeWidget(attrs={"placeholder": "YYYY"}),
+        widget=LabeledRangeWidget(),
     )
 
     def filter_title(self, queryset, name, value):

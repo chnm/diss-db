@@ -4,6 +4,7 @@
 
 <div class="overflow-x-auto">
     <table {% if table.attrs %}{% for key, val in table.attrs.items %}{{ key }}="{{ val }}" {% endfor %}{% else %}class="min-w-full divide-y divide-gray-200"{% endif %}>
+        {% if table.caption %}<caption class="sr-only">{{ table.caption }}</caption>{% endif %}
         <thead class="bg-gray-50">
             {% if table.show_header %}
                 <tr>
@@ -67,53 +68,46 @@
                     Previous
                 </a>
             {% else %}
-                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-400 bg-gray-100 cursor-not-allowed">
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-gray-100 cursor-not-allowed">
                     Previous
                 </span>
             {% endif %}
             
-            <div class="hidden md:flex ml-2">
-                <!--{% for num in table.page.paginator.page_range %}
-                    {% if num == table.page.number %}
-                        <span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ num }}</span>
-                    {% else %}
-                        <a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a>
-                    {% endif %}
-                {% endfor %}-->
+            <ul class="hidden md:flex ml-2 list-none">
                 {% with page_info=table.page|get_page_range:3 %}
                     <!-- Show first page if not in range -->
                     {% if page_info.show_first %}
-                        <a href="{% querystring table.prefixed_page_field=1 %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">1</a>
+                        <li><a href="{% querystring table.prefixed_page_field=1 %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">1</a></li>
                         {% if page_info.show_first_ellipsis %}
-                            <span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span>
+                            <li><span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span></li>
                         {% endif %}
                     {% endif %}
 
                     <!-- Show page numbers in range -->
                     {% for num in page_info.page_range %}
                         {% if num == table.page.number %}
-                            <span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ num }}</span>
+                            <li><span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600" aria-current="page">{{ num }}</span></li>
                         {% else %}
-                            <a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a>
+                            <li><a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a></li>
                         {% endif %}
                     {% endfor %}
 
                     <!-- Show last page if not in range -->
                     {% if page_info.show_last %}
                         {% if page_info.show_last_ellipsis %}
-                            <span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span>
+                            <li><span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span></li>
                         {% endif %}
-                        <a href="{% querystring table.prefixed_page_field=page_info.total_pages %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ page_info.total_pages }}</a>
+                        <li><a href="{% querystring table.prefixed_page_field=page_info.total_pages %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ page_info.total_pages }}</a></li>
                     {% endif %}
                 {% endwith %}
-            </div>
+            </ul>
             
             {% if table.page.has_next %}
                 <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     Next
                 </a>
             {% else %}
-                <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-400 bg-gray-100 cursor-not-allowed">
+                <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-gray-100 cursor-not-allowed">
                     Next
                 </span>
             {% endif %}
