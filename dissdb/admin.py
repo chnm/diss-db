@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source, ScholarWebsite, DissertationLink
+from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source, ScholarWebsite, DissertationLink, ThematicEmphasis, GeographicEmphasis
 
 @admin.register(Source)
 class SourceAdmin(SimpleHistoryAdmin):
@@ -11,6 +11,20 @@ class SourceAdmin(SimpleHistoryAdmin):
     list_filter = ['source_type']
     search_fields = ['name', 'notes']
     history_list_display = ['name', 'source_type']
+
+@admin.register(ThematicEmphasis)
+class ThematicEmphasisAdmin(SimpleHistoryAdmin):
+    list_display = ['name', 'slug', 'source']
+    search_fields = ['name']
+    prepopulated_fields = {'slug': ('name',)}
+    history_list_display = ['name']
+
+@admin.register(GeographicEmphasis)
+class GeographicEmphasisAdmin(SimpleHistoryAdmin):
+    list_display = ['name', 'slug', 'source']
+    search_fields = ['name']
+    prepopulated_fields = {'slug': ('name',)}
+    history_list_display = ['name']
 
 @admin.register(School)
 class SchoolAdmin(SimpleHistoryAdmin):
@@ -146,6 +160,7 @@ class DissertationAdmin(SimpleHistoryAdmin):
         "school",
     )
     search_fields = ("title",)
+    filter_horizontal = ("thematic_emphases", "geographic_emphases")
     inlines = [CommitteeMemberForDissertationInline, DissertationLinkInline]
 
     history_list_display = ['title', 'year', 'author', 'school']

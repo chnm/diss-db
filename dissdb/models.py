@@ -49,6 +49,49 @@ class Source(models.Model):
     def __str__(self):
         return f"{self.name} ({self.get_source_type_display()})"
 
+class ThematicEmphasis(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=200, unique=True, help_text="e.g. Political, Race, Gender")
+    slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly identifier")
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "thematic emphases"
+
+    def __str__(self):
+        return self.name
+
+
+class GeographicEmphasis(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=200, unique=True, help_text="e.g. North America, East Asia")
+    slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly identifier")
+
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.PROTECT,
+        default=1,
+        help_text="The source for this record"
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "geographic emphases"
+
+    def __str__(self):
+        return self.name
+
 # Create your models here.
 class School(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -287,6 +330,21 @@ class Dissertation(models.Model):
         on_delete=models.PROTECT,
         default=1,
         help_text="The source for this record"
+    )
+
+    # Inside the Dissertation model, add these fields:
+    thematic_emphases = models.ManyToManyField(
+        ThematicEmphasis,
+        blank=True,
+        related_name='dissertations',
+        help_text="Thematic tags for this dissertation"
+    )
+    
+    geographic_emphases = models.ManyToManyField(
+        GeographicEmphasis,
+        blank=True,
+        related_name='dissertations',
+        help_text="Geographic tags for this dissertation"
     )
 
     history = HistoricalRecords()

@@ -120,6 +120,20 @@
                 {% endfor %}
             </div>
             {% endif %}
+            {% if dissertation.thematic_emphases.all or dissertation.geographic_emphases.all %}
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for tag in dissertation.thematic_emphases.all %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full border border-amber-200 bg-amber-50 text-xs font-medium text-amber-700">
+                    {{ tag.name }}
+                </span>
+                {% endfor %}
+                {% for tag in dissertation.geographic_emphases.all %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full border border-green-200 bg-green-50 text-xs font-medium text-green-700">
+                    {{ tag.name }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% if dissertation.abstract %}
             <details class="group">
                 <summary class="cursor-pointer list-none flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 select-none">
