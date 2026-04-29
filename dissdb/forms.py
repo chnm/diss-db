@@ -1,7 +1,13 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
+from .models import (
+    CommitteeMember,
+    Dissertation,
+    DissertationLink,
+    Scholar,
+    ScholarWebsite,
+)
 
 INPUT_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 TEXTAREA_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -11,13 +17,22 @@ SELECT_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:b
 class ScholarForm(forms.ModelForm):
     class Meta:
         model = Scholar
-        fields = ["name_first", "name_middle", "name_last", "name_suffix", "orcid", "affiliation"]
+        fields = [
+            "name_first",
+            "name_middle",
+            "name_last",
+            "name_suffix",
+            "orcid",
+            "affiliation",
+        ]
         widgets = {
             "name_first": forms.TextInput(attrs={"class": INPUT_CLASSES}),
             "name_middle": forms.TextInput(attrs={"class": INPUT_CLASSES}),
             "name_last": forms.TextInput(attrs={"class": INPUT_CLASSES}),
             "name_suffix": forms.TextInput(attrs={"class": INPUT_CLASSES}),
-            "orcid": forms.TextInput(attrs={"class": INPUT_CLASSES, "placeholder": "0000-0000-0000-0000"}),
+            "orcid": forms.TextInput(
+                attrs={"class": INPUT_CLASSES, "placeholder": "0000-0000-0000-0000"}
+            ),
             "affiliation": forms.TextInput(attrs={"class": INPUT_CLASSES}),
         }
 
@@ -31,7 +46,9 @@ ScholarWebsiteFormSet = inlineformset_factory(
     widgets={
         "website_type": forms.Select(attrs={"class": SELECT_CLASSES}),
         "url": forms.URLInput(attrs={"class": INPUT_CLASSES}),
-        "label": forms.TextInput(attrs={"class": INPUT_CLASSES, "placeholder": "Optional display label"}),
+        "label": forms.TextInput(
+            attrs={"class": INPUT_CLASSES, "placeholder": "Optional display label"}
+        ),
     },
 )
 
@@ -39,7 +56,14 @@ ScholarWebsiteFormSet = inlineformset_factory(
 class DissertationForm(forms.ModelForm):
     class Meta:
         model = Dissertation
-        fields = ["title", "year", "school", "abstract"]
+        fields = [
+            "title",
+            "year",
+            "school",
+            "abstract",
+            "thematic_emphases",
+            "geographic_emphases",
+        ]
         widgets = {
             "title": forms.TextInput(attrs={"class": INPUT_CLASSES}),
             "year": forms.NumberInput(attrs={"class": INPUT_CLASSES}),
@@ -70,6 +94,8 @@ DissertationLinkFormSet = inlineformset_factory(
     widgets={
         "link_type": forms.Select(attrs={"class": SELECT_CLASSES}),
         "url": forms.URLInput(attrs={"class": INPUT_CLASSES}),
-        "label": forms.TextInput(attrs={"class": INPUT_CLASSES, "placeholder": "Optional display label"}),
+        "label": forms.TextInput(
+            attrs={"class": INPUT_CLASSES, "placeholder": "Optional display label"}
+        ),
     },
 )

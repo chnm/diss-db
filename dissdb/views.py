@@ -1,28 +1,36 @@
+from collections import defaultdict
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from django.views.generic.edit import UpdateView
 from django_filters.views import FilterView
-from django_tables2 import SingleTableMixin, SingleTableView
-from rest_framework import generics, permissions, renderers, status, viewsets
-from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser
+from django_tables2 import SingleTableMixin
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.views import APIView
-
-from django.core import serializers
-from django.http import Http404, HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from collections import defaultdict
 
 from dissdb.serializers import ScholarCreateSerializer, ScholarSerializer
 
 from .filters import ComMemFilter, DissertationFilter, ScholarFilter
-from .forms import CommitteeMemberFormSet, DissertationForm, DissertationLinkFormSet, ScholarForm, ScholarWebsiteFormSet
-from .models import CommitteeMember, Dissertation, DissertationLink, Scholar, ScholarWebsite
+from .forms import (
+    CommitteeMemberFormSet,
+    DissertationForm,
+    DissertationLinkFormSet,
+    ScholarForm,
+)
+from .models import (
+    CommitteeMember,
+    Dissertation,
+    DissertationLink,
+    GeographicEmphasis,
+    Scholar,
+    ScholarWebsite,
+    ThematicEmphasis,
+)
 from .tables import ComMemTable, DissTable, ScholarTable
+
 # import pandas as pd
 
 
@@ -97,7 +105,6 @@ class ScholarDetailAPI(APIView):
         return Response(serializer.data)
 
 
-
 def _collect_url(urls, scholar):
     """Add a scholar's name_full → absolute URL to the urls dict."""
     urls[scholar.name_full] = scholar.get_absolute_url()
@@ -120,10 +127,11 @@ def get_viz_data(request, pk):
     # get advisors (co-chairs) if scholar has a dissertation
     advisors = []
     if has_dissertation:
-        advisors = list(CommitteeMember.objects.filter(
-            dissertation=dissertation,
-            role="chair"
-        ).select_related('scholar'))
+        advisors = list(
+            CommitteeMember.objects.filter(
+                dissertation=dissertation, role="chair"
+            ).select_related("scholar")
+        )
 
     advisorData = ""
     if advisors:
@@ -142,9 +150,9 @@ def get_viz_data(request, pk):
         data.append(advisorData)
 
     # get their advisees
-    advisees = CommitteeMember.objects.filter(
-        role="chair", scholar=pk
-    ).select_related('dissertation__author')
+    advisees = CommitteeMember.objects.filter(role="chair", scholar=pk).select_related(
+        "dissertation__author"
+    )
     if advisees.exists():
         for advisee in advisees:
             _collect_url(urls, advisee.dissertation.author)
@@ -165,8 +173,9 @@ def get_viz_data_complex(request, pk):
 
     # Load all chair records with related scholars in ONE query
     all_chairs = list(
-        CommitteeMember.objects.filter(role="chair")
-        .select_related('scholar', 'dissertation__author')
+        CommitteeMember.objects.filter(role="chair").select_related(
+            "scholar", "dissertation__author"
+        )
     )
 
     # Build lookup maps
@@ -226,11 +235,11 @@ def get_viz_data_complex(request, pk):
     return JsonResponse({"paths": data, "urls": urls})
 
 
-"""@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'scholars': reverse('scholar-list-api', request=request, format=format)
-    })"""
+# @api_view(['GET'])
+# def api_root(request, format=None):
+#     return Response({
+#         'scholars': reverse('scholar-list-api', request=request, format=format)
+#     })
 
 
 class FilteredScholarListView(SingleTableMixin, FilterView):
@@ -250,42 +259,72 @@ class ScholarCreateView(LoginRequiredMixin, generic.CreateView):
         return self.object.get_absolute_url()
 
 
+def _build_emphasis_tree(model):
+    """Build a nested tree structure from a self-referential emphasis model."""
+    all_items = model.objects.select_related("parent").order_by("name")
+    by_parent = defaultdict(list)
+    for item in all_items:
+        by_parent[item.parent_id].append(item)
+
+    def _subtree(parent_id):
+        nodes = []
+        for item in by_parent.get(parent_id, []):
+            nodes.append(
+                {
+                    "id": item.pk,
+                    "name": item.name,
+                    "children": _subtree(item.pk),
+                }
+            )
+        return nodes
+
+    return _subtree(None)
+
+
 class FilteredDissertationListView(SingleTableMixin, FilterView):
     table_class = DissTable
     model = Dissertation
     filterset_class = DissertationFilter
-    template_name = 'dissertations/dissertation_filter.html'
+    template_name = "dissertations/dissertation_filter.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["geographic_tree"] = _build_emphasis_tree(GeographicEmphasis)
+        context["thematic_tree"] = _build_emphasis_tree(ThematicEmphasis)
+        # Pass currently selected IDs so Alpine can check them on page load
+        context["selected_geographic"] = self.request.GET.getlist("geographic_emphases")
+        context["selected_thematic"] = self.request.GET.getlist("thematic_emphases")
+        return context
 
 
 class FilteredComMemListView(SingleTableMixin, FilterView):
     table_class = ComMemTable
     model = CommitteeMember
     filterset_class = ComMemFilter
-    template_name = 'dissertations/committeemember_filter.html'
+    template_name = "dissertations/committeemember_filter.html"
 
-'''
-class DissDetailView(generic.DetailView):
-    model = Dissertation
-    context_object_name = "dissertation_detail"
-    template_name = 'dissertations/dissertation_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        current_diss = self.get_object()
-
-        try:
-            context["advisor"] = CommitteeMember.objects.get(dissertation=current_diss)
-        except:
-            context["advisor"] = "information not available"
-        return context
-'''
+# class DissDetailView(generic.DetailView):
+#     model = Dissertation
+#     context_object_name = "dissertation_detail"
+#     template_name = 'dissertations/dissertation_detail.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         current_diss = self.get_object()
+#
+#         try:
+#             context["advisor"] = CommitteeMember.objects.get(dissertation=current_diss)
+#         except:
+#             context["advisor"] = "information not available"
+#         return context
 
 
 class ScholarDetailView(generic.DetailView):
     model = Scholar
     context_object_name = "scholar_detail"
-    template_name = 'dissertations/scholar_detail.html'
+    template_name = "dissertations/scholar_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -299,13 +338,13 @@ class ScholarDetailView(generic.DetailView):
             advisors = CommitteeMember.objects.filter(
                 dissertation=dissertation,
                 role="chair",
-            ).select_related('scholar')
+            ).select_related("scholar")
             context["advisors"] = advisors if advisors.exists() else None
 
             readers = CommitteeMember.objects.filter(
                 dissertation=dissertation,
                 role="reader",
-            ).select_related('scholar')
+            ).select_related("scholar")
             context["readers"] = readers if readers.exists() else None
 
             context["dissLinks"] = DissertationLink.objects.filter(
@@ -319,12 +358,11 @@ class ScholarDetailView(generic.DetailView):
 
         advisees = CommitteeMember.objects.filter(
             role="chair", scholar=scholar.id
-        ).select_related('dissertation__author')
+        ).select_related("dissertation__author")
         context["advisees"] = advisees if advisees.exists() else None
 
         websites = ScholarWebsite.objects.filter(scholar=scholar.id)
         context["websites"] = websites if websites.exists() else None
-
 
         return context
 
@@ -335,23 +373,13 @@ class ScholarUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "dissertations/scholar_edit.html"
     login_url = "/admin/login/"
 
-    def get_context_data(self, **kwargs):
-        if "website_formset" not in kwargs:
-            kwargs["website_formset"] = ScholarWebsiteFormSet(instance=self.object)
-        return super().get_context_data(**kwargs)
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
-        website_formset = ScholarWebsiteFormSet(request.POST, instance=self.object)
-        if form.is_valid() and website_formset.is_valid():
+        if form.is_valid():
             self.object = form.save()
-            website_formset.instance = self.object
-            website_formset.save()
             return redirect(self.object.get_absolute_url())
-        return self.render_to_response(
-            self.get_context_data(form=form, website_formset=website_formset)
-        )
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class DissertationUpdateView(LoginRequiredMixin, UpdateView):
@@ -362,16 +390,33 @@ class DissertationUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         if "link_formset" not in kwargs:
-            kwargs["link_formset"] = DissertationLinkFormSet(instance=self.object, prefix="links")
+            kwargs["link_formset"] = DissertationLinkFormSet(
+                instance=self.object, prefix="links"
+            )
         if "cm_formset" not in kwargs:
-            kwargs["cm_formset"] = CommitteeMemberFormSet(instance=self.object, prefix="cm")
-        return super().get_context_data(**kwargs)
+            kwargs["cm_formset"] = CommitteeMemberFormSet(
+                instance=self.object, prefix="cm"
+            )
+        context = super().get_context_data(**kwargs)
+        context["geographic_tree"] = _build_emphasis_tree(GeographicEmphasis)
+        context["thematic_tree"] = _build_emphasis_tree(ThematicEmphasis)
+        context["selected_geographic_ids"] = list(
+            self.object.geographic_emphases.values_list("pk", flat=True)
+        )
+        context["selected_thematic_ids"] = list(
+            self.object.thematic_emphases.values_list("pk", flat=True)
+        )
+        return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
-        link_formset = DissertationLinkFormSet(request.POST, instance=self.object, prefix="links")
-        cm_formset = CommitteeMemberFormSet(request.POST, instance=self.object, prefix="cm")
+        link_formset = DissertationLinkFormSet(
+            request.POST, instance=self.object, prefix="links"
+        )
+        cm_formset = CommitteeMemberFormSet(
+            request.POST, instance=self.object, prefix="cm"
+        )
         if form.is_valid() and link_formset.is_valid() and cm_formset.is_valid():
             self.object = form.save()
             link_formset.instance = self.object
@@ -380,7 +425,9 @@ class DissertationUpdateView(LoginRequiredMixin, UpdateView):
             cm_formset.save()
             return redirect(self.object.author.get_absolute_url())
         return self.render_to_response(
-            self.get_context_data(form=form, link_formset=link_formset, cm_formset=cm_formset)
+            self.get_context_data(
+                form=form, link_formset=link_formset, cm_formset=cm_formset
+            )
         )
 
 
@@ -393,6 +440,10 @@ class DissertationCreateView(LoginRequiredMixin, generic.CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["author"] = get_object_or_404(Scholar, pk=self.kwargs["pk"])
+        context["geographic_tree"] = _build_emphasis_tree(GeographicEmphasis)
+        context["thematic_tree"] = _build_emphasis_tree(ThematicEmphasis)
+        context["selected_geographic_ids"] = []
+        context["selected_thematic_ids"] = []
         return context
 
     def form_valid(self, form):

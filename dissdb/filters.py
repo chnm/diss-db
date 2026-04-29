@@ -1,11 +1,18 @@
 import django_filters
-from django_filters import FilterSet
-from django_filters.widgets import RangeWidget
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import F, Q
 from django.db.models.functions import Greatest
 from django.forms.widgets import TextInput
-from .models import Dissertation, CommitteeMember, Scholar
+from django_filters import FilterSet
+from django_filters.widgets import RangeWidget
+
+from .models import (
+    CommitteeMember,
+    Dissertation,
+    GeographicEmphasis,
+    Scholar,
+    ThematicEmphasis,
+)
 
 
 class LabeledRangeWidget(RangeWidget):
@@ -52,6 +59,16 @@ class DissertationFilter(FilterSet):
         field_name="year",
         widget=LabeledRangeWidget(),
     )
+    thematic_emphases = django_filters.ModelMultipleChoiceFilter(
+        queryset=ThematicEmphasis.objects.all(),
+        field_name="thematic_emphases",
+        conjoined=False,
+    )
+    geographic_emphases = django_filters.ModelMultipleChoiceFilter(
+        queryset=GeographicEmphasis.objects.all(),
+        field_name="geographic_emphases",
+        conjoined=False,
+    )
 
     def filter_title(self, queryset, name, value):
         return queryset.annotate(
@@ -64,9 +81,7 @@ class DissertationFilter(FilterSet):
     def filter_school(self, queryset, name, value):
         return queryset.annotate(
             _school_sim=TrigramSimilarity("school__name", value),
-        ).filter(
-            Q(school__name__icontains=value) | Q(_school_sim__gte=0.3)
-        )
+        ).filter(Q(school__name__icontains=value) | Q(_school_sim__gte=0.3))
 
     class Meta:
         model = Dissertation
@@ -91,9 +106,7 @@ class ComMemFilter(FilterSet):
     def filter_dissertation(self, queryset, name, value):
         return queryset.annotate(
             _diss_sim=TrigramSimilarity("dissertation__title", value),
-        ).filter(
-            Q(dissertation__title__icontains=value) | Q(_diss_sim__gte=0.3)
-        )
+        ).filter(Q(dissertation__title__icontains=value) | Q(_diss_sim__gte=0.3))
 
     class Meta:
         model = CommitteeMember
