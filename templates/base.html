@@ -77,6 +77,9 @@
 						<li><a href="{% url 'dissertations' %}" class="text-gray-500 hover:text-gray-700">Dissertations</a></li>
 						<li><a href="{% url 'scholars' %}" class="text-gray-500 hover:text-gray-700">Scholars</a></li>
 						<li><a href="{% url 'committeemembers' %}" class="text-gray-500 hover:text-gray-700">Committee Members</a></li>
+						{% if request.user.is_authenticated %}
+						<li><a href="{% url 'network_viz' %}" class="text-gray-500 hover:text-gray-700">Committee Networks</a></li>
+						{% endif %}
 					</ul>
 				</nav>
 				<nav aria-label="About">
