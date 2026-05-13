@@ -27,7 +27,7 @@ class DissTable(tables.Table):
     )
     year = tables.Column(
         verbose_name="Year",
-        attrs={"th": {"class": "w-1/12"}},
+        attrs={"th": {"class": "w-1/12"}, "td": {"class": "font-mono"}},
     )
 
     class Meta:
