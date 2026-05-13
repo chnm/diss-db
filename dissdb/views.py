@@ -27,6 +27,7 @@ from .models import (
     GeographicEmphasis,
     Scholar,
     ScholarWebsite,
+    School,
     ThematicEmphasis,
 )
 from .tables import ComMemTable, DissTable, ScholarTable
@@ -44,6 +45,86 @@ def about(request):
 
 def contributing(request):
     return render(request, "contributing.html")
+
+def network_viz(request):
+    schools = School.objects.all()
+
+    return render(request, "network_viz.html", {
+        "schools": schools
+    })
+
+def get_school_network_data(request, school_id):
+    try:
+        school = School.objects.get(id=school_id)
+    except School.DoesNotExist:
+        return JsonResponse({"error": "School not found"}, status=404)
+
+    # 1. Load all dissertations for this school in one query.
+    dissertations = (
+        Dissertation.objects
+        .filter(school=school)
+        .select_related("author")
+    )
+
+    if not dissertations.exists():
+        return JsonResponse({"nodes": [], "links": []})
+
+    dissertation_ids = [d.id for d in dissertations]
+
+    # 2. Load all committee memberships for those dissertations in one query (avoids N+1).
+    committee_members = (
+        CommitteeMember.objects
+        .filter(dissertation_id__in=dissertation_ids)
+        .select_related("scholar", "dissertation__author")
+    )
+
+    # 3. Build node registry and link list in memory.
+    ROLE_PRIORITY = {"advisor": 3, "author": 2, "committee": 1}
+
+    node_registry = {}   # name_full -> dict
+    links = []
+
+    def upsert_node(scholar, group):
+        """Add scholar to registry or upgrade their group if higher priority."""
+        key = scholar.name_full
+        current_priority = ROLE_PRIORITY.get(
+            node_registry[key]["group"], 0
+        ) if key in node_registry else 0
+        if ROLE_PRIORITY[group] > current_priority:
+            node_registry[key] = {
+                "id": scholar.name_full,
+                "scholar_id": scholar.pk,
+                "url": scholar.get_absolute_url(),
+                "group": group,
+            }
+
+    # Register every dissertation author first.
+    for diss in dissertations:
+        upsert_node(diss.author, "author")
+
+    # Walk committee memberships to register advisors/readers and build links.
+    for cm in committee_members:
+        author = cm.dissertation.author
+        member = cm.scholar
+
+        if cm.role == CommitteeMember.CHAIR:
+            upsert_node(member, "advisor")
+            links.append({
+                "source": author.name_full,
+                "target": member.name_full,
+                "relationship": "advisor",
+            })
+        elif cm.role == CommitteeMember.READER:
+            upsert_node(member, "committee")
+            links.append({
+                "source": author.name_full,
+                "target": member.name_full,
+                "relationship": "committee member",
+            })
+
+    nodes = list(node_registry.values())
+
+    return JsonResponse({"nodes": nodes, "links": links})
 
 
 class ScholarListAPI(generics.ListAPIView):

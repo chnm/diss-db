@@ -54,11 +54,11 @@
         <div class="hidden sm:block">
             <p class="text-sm text-gray-700">
                 Showing
-                <span class="font-medium">{{ table.page.start_index }}</span>
+                <span class="font-medium font-mono">{{ table.page.start_index }}</span>
                 to
-                <span class="font-medium">{{ table.page.end_index }}</span>
+                <span class="font-medium font-mono">{{ table.page.end_index }}</span>
                 of
-                <span class="font-medium">{{ table.paginator.count }}</span>
+                <span class="font-medium font-mono">{{ table.paginator.count }}</span>
                 results
             </p>
         </div>
@@ -77,7 +77,7 @@
                 {% with page_info=table.page|get_page_range:3 %}
                     <!-- Show first page if not in range -->
                     {% if page_info.show_first %}
-                        <li><a href="{% querystring table.prefixed_page_field=1 %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">1</a></li>
+                        <li><a href="{% querystring table.prefixed_page_field=1 %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium font-mono text-gray-500 hover:bg-gray-50">1</a></li>
                         {% if page_info.show_first_ellipsis %}
                             <li><span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span></li>
                         {% endif %}
@@ -86,9 +86,9 @@
                     <!-- Show page numbers in range -->
                     {% for num in page_info.page_range %}
                         {% if num == table.page.number %}
-                            <li><span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600" aria-current="page">{{ num }}</span></li>
+                            <li><span class="relative inline-flex items-center px-3 py-2 border border-blue-500 bg-blue-50 text-sm font-medium font-mono text-blue-600" aria-current="page">{{ num }}</span></li>
                         {% else %}
-                            <li><a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ num }}</a></li>
+                            <li><a href="{% querystring table.prefixed_page_field=num %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium font-mono text-gray-500 hover:bg-gray-50">{{ num }}</a></li>
                         {% endif %}
                     {% endfor %}
 
@@ -97,7 +97,7 @@
                         {% if page_info.show_last_ellipsis %}
                             <li><span class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500">...</span></li>
                         {% endif %}
-                        <li><a href="{% querystring table.prefixed_page_field=page_info.total_pages %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">{{ page_info.total_pages }}</a></li>
+                        <li><a href="{% querystring table.prefixed_page_field=page_info.total_pages %}" class="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium font-mono text-gray-500 hover:bg-gray-50">{{ page_info.total_pages }}</a></li>
                     {% endif %}
                 {% endwith %}
             </ul>
