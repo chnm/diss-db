@@ -27,6 +27,7 @@ from .models import (
     GeographicEmphasis,
     Scholar,
     ScholarWebsite,
+    School,
     ThematicEmphasis,
 )
 from .tables import ComMemTable, DissTable, ScholarTable
