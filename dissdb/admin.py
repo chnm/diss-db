@@ -3,33 +3,48 @@ from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import CommitteeMember, Dissertation, DuplicateCandidate, Scholar, School, Source, ScholarWebsite, DissertationLink, ThematicEmphasis, GeographicEmphasis
+from .models import (
+    CommitteeMember,
+    Dissertation,
+    DissertationLink,
+    DuplicateCandidate,
+    GeographicEmphasis,
+    Scholar,
+    ScholarWebsite,
+    School,
+    Source,
+    ThematicEmphasis,
+)
+
 
 @admin.register(Source)
 class SourceAdmin(SimpleHistoryAdmin):
-    list_display = ['name', 'source_type', 'date_added']
-    list_filter = ['source_type']
-    search_fields = ['name', 'notes']
-    history_list_display = ['name', 'source_type']
+    list_display = ["name", "source_type", "date_added"]
+    list_filter = ["source_type"]
+    search_fields = ["name", "notes"]
+    history_list_display = ["name", "source_type"]
+
 
 @admin.register(ThematicEmphasis)
 class ThematicEmphasisAdmin(SimpleHistoryAdmin):
-    list_display = ['name', 'slug', 'source']
-    search_fields = ['name']
-    prepopulated_fields = {'slug': ('name',)}
-    history_list_display = ['name']
+    list_display = ["name", "slug", "source"]
+    search_fields = ["name"]
+    prepopulated_fields = {"slug": ("name",)}
+    history_list_display = ["name"]
+
 
 @admin.register(GeographicEmphasis)
 class GeographicEmphasisAdmin(SimpleHistoryAdmin):
-    list_display = ['name', 'slug', 'source']
-    search_fields = ['name']
-    prepopulated_fields = {'slug': ('name',)}
-    history_list_display = ['name']
+    list_display = ["name", "slug", "source"]
+    search_fields = ["name"]
+    prepopulated_fields = {"slug": ("name",)}
+    history_list_display = ["name"]
+
 
 @admin.register(School)
 class SchoolAdmin(SimpleHistoryAdmin):
     search_fields = ("name",)
-    history_list_display = ['name']
+    history_list_display = ["name"]
 
 
 class DissertationInline(admin.TabularInline):
@@ -54,15 +69,17 @@ class CommitteeMemberInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
+
 class ScholarWebsiteInline(admin.TabularInline):
     model = ScholarWebsite
     extra = 1  # number of empty forms to show
-    fields = ['website_type', 'url', 'label', 'source']
+    fields = ["website_type", "url", "label", "source"]
+
 
 class DissertationLinkInline(admin.TabularInline):
     model = DissertationLink
     extra = 1
-    fields = ['link_type', 'url', 'label', 'source']
+    fields = ["link_type", "url", "label", "source"]
 
 
 @admin.register(Scholar)
@@ -86,7 +103,7 @@ class ScholarAdmin(SimpleHistoryAdmin):
     search_fields = ("name_last", "name_first")
     inlines = [DissertationInline, CommitteeMemberInline, ScholarWebsiteInline]
 
-    history_list_display = ['name_last', 'name_first', 'orcid']
+    history_list_display = ["name_last", "name_first", "orcid"]
 
     def authored_dissertations_count(self, obj):
         count = obj.dissertation_set.count()
@@ -159,11 +176,11 @@ class DissertationAdmin(SimpleHistoryAdmin):
         "author",
         "school",
     )
-    search_fields = ("title",)
+    search_fields = ("title", "author__name_first", "author__name_last")
     filter_horizontal = ("thematic_emphases", "geographic_emphases")
     inlines = [CommitteeMemberForDissertationInline, DissertationLinkInline]
 
-    history_list_display = ['title', 'year', 'author', 'school']
+    history_list_display = ["title", "year", "author", "school"]
 
     def committee_count(self, obj):
         return obj.committeemember_set.count()
@@ -178,7 +195,7 @@ class CommitteeMemberAdmin(SimpleHistoryAdmin):
         "scholar",
         "dissertation",
     )
-    history_list_display = ['scholar', 'dissertation', 'role']
+    history_list_display = ["scholar", "dissertation", "role"]
 
 
 @admin.register(DuplicateCandidate)
@@ -370,15 +387,16 @@ class DuplicateCandidateAdmin(admin.ModelAdmin):
 
     scholar_2_dissertations.short_description = "Scholar 2 Activity"
 
+
 @admin.register(ScholarWebsite)
 class ScholarWebsiteAdmin(admin.ModelAdmin):
-    list_display = ['scholar', 'website_type', 'url', 'label']
-    search_fields = ['scholar__name_last', 'url']
-    list_filter = ['website_type']
+    list_display = ["scholar", "website_type", "url", "label"]
+    search_fields = ["scholar__name_last", "url"]
+    list_filter = ["website_type"]
 
 
 @admin.register(DissertationLink)
 class DissertationLinkAdmin(admin.ModelAdmin):
-    list_display = ['dissertation', 'link_type', 'url', 'label']
-    search_fields = ['dissertation__title', 'url']
-    list_filter = ['link_type']
+    list_display = ["dissertation", "link_type", "url", "label"]
+    search_fields = ["dissertation__title", "url"]
+    list_filter = ["link_type"]

@@ -1,0 +1,3203 @@
+[
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 1,
+    "fields": {
+      "aha_id": 307,
+      "name": "100 Asia",
+      "slug": "100-asia",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 2,
+    "fields": {
+      "aha_id": 308,
+      "name": "105 Ancient Near East (West Asia)",
+      "slug": "105-ancient-near-east-west-asia",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 3,
+    "fields": {
+      "aha_id": 309,
+      "name": "110 Central Asia",
+      "slug": "110-central-asia",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 4,
+    "fields": {
+      "aha_id": 93,
+      "name": "111 Early Central Asia to c. 750 CE",
+      "slug": "111-early-central-asia-to-c-750-ce",
+      "parent": 3,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 5,
+    "fields": {
+      "aha_id": 94,
+      "name": "112 Precolonial Central Asia, c. 750-1750",
+      "slug": "112-precolonial-central-asia-c-750-1750",
+      "parent": 3,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 6,
+    "fields": {
+      "aha_id": 95,
+      "name": "113 Modern Central Asia since 1750",
+      "slug": "113-modern-central-asia-since-1750",
+      "parent": 3,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 7,
+    "fields": {
+      "aha_id": 310,
+      "name": "120 China",
+      "slug": "120-china",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 8,
+    "fields": {
+      "aha_id": 97,
+      "name": "121 Ancient China",
+      "slug": "121-ancient-china",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 9,
+    "fields": {
+      "aha_id": 98,
+      "name": "122 Early Imperial China, Qin-Han",
+      "slug": "122-early-imperial-china-qin-han",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 10,
+    "fields": {
+      "aha_id": 99,
+      "name": "123 Period of Division and Early Tang China, 220-755",
+      "slug": "123-period-of-division-and-early-tang-china-220-755",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 11,
+    "fields": {
+      "aha_id": 100,
+      "name": "124 Middle Imperial China, 755-1368",
+      "slug": "124-middle-imperial-china-755-1368",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 12,
+    "fields": {
+      "aha_id": 101,
+      "name": "125 Late Imperial China, 1368-1912",
+      "slug": "125-late-imperial-china-1368-1912",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 13,
+    "fields": {
+      "aha_id": 102,
+      "name": "126 Republic of China, 1912-49",
+      "slug": "126-republic-of-china-1912-49",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 14,
+    "fields": {
+      "aha_id": 103,
+      "name": "127 People's Republic of China since 1949",
+      "slug": "127-peoples-republic-of-china-since-1949",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 15,
+    "fields": {
+      "aha_id": 311,
+      "name": "128 Hong Kong, Macao, and/or Taiwan",
+      "slug": "128-hong-kong-macao-andor-taiwan",
+      "parent": 7,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 16,
+    "fields": {
+      "aha_id": 312,
+      "name": "130 Japan",
+      "slug": "130-japan",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 17,
+    "fields": {
+      "aha_id": 106,
+      "name": "131 Premodern Japan to c. 1600",
+      "slug": "131-premodern-japan-to-c-1600",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 18,
+    "fields": {
+      "aha_id": 107,
+      "name": "132 Early Modern Japan, c. 1600-1868",
+      "slug": "132-early-modern-japan-c-1600-1868",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 19,
+    "fields": {
+      "aha_id": 108,
+      "name": "133 Modern Japan since 1868",
+      "slug": "133-modern-japan-since-1868",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 20,
+    "fields": {
+      "aha_id": 109,
+      "name": "134 Meiji Japan, 1868-1912",
+      "slug": "134-meiji-japan-1868-1912",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 21,
+    "fields": {
+      "aha_id": 110,
+      "name": "135 Imperial Japan, 1905-45",
+      "slug": "135-imperial-japan-1905-45",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 22,
+    "fields": {
+      "aha_id": 111,
+      "name": "136 Postwar Japan, 1945-89",
+      "slug": "136-postwar-japan-1945-89",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 23,
+    "fields": {
+      "aha_id": 112,
+      "name": "137 Contemporary Japan since 1990s",
+      "slug": "137-contemporary-japan-since-1990s",
+      "parent": 16,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 24,
+    "fields": {
+      "aha_id": 313,
+      "name": "140 Korea",
+      "slug": "140-korea",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 25,
+    "fields": {
+      "aha_id": 114,
+      "name": "141 Ancient Korea to the Rise of Koryo",
+      "slug": "141-ancient-korea-to-the-rise-of-koryo",
+      "parent": 24,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 26,
+    "fields": {
+      "aha_id": 115,
+      "name": "142 Medieval Korea, Koryo to c. 1700",
+      "slug": "142-medieval-korea-koryo-to-c-1700",
+      "parent": 24,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 27,
+    "fields": {
+      "aha_id": 116,
+      "name": "143 Early Modern Korea, c. 1700-1876",
+      "slug": "143-early-modern-korea-c-1700-1876",
+      "parent": 24,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 28,
+    "fields": {
+      "aha_id": 117,
+      "name": "144 Modern Korea, 1876-1945",
+      "slug": "144-modern-korea-1876-1945",
+      "parent": 24,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 29,
+    "fields": {
+      "aha_id": 118,
+      "name": "145 Contemporary Korea since 1945",
+      "slug": "145-contemporary-korea-since-1945",
+      "parent": 24,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 30,
+    "fields": {
+      "aha_id": 314,
+      "name": "150 South Asia",
+      "slug": "150-south-asia",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 31,
+    "fields": {
+      "aha_id": 120,
+      "name": "151 Ancient India to c. 600 CE",
+      "slug": "151-ancient-india-to-c-600-ce",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 32,
+    "fields": {
+      "aha_id": 121,
+      "name": "152 Medieval India, c. 600-1500",
+      "slug": "152-medieval-india-c-600-1500",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 33,
+    "fields": {
+      "aha_id": 122,
+      "name": "153 Early Modern South Asian Empires and Global Economy, c. 1500-c. 1800",
+      "slug": "153-early-modern-south-asian-empires-and-global-economy-c-1500-c-1800",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 34,
+    "fields": {
+      "aha_id": 123,
+      "name": "154 Modern South Asia since c. 1700",
+      "slug": "154-modern-south-asia-since-c-1700",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 35,
+    "fields": {
+      "aha_id": 124,
+      "name": "155 Modern India",
+      "slug": "155-modern-india",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 36,
+    "fields": {
+      "aha_id": 125,
+      "name": "156 Sri Lanka",
+      "slug": "156-sri-lanka",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 37,
+    "fields": {
+      "aha_id": 126,
+      "name": "157 Pakistan and/or Bangladesh",
+      "slug": "157-pakistan-andor-bangladesh",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 38,
+    "fields": {
+      "aha_id": 127,
+      "name": "158 Afghanistan, Nepal, Bhutan, and/or Maldives",
+      "slug": "158-afghanistan-nepal-bhutan-andor-maldives",
+      "parent": 30,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 39,
+    "fields": {
+      "aha_id": 315,
+      "name": "160 Southeast Asia",
+      "slug": "160-southeast-asia",
+      "parent": 1,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 40,
+    "fields": {
+      "aha_id": 129,
+      "name": "161 Early Southeast Asia to c. 1300",
+      "slug": "161-early-southeast-asia-to-c-1300",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 41,
+    "fields": {
+      "aha_id": 130,
+      "name": "162 Middle Period Southeast Asia, c. 1300-c. 1800",
+      "slug": "162-middle-period-southeast-asia-c-1300-c-1800",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 42,
+    "fields": {
+      "aha_id": 131,
+      "name": "163 Southeast Asia since 1800",
+      "slug": "163-southeast-asia-since-1800",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 43,
+    "fields": {
+      "aha_id": 132,
+      "name": "164 Burma",
+      "slug": "164-burma",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 44,
+    "fields": {
+      "aha_id": 133,
+      "name": "165 Thailand",
+      "slug": "165-thailand",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 45,
+    "fields": {
+      "aha_id": 134,
+      "name": "166 Vietnam, Cambodia, and/or Laos",
+      "slug": "166-vietnam-cambodia-andor-laos",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 46,
+    "fields": {
+      "aha_id": 135,
+      "name": "167 Malaysia, Singapore, and/or Brunei",
+      "slug": "167-malaysia-singapore-andor-brunei",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 47,
+    "fields": {
+      "aha_id": 136,
+      "name": "168 Indonesia and/or Timor Leste",
+      "slug": "168-indonesia-andor-timor-leste",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 48,
+    "fields": {
+      "aha_id": 137,
+      "name": "169 Philippines",
+      "slug": "169-philippines",
+      "parent": 39,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 49,
+    "fields": {
+      "aha_id": 138,
+      "name": "180 Australasia and Oceania",
+      "slug": "180-australasia-and-oceania",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 50,
+    "fields": {
+      "aha_id": 139,
+      "name": "181 Australia",
+      "slug": "181-australia",
+      "parent": 49,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 51,
+    "fields": {
+      "aha_id": 140,
+      "name": "182 New Zealand",
+      "slug": "182-new-zealand",
+      "parent": 49,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 52,
+    "fields": {
+      "aha_id": 141,
+      "name": "183 Pacific Islands",
+      "slug": "183-pacific-islands",
+      "parent": 49,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 53,
+    "fields": {
+      "aha_id": 142,
+      "name": "184 Antarctica",
+      "slug": "184-antarctica",
+      "parent": 49,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 54,
+    "fields": {
+      "aha_id": 143,
+      "name": "200 Middle East (West Asia) and North Africa",
+      "slug": "200-middle-east-west-asia-and-north-africa",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 55,
+    "fields": {
+      "aha_id": 144,
+      "name": "201 Middle East (West Asia)/North Africa, 600-1300",
+      "slug": "201-middle-east-west-asianorth-africa-600-1300",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 56,
+    "fields": {
+      "aha_id": 145,
+      "name": "202 Middle East (West Asia)/North Africa, 1300-1800",
+      "slug": "202-middle-east-west-asianorth-africa-1300-1800",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 57,
+    "fields": {
+      "aha_id": 146,
+      "name": "203 Middle East (West Asia)/North Africa since 1800",
+      "slug": "203-middle-east-west-asianorth-africa-since-1800",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 58,
+    "fields": {
+      "aha_id": 147,
+      "name": "204 Maghreb (North Africa)",
+      "slug": "204-maghreb-north-africa",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 59,
+    "fields": {
+      "aha_id": 148,
+      "name": "205 Mashreq (Arab East)",
+      "slug": "205-mashreq-arab-east",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 60,
+    "fields": {
+      "aha_id": 149,
+      "name": "206 Arabian Peninsula",
+      "slug": "206-arabian-peninsula",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 61,
+    "fields": {
+      "aha_id": 150,
+      "name": "207 Ottoman Empire",
+      "slug": "207-ottoman-empire",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 62,
+    "fields": {
+      "aha_id": 151,
+      "name": "208 Turkey",
+      "slug": "208-turkey",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 63,
+    "fields": {
+      "aha_id": 152,
+      "name": "209 Iran",
+      "slug": "209-iran",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 64,
+    "fields": {
+      "aha_id": 153,
+      "name": "211 Egypt/Sudan",
+      "slug": "211-egyptsudan",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 65,
+    "fields": {
+      "aha_id": 154,
+      "name": "212 Israel/Palestine",
+      "slug": "212-israelpalestine",
+      "parent": 54,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 66,
+    "fields": {
+      "aha_id": 155,
+      "name": "220 Africa",
+      "slug": "220-africa",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 67,
+    "fields": {
+      "aha_id": 156,
+      "name": "221 Africa to 1500",
+      "slug": "221-africa-to-1500",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 68,
+    "fields": {
+      "aha_id": 157,
+      "name": "222 Africa, 1500-1850",
+      "slug": "222-africa-1500-1850",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 69,
+    "fields": {
+      "aha_id": 158,
+      "name": "223 Africa since 1850",
+      "slug": "223-africa-since-1850",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 70,
+    "fields": {
+      "aha_id": 159,
+      "name": "224 East Africa",
+      "slug": "224-east-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 71,
+    "fields": {
+      "aha_id": 160,
+      "name": "225 Equatorial Africa",
+      "slug": "225-equatorial-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 72,
+    "fields": {
+      "aha_id": 161,
+      "name": "226 North Africa (Maghreb)",
+      "slug": "226-north-africa-maghreb",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 73,
+    "fields": {
+      "aha_id": 162,
+      "name": "227 Northeast Africa",
+      "slug": "227-northeast-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 74,
+    "fields": {
+      "aha_id": 163,
+      "name": "228 Southern Africa",
+      "slug": "228-southern-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 75,
+    "fields": {
+      "aha_id": 164,
+      "name": "229 Trans-Saharan Africa",
+      "slug": "229-trans-saharan-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 76,
+    "fields": {
+      "aha_id": 165,
+      "name": "231 West Africa",
+      "slug": "231-west-africa",
+      "parent": 66,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 77,
+    "fields": {
+      "aha_id": 166,
+      "name": "300 Europe",
+      "slug": "300-europe",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 78,
+    "fields": {
+      "aha_id": 167,
+      "name": "301 Mediterranean Prehistory",
+      "slug": "301-mediterranean-prehistory",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 79,
+    "fields": {
+      "aha_id": 168,
+      "name": "302 Greece and Mediterranean to 323 BCE",
+      "slug": "302-greece-and-mediterranean-to-323-bce",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 80,
+    "fields": {
+      "aha_id": 169,
+      "name": "303 Hellenistic and Imperial Greek World",
+      "slug": "303-hellenistic-and-imperial-greek-world",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 81,
+    "fields": {
+      "aha_id": 170,
+      "name": "304 Rome and Italy to 31 BCE",
+      "slug": "304-rome-and-italy-to-31-bce",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 82,
+    "fields": {
+      "aha_id": 171,
+      "name": "305 Roman Empire",
+      "slug": "305-roman-empire",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 83,
+    "fields": {
+      "aha_id": 172,
+      "name": "306 Late Antiquity",
+      "slug": "306-late-antiquity",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 84,
+    "fields": {
+      "aha_id": 173,
+      "name": "307 Byzantium",
+      "slug": "307-byzantium",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 85,
+    "fields": {
+      "aha_id": 174,
+      "name": "310 Early Middle Ages, 400-1000",
+      "slug": "310-early-middle-ages-400-1000",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 86,
+    "fields": {
+      "aha_id": 175,
+      "name": "311 British Isles, 400-1000",
+      "slug": "311-british-isles-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 87,
+    "fields": {
+      "aha_id": 176,
+      "name": "312 Gaul and Francia, 400-1000",
+      "slug": "312-gaul-and-francia-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 88,
+    "fields": {
+      "aha_id": 177,
+      "name": "313 Central and Eastern Europe, 400-1000",
+      "slug": "313-central-and-eastern-europe-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 89,
+    "fields": {
+      "aha_id": 178,
+      "name": "314 Scandinavia, 400-1000",
+      "slug": "314-scandinavia-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 90,
+    "fields": {
+      "aha_id": 179,
+      "name": "315 Iberian Peninsula, 400-1000",
+      "slug": "315-iberian-peninsula-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 91,
+    "fields": {
+      "aha_id": 180,
+      "name": "316 Italy, 400-1000",
+      "slug": "316-italy-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 92,
+    "fields": {
+      "aha_id": 181,
+      "name": "317 Balkans, 400-1000",
+      "slug": "317-balkans-400-1000",
+      "parent": 85,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 93,
+    "fields": {
+      "aha_id": 182,
+      "name": "320 Later Middle Ages, 1000-1500",
+      "slug": "320-later-middle-ages-1000-1500",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 94,
+    "fields": {
+      "aha_id": 183,
+      "name": "321 British Isles, 1000-1500",
+      "slug": "321-british-isles-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 95,
+    "fields": {
+      "aha_id": 184,
+      "name": "322 France, 1000-1500",
+      "slug": "322-france-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 96,
+    "fields": {
+      "aha_id": 185,
+      "name": "323 Low Countries, 1000-1500",
+      "slug": "323-low-countries-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 97,
+    "fields": {
+      "aha_id": 186,
+      "name": "324 Central and Eastern Europe, 1000-1500",
+      "slug": "324-central-and-eastern-europe-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 98,
+    "fields": {
+      "aha_id": 187,
+      "name": "325 Scandinavia, 1000-1500",
+      "slug": "325-scandinavia-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 99,
+    "fields": {
+      "aha_id": 188,
+      "name": "326 German Lands, 1000-1500",
+      "slug": "326-german-lands-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 100,
+    "fields": {
+      "aha_id": 189,
+      "name": "327 Iberian Peninsula, 1000-1500",
+      "slug": "327-iberian-peninsula-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 101,
+    "fields": {
+      "aha_id": 190,
+      "name": "328 Italy, 1000-1500",
+      "slug": "328-italy-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 102,
+    "fields": {
+      "aha_id": 191,
+      "name": "329 Balkans, 1000-1500",
+      "slug": "329-balkans-1000-1500",
+      "parent": 93,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 103,
+    "fields": {
+      "aha_id": 192,
+      "name": "340 Renaissance",
+      "slug": "340-renaissance",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 104,
+    "fields": {
+      "aha_id": 193,
+      "name": "350 Early Modern Europe, 1500-1800",
+      "slug": "350-early-modern-europe-1500-1800",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 105,
+    "fields": {
+      "aha_id": 194,
+      "name": "351 British Isles, 1500-1800",
+      "slug": "351-british-isles-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 106,
+    "fields": {
+      "aha_id": 195,
+      "name": "352 France, 1500-1800",
+      "slug": "352-france-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 107,
+    "fields": {
+      "aha_id": 196,
+      "name": "353 Low Countries, 1500-1800",
+      "slug": "353-low-countries-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 108,
+    "fields": {
+      "aha_id": 197,
+      "name": "354 Spain and Portugal, 1500-1800",
+      "slug": "354-spain-and-portugal-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 109,
+    "fields": {
+      "aha_id": 198,
+      "name": "355 Italian States, 1500-1800",
+      "slug": "355-italian-states-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 110,
+    "fields": {
+      "aha_id": 199,
+      "name": "356 German Lands, 1500-1800",
+      "slug": "356-german-lands-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 111,
+    "fields": {
+      "aha_id": 200,
+      "name": "357 Scandinavia, 1500-1800",
+      "slug": "357-scandinavia-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 112,
+    "fields": {
+      "aha_id": 201,
+      "name": "358 Eastern Europe, 1500-1800",
+      "slug": "358-eastern-europe-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 113,
+    "fields": {
+      "aha_id": 202,
+      "name": "359 Balkans, 1500-1800",
+      "slug": "359-balkans-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 114,
+    "fields": {
+      "aha_id": 203,
+      "name": "361 Russia, 1500-1800",
+      "slug": "361-russia-1500-1800",
+      "parent": 104,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 115,
+    "fields": {
+      "aha_id": 204,
+      "name": "370 Modern Europe, 1750-1914",
+      "slug": "370-modern-europe-1750-1914",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 116,
+    "fields": {
+      "aha_id": 205,
+      "name": "371 Britain and Ireland, 1750-1914",
+      "slug": "371-britain-and-ireland-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 117,
+    "fields": {
+      "aha_id": 206,
+      "name": "372 France, 1750-1914",
+      "slug": "372-france-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 118,
+    "fields": {
+      "aha_id": 207,
+      "name": "373 Low Countries, 1750-1914",
+      "slug": "373-low-countries-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 119,
+    "fields": {
+      "aha_id": 208,
+      "name": "374 Spain and Portugal, 1750-1914",
+      "slug": "374-spain-and-portugal-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 120,
+    "fields": {
+      "aha_id": 209,
+      "name": "375 Italy, 1750-1914",
+      "slug": "375-italy-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 121,
+    "fields": {
+      "aha_id": 210,
+      "name": "376 German-speaking Central Europe, 1750-1914",
+      "slug": "376-german-speaking-central-europe-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 122,
+    "fields": {
+      "aha_id": 211,
+      "name": "377 Scandinavia, 1750-1914",
+      "slug": "377-scandinavia-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 123,
+    "fields": {
+      "aha_id": 212,
+      "name": "378 Eastern Europe, 1750-1914",
+      "slug": "378-eastern-europe-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 124,
+    "fields": {
+      "aha_id": 213,
+      "name": "379 Balkans, 1750-1914",
+      "slug": "379-balkans-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 125,
+    "fields": {
+      "aha_id": 214,
+      "name": "381 Russia, 1750-1914",
+      "slug": "381-russia-1750-1914",
+      "parent": 115,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 126,
+    "fields": {
+      "aha_id": 215,
+      "name": "390 Europe in the Era of the Two World Wars, 1914-45",
+      "slug": "390-europe-in-the-era-of-the-two-world-wars-1914-45",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 127,
+    "fields": {
+      "aha_id": 216,
+      "name": "391 Britain and Ireland, 1914-45",
+      "slug": "391-britain-and-ireland-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 128,
+    "fields": {
+      "aha_id": 217,
+      "name": "392 France, 1914-45",
+      "slug": "392-france-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 129,
+    "fields": {
+      "aha_id": 218,
+      "name": "393 Low Countries, 1914-45",
+      "slug": "393-low-countries-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 130,
+    "fields": {
+      "aha_id": 219,
+      "name": "394 Spain and Portugal, 1914-45",
+      "slug": "394-spain-and-portugal-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 131,
+    "fields": {
+      "aha_id": 220,
+      "name": "395 Italy, 1914-45",
+      "slug": "395-italy-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 132,
+    "fields": {
+      "aha_id": 221,
+      "name": "396 German-speaking Central Europe, 1914-45",
+      "slug": "396-german-speaking-central-europe-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 133,
+    "fields": {
+      "aha_id": 222,
+      "name": "397 Scandinavia, 1914-45",
+      "slug": "397-scandinavia-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 134,
+    "fields": {
+      "aha_id": 223,
+      "name": "398 Eastern Europe, 1914-45",
+      "slug": "398-eastern-europe-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 135,
+    "fields": {
+      "aha_id": 224,
+      "name": "399 Balkans, 1914-45",
+      "slug": "399-balkans-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 136,
+    "fields": {
+      "aha_id": 225,
+      "name": "401 Soviet Union, 1914-45",
+      "slug": "401-soviet-union-1914-45",
+      "parent": 126,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 137,
+    "fields": {
+      "aha_id": 226,
+      "name": "410 Contemporary Europe since 1945",
+      "slug": "410-contemporary-europe-since-1945",
+      "parent": 77,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 138,
+    "fields": {
+      "aha_id": 227,
+      "name": "411 Britain and Ireland since 1945",
+      "slug": "411-britain-and-ireland-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 139,
+    "fields": {
+      "aha_id": 228,
+      "name": "412 France since 1945",
+      "slug": "412-france-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 140,
+    "fields": {
+      "aha_id": 229,
+      "name": "413 Low Countries since 1945",
+      "slug": "413-low-countries-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 141,
+    "fields": {
+      "aha_id": 230,
+      "name": "414 Spain and Portugal since 1945",
+      "slug": "414-spain-and-portugal-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 142,
+    "fields": {
+      "aha_id": 231,
+      "name": "415 Italy since 1945",
+      "slug": "415-italy-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 143,
+    "fields": {
+      "aha_id": 232,
+      "name": "416 German-speaking Central Europe since 1945",
+      "slug": "416-german-speaking-central-europe-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 144,
+    "fields": {
+      "aha_id": 233,
+      "name": "417 Scandinavia since 1945",
+      "slug": "417-scandinavia-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 145,
+    "fields": {
+      "aha_id": 234,
+      "name": "418 Eastern Europe since 1945",
+      "slug": "418-eastern-europe-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 146,
+    "fields": {
+      "aha_id": 235,
+      "name": "419 Balkans since 1945",
+      "slug": "419-balkans-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 147,
+    "fields": {
+      "aha_id": 236,
+      "name": "421 Soviet Union and Russia since 1945",
+      "slug": "421-soviet-union-and-russia-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 148,
+    "fields": {
+      "aha_id": 237,
+      "name": "422 Post-Soviet Nationalities since 1945",
+      "slug": "422-post-soviet-nationalities-since-1945",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 149,
+    "fields": {
+      "aha_id": 238,
+      "name": "423 European Union",
+      "slug": "423-european-union",
+      "parent": 137,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 150,
+    "fields": {
+      "aha_id": 239,
+      "name": "500 The Americas",
+      "slug": "500-the-americas",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 151,
+    "fields": {
+      "aha_id": 240,
+      "name": "510 Native American/Indigenous",
+      "slug": "510-native-americanindigenous",
+      "parent": 150,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 152,
+    "fields": {
+      "aha_id": 241,
+      "name": "511 Precontact Native American/Indigenous",
+      "slug": "511-precontact-native-americanindigenous",
+      "parent": 151,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 153,
+    "fields": {
+      "aha_id": 242,
+      "name": "512 Colonial Period Native American/Indigenous",
+      "slug": "512-colonial-period-native-americanindigenous",
+      "parent": 151,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 154,
+    "fields": {
+      "aha_id": 243,
+      "name": "513 19th-Century Native American/Indigenous",
+      "slug": "513-19th-century-native-americanindigenous",
+      "parent": 151,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 155,
+    "fields": {
+      "aha_id": 244,
+      "name": "514 Native American since 1900",
+      "slug": "514-native-american-since-1900",
+      "parent": 151,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 156,
+    "fields": {
+      "aha_id": 245,
+      "name": "520 Latin America",
+      "slug": "520-latin-america",
+      "parent": 150,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 157,
+    "fields": {
+      "aha_id": 246,
+      "name": "521 Precontact/Indigenous Latin America",
+      "slug": "521-precontactindigenous-latin-america",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 158,
+    "fields": {
+      "aha_id": 247,
+      "name": "522 Latin American Conquest and Early European Settlement",
+      "slug": "522-latin-american-conquest-and-early-european-settlement",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 159,
+    "fields": {
+      "aha_id": 248,
+      "name": "523 Spanish America, 1680-1760",
+      "slug": "523-spanish-america-1680-1760",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 160,
+    "fields": {
+      "aha_id": 249,
+      "name": "524 Reform and Expansion in Spanish America, 1760-1800",
+      "slug": "524-reform-and-expansion-in-spanish-america-1760-1800",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 161,
+    "fields": {
+      "aha_id": 250,
+      "name": "525 19th-Century Latin America",
+      "slug": "525-19th-century-latin-america",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 162,
+    "fields": {
+      "aha_id": 251,
+      "name": "526 Latin America since 1900",
+      "slug": "526-latin-america-since-1900",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 163,
+    "fields": {
+      "aha_id": 252,
+      "name": "530 Brazil",
+      "slug": "530-brazil",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 164,
+    "fields": {
+      "aha_id": 253,
+      "name": "531 Precontact/Indigenous Brazil",
+      "slug": "531-precontactindigenous-brazil",
+      "parent": 163,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 165,
+    "fields": {
+      "aha_id": 254,
+      "name": "532 Colonial Brazil",
+      "slug": "532-colonial-brazil",
+      "parent": 163,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 166,
+    "fields": {
+      "aha_id": 255,
+      "name": "533 Imperial Brazil, 1822-89",
+      "slug": "533-imperial-brazil-1822-89",
+      "parent": 163,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 167,
+    "fields": {
+      "aha_id": 256,
+      "name": "534 Republican Brazil since 1889",
+      "slug": "534-republican-brazil-since-1889",
+      "parent": 163,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 168,
+    "fields": {
+      "aha_id": 257,
+      "name": "540 Mexico",
+      "slug": "540-mexico",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 169,
+    "fields": {
+      "aha_id": 258,
+      "name": "541 Precontact/Indigenous Mexico",
+      "slug": "541-precontactindigenous-mexico",
+      "parent": 168,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 170,
+    "fields": {
+      "aha_id": 259,
+      "name": "542 Colonial Mexico",
+      "slug": "542-colonial-mexico",
+      "parent": 168,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 171,
+    "fields": {
+      "aha_id": 260,
+      "name": "543 National Mexico",
+      "slug": "543-national-mexico",
+      "parent": 168,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 172,
+    "fields": {
+      "aha_id": 261,
+      "name": "550 Central America",
+      "slug": "550-central-america",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 173,
+    "fields": {
+      "aha_id": 262,
+      "name": "551 Precontact/Indigenous Central America",
+      "slug": "551-precontactindigenous-central-america",
+      "parent": 172,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 174,
+    "fields": {
+      "aha_id": 263,
+      "name": "552 Colonial Central America",
+      "slug": "552-colonial-central-america",
+      "parent": 172,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 175,
+    "fields": {
+      "aha_id": 264,
+      "name": "553 National Central America",
+      "slug": "553-national-central-america",
+      "parent": 172,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 176,
+    "fields": {
+      "aha_id": 265,
+      "name": "560 Andes",
+      "slug": "560-andes",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 177,
+    "fields": {
+      "aha_id": 266,
+      "name": "570 Southern Cone",
+      "slug": "570-southern-cone",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 178,
+    "fields": {
+      "aha_id": 267,
+      "name": "580 Caribbean",
+      "slug": "580-caribbean",
+      "parent": 156,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 179,
+    "fields": {
+      "aha_id": 268,
+      "name": "581 Precontact/Indigenous Caribbean",
+      "slug": "581-precontactindigenous-caribbean",
+      "parent": 178,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 180,
+    "fields": {
+      "aha_id": 269,
+      "name": "582 Early Colonial Caribbean",
+      "slug": "582-early-colonial-caribbean",
+      "parent": 178,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 181,
+    "fields": {
+      "aha_id": 270,
+      "name": "583 Slavery and Aftermath Caribbean",
+      "slug": "583-slavery-and-aftermath-caribbean",
+      "parent": 178,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 182,
+    "fields": {
+      "aha_id": 271,
+      "name": "584 National Caribbean",
+      "slug": "584-national-caribbean",
+      "parent": 178,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 183,
+    "fields": {
+      "aha_id": 272,
+      "name": "590 Early and Colonial North America",
+      "slug": "590-early-and-colonial-north-america",
+      "parent": 150,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 184,
+    "fields": {
+      "aha_id": 273,
+      "name": "591 Precontact/Indigenous North America",
+      "slug": "591-precontactindigenous-north-america",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 185,
+    "fields": {
+      "aha_id": 274,
+      "name": "592 European Discovery and Exploration of North America",
+      "slug": "592-european-discovery-and-exploration-of-north-america",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 186,
+    "fields": {
+      "aha_id": 275,
+      "name": "593 British Politics and Administration of North America",
+      "slug": "593-british-politics-and-administration-of-north-america",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 187,
+    "fields": {
+      "aha_id": 276,
+      "name": "594 Colonial North America",
+      "slug": "594-colonial-north-america",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 188,
+    "fields": {
+      "aha_id": 277,
+      "name": "595 Colonial New England",
+      "slug": "595-colonial-new-england",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 189,
+    "fields": {
+      "aha_id": 278,
+      "name": "596 Middle Colonies",
+      "slug": "596-middle-colonies",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 190,
+    "fields": {
+      "aha_id": 279,
+      "name": "597 Colonial Chesapeake",
+      "slug": "597-colonial-chesapeake",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 191,
+    "fields": {
+      "aha_id": 280,
+      "name": "598 Colonial Lower South",
+      "slug": "598-colonial-lower-south",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 192,
+    "fields": {
+      "aha_id": 281,
+      "name": "599 French and Dutch Colonies",
+      "slug": "599-french-and-dutch-colonies",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 193,
+    "fields": {
+      "aha_id": 282,
+      "name": "601 Colonial Spanish Borderlands",
+      "slug": "601-colonial-spanish-borderlands",
+      "parent": 183,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 194,
+    "fields": {
+      "aha_id": 283,
+      "name": "610 Canada",
+      "slug": "610-canada",
+      "parent": 150,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 195,
+    "fields": {
+      "aha_id": 289,
+      "name": "611 Canadian Exploration and Settlement to 1763",
+      "slug": "611-canadian-exploration-and-settlement-to-1763",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 196,
+    "fields": {
+      "aha_id": 290,
+      "name": "612 Colonial Period Canada, 1760-1870",
+      "slug": "612-colonial-period-canada-1760-1870",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 197,
+    "fields": {
+      "aha_id": 291,
+      "name": "613 Dominion Period Canada, 1870-1921",
+      "slug": "613-dominion-period-canada-1870-1921",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 198,
+    "fields": {
+      "aha_id": 292,
+      "name": "614 Canada since 1921",
+      "slug": "614-canada-since-1921",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 199,
+    "fields": {
+      "aha_id": 284,
+      "name": "615 French and British Canada",
+      "slug": "615-french-and-british-canada",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 200,
+    "fields": {
+      "aha_id": 285,
+      "name": "616 Atlantic Canada",
+      "slug": "616-atlantic-canada",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 201,
+    "fields": {
+      "aha_id": 286,
+      "name": "617 Prairie Provinces",
+      "slug": "617-prairie-provinces",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 202,
+    "fields": {
+      "aha_id": 287,
+      "name": "618 British Columbia",
+      "slug": "618-british-columbia",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 203,
+    "fields": {
+      "aha_id": 288,
+      "name": "619 Quebec",
+      "slug": "619-quebec",
+      "parent": 194,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 204,
+    "fields": {
+      "aha_id": 293,
+      "name": "630 United States",
+      "slug": "630-united-states",
+      "parent": 150,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 205,
+    "fields": {
+      "aha_id": 294,
+      "name": "631 American Revolution, 1756-83",
+      "slug": "631-american-revolution-1756-83",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 206,
+    "fields": {
+      "aha_id": 295,
+      "name": "632 United States, 1783-1815",
+      "slug": "632-united-states-1783-1815",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 207,
+    "fields": {
+      "aha_id": 296,
+      "name": "633 United States, 1815-50",
+      "slug": "633-united-states-1815-50",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 208,
+    "fields": {
+      "aha_id": 297,
+      "name": "634 United States, 1850-77",
+      "slug": "634-united-states-1850-77",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 209,
+    "fields": {
+      "aha_id": 298,
+      "name": "635 United States, 1877-1920",
+      "slug": "635-united-states-1877-1920",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 210,
+    "fields": {
+      "aha_id": 299,
+      "name": "636 United States, 1920-45",
+      "slug": "636-united-states-1920-45",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 211,
+    "fields": {
+      "aha_id": 300,
+      "name": "637 United States, 1945-75",
+      "slug": "637-united-states-1945-75",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 212,
+    "fields": {
+      "aha_id": 301,
+      "name": "638 United States since 1975",
+      "slug": "638-united-states-since-1975",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 213,
+    "fields": {
+      "aha_id": 302,
+      "name": "639 US Northeast",
+      "slug": "639-us-northeast",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 214,
+    "fields": {
+      "aha_id": 303,
+      "name": "641 US South",
+      "slug": "641-us-south",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 215,
+    "fields": {
+      "aha_id": 304,
+      "name": "642 US Great Plains and Borderlands",
+      "slug": "642-us-great-plains-and-borderlands",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 216,
+    "fields": {
+      "aha_id": 305,
+      "name": "643 US Midwest",
+      "slug": "643-us-midwest",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.geographicemphasis",
+    "pk": 217,
+    "fields": {
+      "aha_id": 306,
+      "name": "644 US West",
+      "slug": "644-us-west",
+      "parent": 204,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 1,
+    "fields": {
+      "aha_id": 10,
+      "name": "African American",
+      "slug": "african-american",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 2,
+    "fields": {
+      "aha_id": 20,
+      "name": "Agrarian/Rural",
+      "slug": "agrarianrural",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 3,
+    "fields": {
+      "aha_id": 21,
+      "name": "Animals",
+      "slug": "animals",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 4,
+    "fields": {
+      "aha_id": 22,
+      "name": "Archaeology",
+      "slug": "archaeology",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 5,
+    "fields": {
+      "aha_id": 23,
+      "name": "Art/Architecture/Design",
+      "slug": "artarchitecturedesign",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 6,
+    "fields": {
+      "aha_id": 24,
+      "name": "Asian American",
+      "slug": "asian-american",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 7,
+    "fields": {
+      "aha_id": 25,
+      "name": "Atlantic World",
+      "slug": "atlantic-world",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 8,
+    "fields": {
+      "aha_id": 26,
+      "name": "Biography",
+      "slug": "biography",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 9,
+    "fields": {
+      "aha_id": 27,
+      "name": "Borderlands",
+      "slug": "borderlands",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 10,
+    "fields": {
+      "aha_id": 28,
+      "name": "Capitalism",
+      "slug": "capitalism",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 11,
+    "fields": {
+      "aha_id": 29,
+      "name": "Cartography",
+      "slug": "cartography",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 12,
+    "fields": {
+      "aha_id": 31,
+      "name": "Chicano(a)/Latino(a)",
+      "slug": "chicanoalatinoa",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 13,
+    "fields": {
+      "aha_id": 32,
+      "name": "Childhood and Youth",
+      "slug": "childhood-and-youth",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 14,
+    "fields": {
+      "aha_id": 30,
+      "name": "Citizenship/National Identity/Nationalism",
+      "slug": "citizenshipnational-identitynationalism",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 15,
+    "fields": {
+      "aha_id": 33,
+      "name": "Comparative",
+      "slug": "comparative",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 16,
+    "fields": {
+      "aha_id": 34,
+      "name": "Cultural",
+      "slug": "cultural",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 17,
+    "fields": {
+      "aha_id": 35,
+      "name": "Demography",
+      "slug": "demography",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 18,
+    "fields": {
+      "aha_id": 36,
+      "name": "Diasporas",
+      "slug": "diasporas",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 19,
+    "fields": {
+      "aha_id": 37,
+      "name": "Digital Methods",
+      "slug": "digital-methods",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 20,
+    "fields": {
+      "aha_id": 38,
+      "name": "Diplomatic/International",
+      "slug": "diplomaticinternational",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 21,
+    "fields": {
+      "aha_id": 39,
+      "name": "Disability",
+      "slug": "disability",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 22,
+    "fields": {
+      "aha_id": 40,
+      "name": "Economic/Business",
+      "slug": "economicbusiness",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 23,
+    "fields": {
+      "aha_id": 41,
+      "name": "Education",
+      "slug": "education",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 24,
+    "fields": {
+      "aha_id": 42,
+      "name": "Emotions/Senses",
+      "slug": "emotionssenses",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 25,
+    "fields": {
+      "aha_id": 43,
+      "name": "Empire",
+      "slug": "empire",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 26,
+    "fields": {
+      "aha_id": 6,
+      "name": "Environmental",
+      "slug": "environmental",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 27,
+    "fields": {
+      "aha_id": 45,
+      "name": "Ethnohistory",
+      "slug": "ethnohistory",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 28,
+    "fields": {
+      "aha_id": 46,
+      "name": "Family",
+      "slug": "family",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 29,
+    "fields": {
+      "aha_id": 47,
+      "name": "Film/Media/Photography",
+      "slug": "filmmediaphotography",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 30,
+    "fields": {
+      "aha_id": 48,
+      "name": "Food and Foodways",
+      "slug": "food-and-foodways",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 31,
+    "fields": {
+      "aha_id": 5,
+      "name": "Gender",
+      "slug": "gender",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 32,
+    "fields": {
+      "aha_id": 49,
+      "name": "Genocide",
+      "slug": "genocide",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 33,
+    "fields": {
+      "aha_id": 50,
+      "name": "Historiography/Historical Theory and Method",
+      "slug": "historiographyhistorical-theory-and-method",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 34,
+    "fields": {
+      "aha_id": 51,
+      "name": "History Teaching and Learning",
+      "slug": "history-teaching-and-learning",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 35,
+    "fields": {
+      "aha_id": 52,
+      "name": "Iberian World",
+      "slug": "iberian-world",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 36,
+    "fields": {
+      "aha_id": 53,
+      "name": "Indian Ocean World",
+      "slug": "indian-ocean-world",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 37,
+    "fields": {
+      "aha_id": 54,
+      "name": "Indigenous",
+      "slug": "indigenous",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 38,
+    "fields": {
+      "aha_id": 55,
+      "name": "Intellectual",
+      "slug": "intellectual",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 39,
+    "fields": {
+      "aha_id": 56,
+      "name": "Jewish",
+      "slug": "jewish",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 40,
+    "fields": {
+      "aha_id": 316,
+      "name": "Journalism",
+      "slug": "journalism",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 41,
+    "fields": {
+      "aha_id": 57,
+      "name": "Labor",
+      "slug": "labor",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 42,
+    "fields": {
+      "aha_id": 58,
+      "name": "Legal",
+      "slug": "legal",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 43,
+    "fields": {
+      "aha_id": 59,
+      "name": "LGBTQ",
+      "slug": "lgbtq",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 44,
+    "fields": {
+      "aha_id": 60,
+      "name": "Local",
+      "slug": "local",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 45,
+    "fields": {
+      "aha_id": 61,
+      "name": "Maritime",
+      "slug": "maritime",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 46,
+    "fields": {
+      "aha_id": 62,
+      "name": "Material Culture",
+      "slug": "material-culture",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 47,
+    "fields": {
+      "aha_id": 63,
+      "name": "Medicine/Disease/Public Health",
+      "slug": "medicinediseasepublic-health",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 48,
+    "fields": {
+      "aha_id": 64,
+      "name": "Mediterranean World",
+      "slug": "mediterranean-world",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 49,
+    "fields": {
+      "aha_id": 65,
+      "name": "Memory Studies",
+      "slug": "memory-studies",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 50,
+    "fields": {
+      "aha_id": 66,
+      "name": "Migration/Immigration",
+      "slug": "migrationimmigration",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 51,
+    "fields": {
+      "aha_id": 67,
+      "name": "Military",
+      "slug": "military",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 52,
+    "fields": {
+      "aha_id": 68,
+      "name": "Music",
+      "slug": "music",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 53,
+    "fields": {
+      "aha_id": 69,
+      "name": "Oral",
+      "slug": "oral",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 54,
+    "fields": {
+      "aha_id": 70,
+      "name": "Pacific World",
+      "slug": "pacific-world",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 55,
+    "fields": {
+      "aha_id": 71,
+      "name": "Peace and Conflict",
+      "slug": "peace-and-conflict",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 56,
+    "fields": {
+      "aha_id": 72,
+      "name": "Political",
+      "slug": "political",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 57,
+    "fields": {
+      "aha_id": 73,
+      "name": "Popular Culture",
+      "slug": "popular-culture",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 58,
+    "fields": {
+      "aha_id": 74,
+      "name": "Postcolonial",
+      "slug": "postcolonial",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 59,
+    "fields": {
+      "aha_id": 75,
+      "name": "Print Culture/History of the Book",
+      "slug": "print-culturehistory-of-the-book",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 60,
+    "fields": {
+      "aha_id": 76,
+      "name": "Public",
+      "slug": "public",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 61,
+    "fields": {
+      "aha_id": 77,
+      "name": "Quantitative Methods",
+      "slug": "quantitative-methods",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 62,
+    "fields": {
+      "aha_id": 78,
+      "name": "Race and Ethnicity",
+      "slug": "race-and-ethnicity",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 63,
+    "fields": {
+      "aha_id": 79,
+      "name": "Religion",
+      "slug": "religion",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 64,
+    "fields": {
+      "aha_id": 80,
+      "name": "Science",
+      "slug": "science",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 65,
+    "fields": {
+      "aha_id": 81,
+      "name": "Sexuality",
+      "slug": "sexuality",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 66,
+    "fields": {
+      "aha_id": 82,
+      "name": "Slavery",
+      "slug": "slavery",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 67,
+    "fields": {
+      "aha_id": 83,
+      "name": "Social",
+      "slug": "social",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 68,
+    "fields": {
+      "aha_id": 84,
+      "name": "Social Movements",
+      "slug": "social-movements",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 69,
+    "fields": {
+      "aha_id": 85,
+      "name": "Sports",
+      "slug": "sports",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 70,
+    "fields": {
+      "aha_id": 86,
+      "name": "Technology",
+      "slug": "technology",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 71,
+    "fields": {
+      "aha_id": 87,
+      "name": "Transnational",
+      "slug": "transnational",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 72,
+    "fields": {
+      "aha_id": 88,
+      "name": "Urban",
+      "slug": "urban",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 73,
+    "fields": {
+      "aha_id": 89,
+      "name": "Women",
+      "slug": "women",
+      "parent": null,
+      "source": 1
+    }
+  },
+  {
+    "model": "dissdb.thematicemphasis",
+    "pk": 74,
+    "fields": {
+      "aha_id": 90,
+      "name": "World/Global",
+      "slug": "worldglobal",
+      "parent": null,
+      "source": 1
+    }
+  }
+]

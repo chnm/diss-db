@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
 
+
 class Source(models.Model):
     """Track the source of the data"""
 
@@ -12,59 +13,69 @@ class Source(models.Model):
 
     name = models.CharField(
         max_length=200,
-        help_text="Name of the source (organization, department, person, etc.)"
+        help_text="Name of the source (organization, department, person, etc.)",
     )
 
     SOURCE_TYPE_CHOICES = [
-        ('organization', 'Organization'),
-        ('department', 'Department'),
-        ('person', 'Person'),
-        ('other', 'Other'),
+        ("organization", "Organization"),
+        ("department", "Department"),
+        ("person", "Person"),
+        ("other", "Other"),
     ]
     source_type = models.CharField(
-        max_length=20,
-        choices=SOURCE_TYPE_CHOICES,
-        help_text="Type of source"
+        max_length=20, choices=SOURCE_TYPE_CHOICES, help_text="Type of source"
     )
 
     contact_info = models.TextField(
-        blank=True,
-        default='',
-        help_text="Contact information or additional details"
+        blank=True, default="", help_text="Contact information or additional details"
     )
 
     # Tracking
     date_added = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(
-        blank=True,
-        default='',
-        help_text="Additional notes about this source"
+        blank=True, default="", help_text="Additional notes about this source"
     )
 
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name} ({self.get_source_type_display()})"
 
+
 class ThematicEmphasis(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=200, unique=True, help_text="e.g. Political, Race, Gender")
-    slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly identifier")
+    aha_id = models.IntegerField(
+        unique=True, null=True, blank=True, help_text="Original AHA taxonomy ID"
+    )
+    name = models.CharField(
+        max_length=200, unique=True, help_text="e.g. Political, Race, Gender"
+    )
+    slug = models.SlugField(
+        max_length=200, unique=True, help_text="URL-friendly identifier"
+    )
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        help_text="Parent thematic emphasis for hierarchical taxonomy",
+    )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
         verbose_name_plural = "thematic emphases"
 
     def __str__(self):
@@ -73,24 +84,40 @@ class ThematicEmphasis(models.Model):
 
 class GeographicEmphasis(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=200, unique=True, help_text="e.g. North America, East Asia")
-    slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly identifier")
+    aha_id = models.IntegerField(
+        unique=True, null=True, blank=True, help_text="Original AHA taxonomy ID"
+    )
+    name = models.CharField(
+        max_length=200, unique=True, help_text="e.g. North America, East Asia"
+    )
+    slug = models.SlugField(
+        max_length=200, unique=True, help_text="URL-friendly identifier"
+    )
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        help_text="Parent geographic emphasis for hierarchical taxonomy",
+    )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
         verbose_name_plural = "geographic emphases"
 
     def __str__(self):
         return self.name
+
 
 # Create your models here.
 class School(models.Model):
@@ -106,7 +133,7 @@ class School(models.Model):
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
@@ -117,10 +144,12 @@ class School(models.Model):
     class Meta:
         ordering = ["name"]
 
+
 class Department(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(help_text="The name of the department", max_length=200)
     school = models.ForeignKey(School, on_delete=models.PROTECT)
+
 
 # Ensure that the ORCID is in the correct format
 orcid_validator = RegexValidator(r"\d{4}-\d{4}-\d{4}-\d{4}")
@@ -184,14 +213,14 @@ class Scholar(models.Model):
         null=True,
         verbose_name="Current University or other affiliation",
         help_text="The name of this scholar's current affiliation",
-        max_length=200
+        max_length=200,
     )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
@@ -234,23 +263,22 @@ class Scholar(models.Model):
     class Meta:
         ordering = ["name_last", "name_first", "name_middle"]
 
+
 class ScholarWebsite(models.Model):
-    PERSONAL = 'personal'
-    DEPARTMENT = 'department'
-    SOCIAL = 'social media'
-    OTHER = 'other'
+    PERSONAL = "personal"
+    DEPARTMENT = "department"
+    SOCIAL = "social media"
+    OTHER = "other"
 
     WEBSITE_TYPE_CHOICES = [
-        (PERSONAL, 'Personal Website'),
-        (DEPARTMENT, 'Department Profile'),
-        (SOCIAL, 'Social Media Profile'),
-        (OTHER, 'Other'),
+        (PERSONAL, "Personal Website"),
+        (DEPARTMENT, "Department Profile"),
+        (SOCIAL, "Social Media Profile"),
+        (OTHER, "Other"),
     ]
 
     scholar = models.ForeignKey(
-        Scholar,
-        on_delete=models.CASCADE,
-        related_name='websites'
+        Scholar, on_delete=models.CASCADE, related_name="websites"
     )
     url = models.URLField(max_length=500)
     website_type = models.CharField(
@@ -261,14 +289,14 @@ class ScholarWebsite(models.Model):
     label = models.CharField(
         max_length=200,
         blank=True,
-        help_text="Optional custom label, e.g. 'GMU Faculty Page'"
+        help_text="Optional custom label, e.g. 'GMU Faculty Page'",
     )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
@@ -277,7 +305,8 @@ class ScholarWebsite(models.Model):
         return f"{self.get_website_type_display()} - {self.url}"
 
     class Meta:
-        ordering = ['website_type']
+        ordering = ["website_type"]
+
 
 class Dissertation(models.Model):
     id = models.BigAutoField(primary_key=True, verbose_name="ID")
@@ -302,7 +331,9 @@ class Dissertation(models.Model):
     )
     author = models.ForeignKey(Scholar, on_delete=models.PROTECT)
     school = models.ForeignKey(School, on_delete=models.PROTECT)
-    department = models.ForeignKey(Department, on_delete=models.PROTECT, null=True, blank=True)
+    department = models.ForeignKey(
+        Department, on_delete=models.PROTECT, null=True, blank=True
+    )
     aha_author_id = models.BigIntegerField(
         verbose_name="AHA author ID",
         editable=False,
@@ -319,32 +350,29 @@ class Dissertation(models.Model):
     )
 
     abstract = models.TextField(
-        blank=True,
-        null=True,
-        default=None,
-        help_text="Abstract of the dissertation"
+        blank=True, null=True, default=None, help_text="Abstract of the dissertation"
     )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     # Inside the Dissertation model, add these fields:
     thematic_emphases = models.ManyToManyField(
         ThematicEmphasis,
         blank=True,
-        related_name='dissertations',
-        help_text="Thematic tags for this dissertation"
+        related_name="dissertations",
+        help_text="Thematic tags for this dissertation",
     )
-    
+
     geographic_emphases = models.ManyToManyField(
         GeographicEmphasis,
         blank=True,
-        related_name='dissertations',
-        help_text="Geographic tags for this dissertation"
+        related_name="dissertations",
+        help_text="Geographic tags for this dissertation",
     )
 
     history = HistoricalRecords()
@@ -361,23 +389,22 @@ class Dissertation(models.Model):
     def __str__(self) -> str:
         return f"{self.main_title} ({self.author})"
 
+
 class DissertationLink(models.Model):
-    PROQUEST = 'proquest'
-    INSTITUTIONAL = 'institutional'
-    PDF = 'pdf'
-    OTHER = 'other'
+    PROQUEST = "proquest"
+    INSTITUTIONAL = "institutional"
+    PDF = "pdf"
+    OTHER = "other"
 
     LINK_TYPE_CHOICES = [
-        (PROQUEST, 'ProQuest'),
-        (INSTITUTIONAL, 'Institutional Repository'),
-        (PDF, 'PDF'),
-        (OTHER, 'Other'),
+        (PROQUEST, "ProQuest"),
+        (INSTITUTIONAL, "Institutional Repository"),
+        (PDF, "PDF"),
+        (OTHER, "Other"),
     ]
 
     dissertation = models.ForeignKey(
-        Dissertation,
-        on_delete=models.CASCADE,
-        related_name='links'
+        Dissertation, on_delete=models.CASCADE, related_name="links"
     )
     url = models.URLField(max_length=500)
     link_type = models.CharField(
@@ -388,14 +415,14 @@ class DissertationLink(models.Model):
     label = models.CharField(
         max_length=200,
         blank=True,
-        help_text="Optional custom label, e.g. 'GMU Institutional Repository'"
+        help_text="Optional custom label, e.g. 'GMU Institutional Repository'",
     )
 
     source = models.ForeignKey(
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
@@ -404,9 +431,10 @@ class DissertationLink(models.Model):
         return f"{self.get_link_type_display()} - {self.url}"
 
     class Meta:
-        ordering = ['link_type']
+        ordering = ["link_type"]
         # Prevent storing the same URL twice for the same dissertation
-        unique_together = ['dissertation', 'url']
+        unique_together = ["dissertation", "url"]
+
 
 class CommitteeMember(models.Model):
     scholar = models.ForeignKey(Scholar, on_delete=models.PROTECT)
@@ -444,15 +472,15 @@ class CommitteeMember(models.Model):
         Source,
         on_delete=models.PROTECT,
         default=1,
-        help_text="The source for this record"
+        help_text="The source for this record",
     )
 
     history = HistoricalRecords()
 
     class Meta:
         indexes = [
-            models.Index(fields=['role', 'scholar'], name='idx_cm_role_scholar'),
-            models.Index(fields=['role', 'dissertation'], name='idx_cm_role_diss'),
+            models.Index(fields=["role", "scholar"], name="idx_cm_role_scholar"),
+            models.Index(fields=["role", "dissertation"], name="idx_cm_role_diss"),
         ]
 
     def __str__(self) -> str:
