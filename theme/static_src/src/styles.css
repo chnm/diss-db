@@ -2,8 +2,248 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Base ─────────────────────────────────────────── */
+
 @layer base {
-  a:not(.btn):not([class*="bg-"]):not([class*="text-white"]) {
-    @apply text-blue-600 hover:text-blue-800 hover:underline;
+  :root {
+    --paper:  #f4f1ec;
+    --paper2: #e9e5dd;
+    --paper3: #fbfaf6;
+    --ink:    #141822;
+    --ink2:   #313644;
+    --mute:   #6f7585;
+    --line:   #c8cad2;
+    --line2:  #e0e2e8;
+    --accent: #1f3a6b;
+    --avatar: #d8dbe2;
+  }
+
+  body {
+    @apply font-sans text-ink;
+    background: var(--paper);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+}
+
+/* ── Components ───────────────────────────────────── */
+
+@layer components {
+
+  /* Kicker — mono caps label used everywhere */
+  .kicker {
+    @apply font-mono uppercase tracking-[0.14em] text-meta-sm font-medium;
+  }
+
+  /* Section header: kicker + display-lg h1 */
+  .section-header {
+    @apply pt-14 pb-7 border-b border-line;
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    @apply flex items-center gap-3 flex-wrap bg-paper2 border-b border-line;
+    padding: 20px 64px;
+  }
+
+  /* Card / panel */
+  .card {
+    @apply border border-line bg-paper3;
+    padding: 28px;
+  }
+
+  .card-sm {
+    @apply border border-line bg-paper3;
+    padding: 24px;
+  }
+
+  .card-callout {
+    @apply border border-line bg-paper2;
+    padding: 22px;
+  }
+
+  /* Section rule (heavy, under headings) */
+  .rule-heavy {
+    @apply border-b-2 border-ink pb-3 mb-6;
+  }
+
+  /* Section rule (soft, between items) */
+  .rule-soft {
+    @apply border-b border-line2;
+  }
+
+  /* Stat number (big serif number + kicker label below) */
+  .stat-number {
+    @apply font-serif text-display-sm font-medium leading-none;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply kicker cursor-pointer;
+    padding: 12px 22px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+  }
+
+  .btn-secondary {
+    @apply kicker cursor-pointer;
+    padding: 12px 22px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+  }
+
+  .btn-subtle {
+    @apply kicker cursor-pointer;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    color: var(--ink2);
+  }
+
+  /* Form inputs */
+  .form-input {
+    @apply mt-1 block w-full border border-line bg-paper3 px-3 py-2 text-sm font-sans;
+    outline: none;
+  }
+  .form-input:focus {
+    border-color: var(--accent);
+  }
+
+  /* Form label */
+  .form-label {
+    @apply kicker text-mute block mb-1;
+  }
+
+  /* Meta table (used in diss detail sidebar) */
+  .meta-table {
+    @apply text-meta leading-relaxed w-full;
+  }
+  .meta-table td {
+    @apply pt-1.5;
+  }
+  .meta-table td:first-child {
+    @apply kicker text-mute pr-4 align-top;
+    width: 110px;
+  }
+
+  /* Chip / tag */
+  .chip {
+    @apply font-mono text-meta-sm text-ink2 border border-line bg-paper3;
+    padding: 2px 8px;
+  }
+
+  /* Lineage indent block */
+  .lineage-indent {
+    @apply ml-4 border-l-2 border-accent pl-4 mt-2 pt-1.5;
+  }
+
+  /* Avatar circle */
+  .avatar {
+    @apply bg-avatar border border-line rounded-full flex items-center justify-center font-serif italic text-accent;
+  }
+
+  /* Page content section with standard padding */
+  .page-section {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    @apply font-mono text-xs text-mute;
+    padding: 20px 64px 0;
+  }
+}
+
+/* ── Table (archive-table) ────────────────────────── */
+
+.archive-table {
+  @apply w-full text-sm;
+  border-collapse: collapse;
+}
+.archive-table thead tr {
+  @apply border-b-2 border-ink;
+}
+.archive-table th {
+  @apply kicker text-mute font-medium text-left;
+  padding: 14px 24px;
+}
+.archive-table th a {
+  color: inherit;
+}
+.archive-table tbody tr {
+  @apply border-b border-line2;
+}
+.archive-table tbody tr.even-row {
+  background: rgba(255,255,255,0.4);
+}
+.archive-table td {
+  @apply align-top;
+  padding: 18px 24px;
+}
+.archive-table td a {
+  color: var(--accent);
+}
+.empty-cell {
+  @apply text-center text-mute font-serif italic;
+  padding: 48px 24px;
+  font-size: 22px;
+}
+
+/* Pagination */
+.table-pagination {
+  @apply flex items-center justify-between;
+  padding: 32px 64px;
+}
+.page-links {
+  @apply flex items-center gap-2;
+}
+.page-btn {
+  @apply font-mono text-meta text-ink2 inline-block text-center;
+  padding: 8px 14px;
+  min-width: 36px;
+  border: 1px solid var(--line);
+}
+.page-btn.active {
+  @apply text-paper;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.page-ellipsis {
+  @apply font-mono text-meta text-mute;
+  padding: 8px 6px;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .section-header,
+  .filter-bar,
+  .page-section,
+  .table-pagination,
+  .breadcrumb {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-header,
+  .filter-bar,
+  .page-section,
+  .table-pagination,
+  .breadcrumb {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 }
