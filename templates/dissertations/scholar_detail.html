@@ -1,761 +1,440 @@
 {% extends "base.html" %}
+{% load dissdb_tags %}
+
+{% block title %}
+<title>{{ scholar_detail.name_full }} - The History Dissertation Database</title>
+{% endblock title %}
 
 {% block main %}
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <h1 class="text-3xl font-bold text-gray-900" id="scholar">{{ scholar_detail.name_full }}</h1>
-                {% if request.user.is_authenticated %}
-                    <div class="flex items-center gap-2">
-                        <a href="{% url 'scholar-edit' scholar_detail.pk %}"
-                           class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Edit Scholar
-                        </a>
-                        {% if dissertation and dissertation != "information not available" %}
-                            <a href="{% url 'dissertation-edit' dissertation.pk %}"
-                               class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Edit Dissertation
-                            </a>
-                        {% else %}
-                            <a href="{% url 'dissertation-create' scholar_detail.pk %}"
-                               class="inline-flex items-center px-4 py-2 rounded-md bg-green-600 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                                Add Dissertation
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </div>
-
-        <!-- Scholar info: 2-column grid -->
-            <div class="bg-gray-50 p-6 rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Current Affiliation</h2>
-                        {% if scholar_detail.affiliation %}
-                            <p class="text-gray-700">{{ scholar_detail.affiliation }}</p>
-                        {% else %}
-                            <p class="text-gray-700">information not provided</p>
-                        {% endif %}
-
-                        <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ORCID</h2>
-                        {% if scholar_detail.orcid %}
-                            <p class="text-gray-700"><a href="{{ scholar_detail.orcid_url }}" target="_blank" class="font-mono text-blue-600 hover:text-blue-800">{{ scholar_detail.orcid }}</a></p>
-                        {% else %}
-                            <p class="text-gray-700">information not provided</p>
-                        {% endif %}
-
-                    </div>
-
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Advisor{{ advisors|length|pluralize }}</h2>
-                        {% if advisors %}
-                            <ul class="list-disc list-inside space-y-1">
-                                {% for advisor in advisors %}
-                                    <li><a href="{{ advisor.scholar.get_absolute_url }}"
-                                           class="text-blue-600 hover:text-blue-800">{{ advisor.scholar.name_full }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p class="text-gray-700">information not available</p>
-                        {% endif %}
-
-                        <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Readers</h2>
-                        {% if readers %}
-                            <ul class="list-disc list-inside space-y-1">
-                                {% for reader in readers %}
-                                    <li><a href="{{ reader.scholar.get_absolute_url }}"
-                                           class="text-blue-600 hover:text-blue-800">{{ reader.scholar.name_full }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p class="text-gray-700">no reader data</p>
-                        {% endif %}
-
-                        <h2 class="text-lg font-semibold text-gray-900 mt-4 mb-2">Advisees</h2>
-                        {% if advisees %}
-                            <ul class="list-disc list-inside space-y-1">
-                                {% for advisee in advisees %}
-                                    <li><a href="{{ advisee.dissertation.author.get_absolute_url }}"
-                                           class="text-blue-600 hover:text-blue-800">{{ advisee.dissertation.author.name_full }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p class="text-gray-700">no advisee data</p>
-                        {% endif %}
-                    </div>
-                </div>
-
-            </div>
-
-        <!-- Dissertation: separate card -->
-            {% if dissertation and dissertation != "information not available" %}
-                <div class="bg-white border border-gray-200 rounded-lg p-6 mt-4">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-3">Dissertation</h2>
-                    <p class="text-gray-900 font-medium mb-3">{{ dissertation.title }}</p>
-                    <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-600 mb-4">
-                        <span>{{ dissertation.school }}</span>
-                        <span class="font-mono">{{ dissertation.year }}</span>
-                    </div>
-                    {% if dissLinks %}
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            {% for link in dissLinks %}
-                                <a href="{{ link.url }}" target="_blank"
-                                   class="inline-flex items-center px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-xs font-medium text-blue-700 hover:bg-blue-100">
-                                    {{ link.label|default:link.get_link_type_display }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if dissertation.thematic_emphases.all or dissertation.geographic_emphases.all %}
-                        <details class="group mb-4">
-                            <summary class="cursor-pointer list-none flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 select-none">
-                                <svg class="h-4 w-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                                Areas of Emphasis
-                            </summary>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-                                {% if dissertation.geographic_emphases.all %}
-                                    <div>
-                                        <h3 class="text-sm font-medium text-gray-900 mb-1">Geographic</h3>
-                                        <ul class="text-sm text-gray-700 space-y-0.5">
-                                            {% for tag in dissertation.geographic_emphases.all %}
-                                                <li>{{ tag.name }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                                {% if dissertation.thematic_emphases.all %}
-                                    <div>
-                                        <h3 class="text-sm font-medium text-gray-900 mb-1">Thematic</h3>
-                                        <ul class="text-sm text-gray-700 space-y-0.5">
-                                            {% for tag in dissertation.thematic_emphases.all %}
-                                                <li>{{ tag.name }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </details>
-                    {% endif %}
-                    {% if dissertation.abstract %}
-                        <details class="group">
-                            <summary class="cursor-pointer list-none flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 select-none">
-                                <svg class="h-4 w-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                                Abstract
-                            </summary>
-                            <p class="mt-3 text-sm text-gray-700 leading-relaxed">{{ dissertation.abstract|linebreaksbr }}</p>
-                        </details>
-                    {% else %}
-                        <p class="text-sm text-gray-500 italic">No abstract in database</p>
-                    {% endif %}
-                </div>
-            {% endif %}
-        </header>
-
-        <div class="space-y-8">
-            <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Immediate Tree</h2>
-                <div class="bg-white p-4 rounded-lg border border-gray-200">
-                    <div id="simpleTree"></div>
-                </div>
-                <br>
-                <button id="downloadImmediateTree"
-                        class="relative inline-flex items-center px-3 py-2 rounded-lg border-blue-500 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">Download
-                    Simple Tree as PNG</button>
-            </section>
-
-            <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Extended Tree</h2>
-                <div class="bg-white p-4 rounded-lg border border-gray-200">
-                    <div id="complexTree2"></div>
-                </div>
-                <br>
-                <button id="downloadExtendedTree"
-                        class="relative inline-flex items-center px-3 py-2 rounded-lg border-blue-500 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-gray-50">Download
-                    Extended Tree as PNG</button>
-            </section>
-        </div>
-    </div>
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-
-
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
-    <script src="https://cdn.jsdelivr.net/npm/save-svg-as-png/lib/saveSvgAsPng.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script type="module">
-        import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-        const vizUrl = {% if scholar_detail.id %}"{% url 'get_viz_data' scholar_detail.id %}"{% else %}null{% endif %};
-        const vizUrlComplex = {% if scholar_detail.id %}"{% url 'get_viz_data_complex' scholar_detail.id %}"{% else %}null{% endif %};
-        let objData = [];
-        function findHeight(data) {
-            let h = 0
-            if (data.length <= 15) {
-                h = 300
-            }
-            else {
-                h = data.length * 15
-            }
-            return h
-        }
-        let simpleUrls = {};
-        if (!vizUrl) { document.querySelector("#simpleTree").textContent = 'No connections in database.'; }
-        else fetch(vizUrl)
-            .then(res => res.json())
-            .then(json => {
-                objData = json.paths;
-                simpleUrls = json.urls;
-            })
-            .then(() => {
-                const simplePlot = Plot.plot({
-                    axis: null,
-                    height: findHeight(objData),
-                    width: 1000,
-                    margin: 20,
-                    marginLeft: 200,
-                    marginRight: 250,
-                    marks: [
-                        Plot.tree(objData, { textStroke: "white", curve: "step-before", fontSize: '12' })
-                    ]
-                })
-                const div = document.querySelector("#simpleTree");
-                div.append(simplePlot);
-
-            // Make names clickable by wrapping text elements in <a> links
-                const svgEl = div.querySelector("svg");
-                if (svgEl) {
-                    svgEl.querySelectorAll("text").forEach(textEl => {
-                        const name = textEl.textContent.trim();
-                        const url = simpleUrls[name];
-                        if (url) {
-                            const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
-                            a.setAttribute("href", url);
-                            a.style.cursor = "pointer";
-                            textEl.parentNode.insertBefore(a, textEl);
-                            a.appendChild(textEl);
-                            textEl.style.fill = "#2563eb";
-                            textEl.addEventListener("mouseenter", () => { textEl.style.textDecoration = "underline"; });
-                            textEl.addEventListener("mouseleave", () => { textEl.style.textDecoration = "none"; });
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-
-    //complex tree viz
-        let objData2 = [];
-        let complexUrls = {};
-
-        function findWidth(data) {
-            let max = 0;
-            let w = 0;
-            data.forEach(element => {
-                if ((element.split("/").length - 1) > max) {
-                    max = (element.split("/").length - 1)
-                }
-            });
-            if ((max * 300) <= 600) {
-                w = 700
-            }
-            else {
-                w = max * 320
-            }
-            return w
-        }
-
-        function restructureData(data) {
-            const newData = []
-            data.forEach(element => {
-                if (data.indexOf(element) != data.length - 1) {
-                    const subStringArray = element.split('/')
-                //newData.push(subStringArray)
-                    subStringArray.forEach(item => {
-                        var newItem = { id: item, parentId: subStringArray[subStringArray.indexOf(item) - 1] }
-                    //inList = contains(newItem, newData)
-                        if (!(newData.some(newData => newData.id === item))) {
-                            newData.push(newItem)
-                        }
-                    })
-                }
-
-            })
-            return newData
-        }
-
-        function Tree(data, { // data is either tabular (array of objects) or hierarchy (nested objects)
-            path, // as an alternative to id and parentId, returns an array identifier, imputing internal nodes
-            id = Array.isArray(data) ? d => d.id : null, // if tabular data, given a d in data, returns a unique identifier (string)
-            parentId = Array.isArray(data) ? d => d.parentId : null, // if tabular data, given a node d, returns its parent’s identifier
-            children, // if hierarchical data, given a d in data, returns its children
-            tree = d3.tree, // layout algorithm (typically d3.tree or d3.cluster)
-            sort, // how to sort nodes prior to layout (e.g., (a, b) => d3.descending(a.height, b.height))
-            label, // given a node d, returns the display name
-            title, // given a node d, returns its hover text
-            link, // given a node d, its link (if any)
-            linkTarget = "_blank", // the target attribute for links (if any)
-            width = 640, // outer width, in pixels
-            height, // outer height, in pixels
-            r = 3, // radius of nodes
-            padding = 1, // horizontal padding for first and last column
-            fill = "#999", // fill for nodes
-            fillOpacity, // fill opacity for nodes
-            stroke = "#555", // stroke for links
-            strokeWidth = 1.5, // stroke width for links
-            strokeOpacity = 0.4, // stroke opacity for links
-            strokeLinejoin, // stroke line join for links
-            strokeLinecap, // stroke line cap for links
-            halo = "#fff", // color of label halo
-            haloWidth = 3, // padding around the labels
-            curve = d3.curveBumpX, // curve for the link
-            highlight = () => true
-        } = {}) {
-
-        // If id and parentId options are specified, or the path option, use d3.stratify
-        // to convert tabular data to a hierarchy; otherwise we assume that the data is
-        // specified as an object {children} with nested objects (a.k.a. the “flare.json”
-        // format), and use d3.hierarchy.
-            const root = path != null ? d3.stratify().path(path)(data)
-                : id != null || parentId != null ? d3.stratify().id(id).parentId(parentId)(data)
-                : d3.hierarchy(data, children);
-
-        // Sort the nodes.
-            if (sort != null) root.sort(sort);
-
-        // Compute labels and titles.
-            const descendants = root.descendants();
-            const L = label == null ? null : descendants.map(d => label(d.data, d));
-
-        // Compute the layout.
-            const dx = 10;
-            const dy = width / (root.height + padding);
-            tree().nodeSize([dx, dy])(root);
-
-        // Center the tree.
-            let x0 = Infinity;
-            let x1 = -x0;
-            root.each(d => {
-                if (d.x > x1) x1 = d.x;
-                if (d.x < x0) x0 = d.x;
-            });
-
-        // Compute the default height.
-            if (height === undefined) height = x1 - x0 + dx * 2;
-
-        // Use the required curve
-            if (typeof curve !== "function") throw new Error(`Unsupported curve`);
-
-            const svg = d3.create("svg")
-                .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
-                .attr("width", width)
-                .attr("height", height)
-                .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", 10);
-
-            svg.append("g")
-                .attr("fill", "none")
-                .attr("stroke", stroke)
-                .attr("stroke-opacity", strokeOpacity)
-                .attr("stroke-linecap", strokeLinecap)
-                .attr("stroke-linejoin", strokeLinejoin)
-                .attr("stroke-width", strokeWidth)
-                .selectAll("path")
-                .data(root.links())
-                .join("path")
-            //.attr("stroke", d => highlight(d.source) && highlight(d.target) ? "red" : null)
-                .attr("stroke-opacity", d => highlight(d.source) && highlight(d.target) ? 1 : null)
-                .attr("d", d3.link(curve)
-                        .x(d => d.y)
-                        .y(d => d.x));
-
-            const node = svg.append("g")
-                .selectAll("a")
-                .data(root.descendants())
-                .join("a")
-                .attr("xlink:href", link == null ? null : d => link(d.data, d))
-                .attr("target", link == null ? null : linkTarget)
-                .attr("transform", d => `translate(${d.y},${d.x})`);
-
-            node.append("circle")
-                .attr("fill", d => d.children ? stroke : fill)
-                .attr("r", r)
-                .on("click", handleClick)
-                .on("mouseover", handleMouseOver)
-                .on("mouseout", handleMouseOut);
-        //.on("dblclick", handleDblClick)
-        //.on("click", handleClick)
-
-            if (title != null) node.append("title")
-                .text(d => title(d.data, d));
-
-            if (L) node.append("text")
-                .attr("dy", "0.32em")
-                .attr("x", d => d.children ? -6 : 6)
-                .attr("text-anchor", d => d.children ? "end" : "start")
-                .attr("paint-order", "stroke")
-                .attr("stroke", halo)
-                .attr("stroke-width", haloWidth)
-                .attr("fill", (d, i) => link && link(d.data, d) ? "#2563eb" : null)
-                .style("cursor", (d, i) => link && link(d.data, d) ? "pointer" : null)
-                .text((d, i) => L[i]);
-            d3.selectAll(".node")
-            d3.selectAll(".node")
-            d3.selectAll(".node")
-
-        // Global variable to track current persistent highlight
-            let currentHighlightedPath = null;
-
-            function getPathToRoot(node) {
-                const path = [];
-                let current = node;
-                while (current) {
-                    path.push(current);
-                    current = current.parent;
-                }
-                return path;
-            }
-
-        //on click create fixed highlight
-            function handleClick(event, d) {
-            // If clicking the same node, reset
-                if (currentHighlightedPath && currentHighlightedPath[0] === d) {
-                // Reset everything
-                    d3.selectAll("circle")
-                    //.property("clicked", false)
-                        .transition()
-                        .duration(200)
-                        .style("fill", "#999")
-                        .attr("r", 3);
-                // Reset source node with transition
-                    d3.select(event.currentTarget)
-                        .transition()
-                        .duration(200)
-                        .style("fill", function () {
-                            return d3.select(this).property("_prevFill");
-                        })
-                        .attr("r", 3);
-                // Reset all links with transition
-                    d3.selectAll("path")
-                    //.property("clicked", false)
-                        .transition()
-                        .duration(200)
-                        .style("stroke", "#999")
-                        .style("stroke-width", "1.5px");
-
-                    currentHighlightedPath = null;
-                    return;
-                }
-
-            // Apply persistent highlight
-                currentHighlightedPath = getPathToRoot(d);
-            /// Store the current node for click
-                const node = d3.select(this);
-            //node.property("_prevFill", node.style("fill"));
-
-            // Highlight with transition
-                svg.select(event.currentTarget)
-                    .transition()
-                    .duration(200)
-                    .style("fill", "#FF0000")
-                    .style("opacity", 1)
-                    .attr("r", 8);
-
-            // Highlight nodes in path
-                svg.selectAll("circle")
-                    .filter((n) => currentHighlightedPath.some(p => p === n))
-                    .transition()
-                    .duration(200)
-                    .style("fill", "#FF0000")
-                    .style("opacity", 1)
-                    .attr("r", 6);
-
-            // Highlight links in path
-                svg.selectAll("path")
-                    .filter((linkData) => currentHighlightedPath.some(p => linkData.target === p && currentHighlightedPath.includes(linkData.source)))
-                    .transition()
-                    .duration(200)
-                    .style("stroke", "#FF0000")
-                    .style("opacity", 1)
-                    .style("stroke-width", "4.5px");
-
-            }
-
-            function handleMouseOver(event, d) {
-                if (currentHighlightedPath != null) {
-                    return
-                }
-            /// Store the current node for mouseout
-                const node = d3.select(this);
-                node.property("_prevFill", node.style("fill"));
-
-            // Highlight with transition
-                d3.select(event.currentTarget)
-                    .transition()
-                    .duration(200)
-                    .style("fill", "#FF0000")
-                    .style("opacity", 1)
-                    .attr("r", 8)
-                let test = svg.selectAll("text").filter(n => n === d)
-                console.log(test)
-                svg.selectAll("text")
-                    .filter(n => n === d)
-                    .transition()
-                    .duration(200)
-                    .style("opacity", 1)
-                    .style("font-weight", "bold")
-                    .attr("stroke-width", 4);
-
-
-            // Get path to root- working
-                let path = [];
-                let current = d;
-                while (current.parent) {
-                    path.push([current, current.parent]);
-                    current = current.parent;
-                }
-
-            //mute nodes
-                svg.selectAll("circle")
-                    .style("opacity", 0.2);
-            //mute links
-                svg.selectAll("path")
-                    .style("opacity", 0.1);
-            //mute text
-                svg.selectAll("text")
-                    .style("opacity", 0.2);
-
-            // Highlight nodes in path
-                svg.selectAll("circle")
-                    .filter((n) => path.some(p => p[1] === n))
-                    .transition()
-                    .duration(200)
-                    .style("fill", "#FF0000")
-                    .style("opacity", 1)
-                    .attr("r", 6);
-
-            // Highlight links in path
-                svg.selectAll("path")
-                    .filter((linkData) => path.some(p => p[0] === linkData.target && p[1] === linkData.source))
-                    .transition()
-                    .duration(200)
-                    .style("stroke", "#FF0000")
-                    .style("opacity", 1)
-                    .style("stroke-width", "4.5px");
-
-            //restore text boldness
-                d3.selectAll("text")
-                    .filter(n => path.some(p => p[1] === n))
-                    .transition()
-                    .duration(200)
-                    .style("opacity", 1);
-            }
-
-
-        // Reset highlighting
-            function handleMouseOut() {
-                if (currentHighlightedPath != null) {
-                // Highlight with transition
-                    svg.select(event.currentTarget)
-                        .transition()
-                        .duration(200)
-                        .style("fill", "#FF0000")
-                        .style("opacity", 1)
-                        .attr("r", 8);
-
-                // Highlight nodes in path
-                    svg.selectAll("circle")
-                        .filter((n) => currentHighlightedPath.some(p => p === n))
-                        .transition()
-                        .duration(200)
-                        .style("fill", "#FF0000")
-                        .style("opacity", 1)
-                        .attr("r", 6);
-
-                // Highlight links in path
-                    svg.selectAll("path")
-                        .filter((linkData) => currentHighlightedPath.some(p => linkData.target === p && currentHighlightedPath.includes(linkData.source)))
-                        .transition()
-                        .duration(200)
-                        .style("stroke", "#FF0000")
-                        .style("opacity", 1)
-                        .style("stroke-width", "4.5px");
-                    return;
-                }
-                const click = d3.select(this).property("clicked")
-                if (click) {
-                    console.log(click)
-                    return;
-                }
-                svg.selectAll("circle")
-                    .style("opacity", 1);
-                svg.selectAll("path")
-                    .style("opacity", 1);
-                svg.selectAll("text")
-                    .style("opacity", 1)
-                    .style("font-weight", "normal");
-                d3.selectAll("circle")
-                    .transition()
-                    .duration(200)
-                    .style("fill", "#999") //changed from #999
-                    .attr("r", 3);
-            // Reset node with transition
-                d3.select(event.currentTarget)
-                    .transition()
-                    .duration(200)
-                    .style("fill", function () {
-                        return d3.select(this).property("_prevFill");
-                    })
-                    .attr("r", 3);
-            // Reset all links with transition
-                d3.selectAll("path")
-                    .transition()
-                    .duration(200)
-                    .style("stroke", "#999")
-                    .style("stroke-width", "1.5px");
-            }
-
-            svg.on("click", function (event) {
-            // Check if the click was on the SVG background
-                if (event.target === this) {
-                // Reset everything
-                    svg.selectAll("circle")
-                        .style("opacity", 1);
-                    svg.selectAll("path")
-                        .style("opacity", 1);
-                    svg.selectAll("text")
-                        .style("opacity", 1)
-                        .style("font-weight", "normal");
-                    d3.selectAll("circle")
-                    //.property("clicked", false)
-                        .transition()
-                        .duration(200)
-                        .style("fill", "#999")
-                        .attr("r", 3);
-                // Reset source node with transition
-                    d3.select(event.currentTarget)
-                        .transition()
-                        .duration(200)
-                        .style("fill", function () {
-                            return d3.select(this).property("_prevFill");
-                        })
-                        .attr("r", 3);
-                // Reset all links with transition
-                    d3.selectAll("path")
-                    //.property("clicked", false)
-                        .transition()
-                        .duration(200)
-                        .style("stroke", "#999")
-                        .style("stroke-width", "1.5px");
-
-                    currentHighlightedPath = null;
-                }
-            });
-
-            return svg.node();
-        }
-
-
-        if (!vizUrlComplex) { document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.'; }
-        else fetch(vizUrlComplex)
-            .then(res => res.json())
-            .then(json => {
-                objData2 = json.paths;
-                complexUrls = json.urls;
-            })
-            .then(() => {
-                const d3Data = restructureData(objData2);
-                const d3Data2 = d3.stratify()(d3Data)
-                const chart = Tree(d3Data2, {
-                    label: d => d.id,
-                    title: (d, n) => `${n.ancestors().reverse().map(d => d.data.id).join(".")}`, // hover text
-                    link: (d) => complexUrls[d.id] || null,
-                    linkTarget: "_self",
-                    sort: (a, b) => d3.descending(a.height, b.height), // reduce link crossings
-                    tree: d3.tidy,
-                    width: findWidth(objData2),
-                    margin: 20,
-                    curve: d3.curveStep
-                })
-                const div2 = document.querySelector("#complexTree2");
-                div2.append(chart);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.';
-            });
-    </script>
-    <script type="module">
-        import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-        d3.select("#downloadImmediateTree")
-            .on('click', function () {
-                const svgElement = d3.select("#simpleTree svg").node();
-                const scholarElement = document.getElementById("scholar");
-                let scholarName = scholarElement ? scholarElement.textContent.trim() : "Unknown";
-
-            // Clean the name for use in filename (remove spaces, special chars)
-                scholarName = scholarName
-                    .replace(/\s+/g, '') // Remove all spaces
-                    .replace(/[^a-zA-Z0-9]/g, '') // Remove special characters
-                    .substring(0, 50); // Limit length
-
-            // Create filename
-                const filename = `${scholarName}_simpleTree.png`;
-
-            // Try the save
-                saveSvgAsPng(svgElement, filename, {
-                    scale: 2,
-                    backgroundColor: "#FFFFFF"
-                });
-            })
-        d3.select("#downloadExtendedTree")
-            .on('click', function () {
-                const container = document.getElementById("complexTree2");
-
-                const scholarElement = document.getElementById("scholar");
-                let scholarName = scholarElement ? scholarElement.textContent.trim() : "Unknown";
-
-            // Clean the name for use in filename (remove spaces, special chars)
-                scholarName = scholarName
-                    .replace(/\s+/g, '') // Remove all spaces
-                    .replace(/[^a-zA-Z0-9]/g, '') // Remove special characters
-                    .substring(0, 50); // Limit length
-
-            // Create filename
-                const filename = `${scholarName}_extendedTree.png`;
-
-            // Temporarily remove overflow restrictions
-                const originalStyle = container.style.cssText;
-                container.style.overflow = 'visible';
-                container.style.height = 'auto';
-
-                html2canvas(container, {
-                    scale: 2,
-                    backgroundColor: '#FFFFFF',
-                    useCORS: true,
-                    allowTaint: true
-                }).then(canvas => {
-                    const link = document.createElement("a");
-                    link.download = filename;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-
-                // Restore original styles
-                    container.style.cssText = originalStyle;
-                });
-            });
-    </script>
+<div class="breadcrumb">
+	<a href="{% url 'scholars' %}" class="text-mute">Scholars</a> / {{ scholar_detail.name_full }}
+</div>
+
+{# Profile head #}
+<section class="page-section py-10 border-b border-line">
+	<div class="grid grid-cols-[120px_1fr_auto] gap-8 items-start profile-head">
+		<div class="avatar w-[120px] h-[120px] text-[40px]">{{ scholar_detail.name_full|initials }}</div>
+		<div>
+			<h1 class="font-serif text-[52px] font-medium tracking-tight m-0 mb-2">{{ scholar_detail.name_full }}</h1>
+			<div class="font-serif text-[17px] text-ink2">
+				{% if scholar_detail.affiliation %}{{ scholar_detail.affiliation }}{% endif %}{% if scholar_detail.affiliation and scholar_detail.orcid %}<span class="text-mute mx-2">·</span>{% endif %}{% if scholar_detail.orcid %}<a href="{{ scholar_detail.orcid_url }}" target="_blank" class="font-mono text-meta text-accent">{{ scholar_detail.orcid }}</a>{% endif %}
+			</div>
+			{% if request.user.is_authenticated %}
+			<div class="mt-3 flex gap-2">
+				<a href="{% url 'scholar-edit' scholar_detail.pk %}" class="btn-subtle text-[10px]">Edit Scholar</a>
+				{% if dissertation %}
+				<a href="{% url 'dissertation-edit' dissertation.pk %}" class="btn-subtle text-[10px]">Edit Dissertation</a>
+				{% else %}
+				<a href="{% url 'dissertation-create' scholar_detail.pk %}" class="btn-subtle text-[10px]">Add Dissertation</a>
+				{% endif %}
+			</div>
+			{% endif %}
+		</div>
+		<div class="flex gap-6 items-end">
+			<div class="text-right">
+				<div class="stat-number">{{ advisee_count }}</div>
+				<div class="font-mono text-[10px] text-mute mt-1">Advised</div>
+			</div>
+			<div class="text-right">
+				<div class="stat-number">{{ committee_count }}</div>
+				<div class="font-mono text-[10px] text-mute mt-1">Served on</div>
+			</div>
+			{% if lineage_depth %}
+			<div class="text-right">
+				<div class="stat-number">{{ lineage_depth }}</div>
+				<div class="font-mono text-[10px] text-mute mt-1">Lineage depth</div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+</section>
+
+<div x-data="{ tab: 'dissertation' }">
+
+{# Tab bar #}
+<div class="page-section flex gap-7 border-b border-line py-5 -mt-px">
+	<button @click="tab = 'dissertation'" class="font-mono text-xs font-medium uppercase tracking-wide bg-transparent border-none cursor-pointer pb-1 border-b-2" :class="tab === 'dissertation' ? 'text-accent border-accent' : 'text-ink2 border-transparent'">Dissertation</button>
+	{% if advisees %}
+	<button @click="tab = 'advised'" class="font-mono text-xs font-medium uppercase tracking-wide bg-transparent border-none cursor-pointer pb-1 border-b-2" :class="tab === 'advised' ? 'text-accent border-accent' : 'text-ink2 border-transparent'">Dissertations advised</button>
+	{% endif %}
+	{% if committees_served %}
+	<button @click="tab = 'committees'" class="font-mono text-xs font-medium uppercase tracking-wide bg-transparent border-none cursor-pointer pb-1 border-b-2" :class="tab === 'committees' ? 'text-accent border-accent' : 'text-ink2 border-transparent'">Committees served</button>
+	{% endif %}
+	<button @click="tab = 'lineage'" class="font-mono text-xs font-medium uppercase tracking-wide bg-transparent border-none cursor-pointer pb-1 border-b-2" :class="tab === 'lineage' ? 'text-accent border-accent' : 'text-ink2 border-transparent'">Lineage</button>
+</div>
+
+{# Tab: Dissertation #}
+<section x-show="tab === 'dissertation'" class="page-section py-9">
+	{% if dissertation %}
+	<div class="grid grid-cols-[1.5fr_1fr] gap-16 tab-content-grid">
+		<div>
+			<div class="font-mono text-xs font-medium uppercase tracking-wide text-accent mb-4">Dissertation · {{ dissertation.year }}</div>
+			<h2 class="font-serif text-display-md m-0 mb-6">{{ dissertation.title }}</h2>
+			<div class="font-serif text-lg text-ink2 mb-8">
+				<em>at</em> {{ dissertation.school }}
+			</div>
+
+			{% if dissertation.abstract %}
+			<div class="border-t-2 border-ink pt-5">
+				<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3.5">Abstract</div>
+				<div class="font-serif text-body-lg text-ink">
+					{{ dissertation.abstract|linebreaksbr }}
+				</div>
+			</div>
+			{% else %}
+			<div class="border-t-2 border-ink pt-5">
+				<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3.5">Abstract</div>
+				<p class="font-serif text-body-lg italic text-mute">No abstract in database.</p>
+			</div>
+			{% endif %}
+		</div>
+
+		<aside class="border-l border-line pl-8">
+			<table class="meta-table">
+				<tbody>
+					<tr>
+						<td>Record ID</td>
+						<td class="font-mono">{{ dissertation.pk }}</td>
+					</tr>
+					<tr>
+						<td>Granted</td>
+						<td>{{ dissertation.year }}</td>
+					</tr>
+					<tr>
+						<td>Institution</td>
+						<td>{{ dissertation.school }}</td>
+					</tr>
+					{% if advisors %}
+					<tr>
+						<td>Advisor</td>
+						<td>
+							{% for cm in advisors %}
+							<a href="{{ cm.scholar.get_absolute_url }}" class="text-ink underline underline-offset-2">{{ cm.scholar.name_full }}</a>{% if not forloop.last %}, {% endif %}
+							{% endfor %}
+						</td>
+					</tr>
+					{% endif %}
+					{% if readers %}
+					<tr>
+						<td>Committee</td>
+						<td>
+							{% for cm in readers %}
+							<a href="{{ cm.scholar.get_absolute_url }}" class="text-ink underline underline-offset-2">{{ cm.scholar.name_full }}</a>{% if not forloop.last %}, {% endif %}
+							{% endfor %}
+						</td>
+					</tr>
+					{% endif %}
+					{% if dissertation.geographic_emphases.all %}
+					<tr>
+						<td>Fields</td>
+						<td>{% for tag in dissertation.geographic_emphases.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+					</tr>
+					{% endif %}
+					{% if dissertation.thematic_emphases.all %}
+					<tr>
+						<td>Keywords</td>
+						<td>{% for tag in dissertation.thematic_emphases.all %}<span class="chip mr-1.5">{{ tag.name }}</span>{% endfor %}</td>
+					</tr>
+					{% endif %}
+				</tbody>
+			</table>
+
+			{% if dissLinks %}
+			<div class="mt-4 flex gap-2 flex-wrap">
+				{% for link in dissLinks %}
+				<a href="{{ link.url }}" target="_blank" class="btn-subtle text-[10px] py-1.5 px-3">{{ link.label|default:link.get_link_type_display }}</a>
+				{% endfor %}
+			</div>
+			{% endif %}
+
+			{% if lineage %}
+			<div class="card-sm mt-7">
+				<div class="font-mono text-xs font-medium uppercase tracking-wide text-accent mb-3.5">Lineage at a glance</div>
+				<div class="font-serif text-sm leading-relaxed">
+					{% for ancestor in lineage %}
+					{% if forloop.first %}
+					<div class="text-mute italic text-xs">Advised by</div>
+					<div class="font-medium text-xl mb-3.5">
+						<a href="{{ ancestor.get_absolute_url }}" class="text-ink">{{ ancestor.name_full }}</a>
+					</div>
+					{% else %}
+					<div class="lineage-indent">
+						<div class="text-mute italic text-xs">Who was advised by</div>
+						<div class="text-base {% if forloop.last %}text-mute italic{% else %}mb-3{% endif %}">
+							<a href="{{ ancestor.get_absolute_url }}" class="text-inherit">{{ ancestor.name_full }}</a>
+						</div>
+					</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+				<a href="#" @click.prevent="tab = 'lineage'" class="font-mono text-xs font-medium uppercase tracking-wide inline-block mt-4 text-accent">Open full genealogy →</a>
+			</div>
+			{% endif %}
+
+			{% if co_readers %}
+			<div class="mt-6">
+				<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-2.5">Frequent co-readers</div>
+				{% for cr in co_readers %}
+				<div class="font-serif text-base flex justify-between rule-soft pb-1.5 mb-2">
+					<span>{{ cr.scholar__name_first }} {{ cr.scholar__name_last }}</span>
+					<span class="font-mono text-meta-sm text-mute">{{ cr.count }}×</span>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+		</aside>
+	</div>
+
+	{% if related_dissertations %}
+	<div class="pt-10 border-t border-line mt-10">
+		<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-4">Related dissertations</div>
+		<div class="grid grid-cols-3 gap-7 related-grid">
+			{% for r in related_dissertations %}
+			<a href="{{ r.author.get_absolute_url }}" class="border-t-2 border-ink pt-4 text-ink">
+				<div class="font-mono text-meta-sm text-mute mb-1.5">{{ r.year }} · {{ r.school }}</div>
+				<div class="font-serif text-title-lg mb-2">{{ r.title }}</div>
+				<div class="font-serif text-meta text-ink2 italic">by {{ r.author.name_full }}</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+	{% endif %}
+
+	{% else %}
+	<p class="font-serif text-lg italic text-mute">No dissertation record in database.</p>
+	{% endif %}
+</section>
+
+{# Tab: Dissertations advised #}
+{% if advisees %}
+<section x-show="tab === 'advised'" class="page-section py-9">
+	<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3.5">{{ advisee_count }} dissertation{{ advisee_count|pluralize }} advised</div>
+	{% for cm in advisees %}
+	<a href="{{ cm.dissertation.author.get_absolute_url }}" class="flex gap-4 items-start py-4 rule-soft text-ink">
+		<div class="font-mono text-meta text-mute w-[50px] pt-1">{{ cm.dissertation.year }}</div>
+		<div class="flex-1">
+			<div class="font-serif text-title mb-1">{{ cm.dissertation.title }}</div>
+			<div class="text-meta text-ink2">
+				<span class="font-serif italic">by</span> {{ cm.dissertation.author.name_full }}
+				<span class="text-mute mx-2">·</span>{{ cm.dissertation.school }}
+			</div>
+		</div>
+	</a>
+	{% endfor %}
+</section>
+{% endif %}
+
+{# Tab: Committees served #}
+{% if committees_served %}
+<section x-show="tab === 'committees'" class="page-section py-9">
+	<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3.5">{{ committee_count }} committee{{ committee_count|pluralize }} served on</div>
+	{% for cm in committees_served %}
+	<a href="{{ cm.dissertation.author.get_absolute_url }}" class="flex gap-4 items-start py-4 rule-soft text-ink">
+		<div class="font-mono text-meta text-mute w-[50px] pt-1">{{ cm.dissertation.year }}</div>
+		<div class="flex-1">
+			<div class="font-serif text-title mb-1">{{ cm.dissertation.title }}</div>
+			<div class="text-meta text-ink2">
+				<span class="font-serif italic">by</span> {{ cm.dissertation.author.name_full }}
+				<span class="text-mute mx-2">·</span>{{ cm.dissertation.school }}
+			</div>
+		</div>
+	</a>
+	{% endfor %}
+</section>
+{% endif %}
+
+{# Tab: Lineage (trees) #}
+<section x-show="tab === 'lineage'" class="page-section py-9">
+	<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3.5">Scholarly genealogy</div>
+	<div class="mb-8">
+		<h3 class="font-serif text-title-lg m-0 mb-3">Immediate Tree</h3>
+		<div class="card-sm p-4">
+			<div id="simpleTree"></div>
+		</div>
+		<button id="downloadImmediateTree" class="btn-subtle mt-3">Download Simple Tree as PNG</button>
+	</div>
+	<div>
+		<h3 class="font-serif text-title-lg m-0 mb-3">Extended Tree</h3>
+		<div class="card-sm p-4">
+			<div id="complexTree2"></div>
+		</div>
+		<button id="downloadExtendedTree" class="btn-subtle mt-3">Download Extended Tree as PNG</button>
+	</div>
+</section>
+
+</div>{# end x-data wrapper #}
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/save-svg-as-png/lib/saveSvgAsPng.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script type="module">
+	import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+	const vizUrl = {% if scholar_detail.id %}"{% url 'get_viz_data' scholar_detail.id %}"{% else %}null{% endif %};
+	const vizUrlComplex = {% if scholar_detail.id %}"{% url 'get_viz_data_complex' scholar_detail.id %}"{% else %}null{% endif %};
+	let objData = [];
+	function findHeight(data) {
+		return data.length <= 15 ? 300 : data.length * 15;
+	}
+	let simpleUrls = {};
+	if (!vizUrl) { document.querySelector("#simpleTree").textContent = 'No connections in database.'; }
+	else fetch(vizUrl)
+		.then(res => res.json())
+		.then(json => { objData = json.paths; simpleUrls = json.urls; })
+		.then(() => {
+			const simplePlot = Plot.plot({
+				axis: null, height: findHeight(objData), width: 1000, margin: 20, marginLeft: 200, marginRight: 300,
+				style: { fontFamily: "'JetBrains Mono', ui-monospace, monospace" },
+				marks: [ Plot.tree(objData, { textStroke: "white", curve: "step-before", fontSize: '11' }) ]
+			})
+			const div = document.querySelector("#simpleTree");
+			div.append(simplePlot);
+			const svgEl = div.querySelector("svg");
+			if (svgEl) {
+				svgEl.querySelectorAll("text").forEach(textEl => {
+					const name = textEl.textContent.trim();
+					const url = simpleUrls[name];
+					if (url) {
+						const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
+						a.setAttribute("href", url);
+						a.style.cursor = "pointer";
+						textEl.parentNode.insertBefore(a, textEl);
+						a.appendChild(textEl);
+						textEl.style.fill = "var(--accent)";
+						textEl.addEventListener("mouseenter", () => { textEl.style.textDecoration = "underline"; });
+						textEl.addEventListener("mouseleave", () => { textEl.style.textDecoration = "none"; });
+					}
+				});
+			}
+		})
+		.catch(error => { console.error('Error fetching data:', error); });
+
+	let objData2 = [];
+	let complexUrls = {};
+	function findWidth(data) {
+		let max = 0;
+		data.forEach(element => {
+			if ((element.split("/").length - 1) > max) { max = (element.split("/").length - 1) }
+		});
+		return (max * 300) <= 600 ? 700 : max * 320;
+	}
+	function restructureData(data) {
+		const newData = [];
+		data.forEach(element => {
+			if (data.indexOf(element) != data.length - 1) {
+				const subStringArray = element.split('/');
+				subStringArray.forEach(item => {
+					var newItem = { id: item, parentId: subStringArray[subStringArray.indexOf(item) - 1] };
+					if (!(newData.some(newData => newData.id === item))) { newData.push(newItem); }
+				});
+			}
+		});
+		return newData;
+	}
+	function Tree(data, { path, id = Array.isArray(data) ? d => d.id : null, parentId = Array.isArray(data) ? d => d.parentId : null, children, tree = d3.tree, sort, label, title, link, linkTarget = "_blank", width = 640, height, r = 3, padding = 1, fill = "#999", fillOpacity, stroke = "#555", strokeWidth = 1.5, strokeOpacity = 0.4, strokeLinejoin, strokeLinecap, halo = "#fff", haloWidth = 3, curve = d3.curveBumpX } = {}) {
+		const root = path != null ? d3.stratify().path(path)(data) : id != null || parentId != null ? d3.stratify().id(id).parentId(parentId)(data) : d3.hierarchy(data, children);
+		if (sort != null) root.sort(sort);
+		const descendants = root.descendants();
+		const L = label == null ? null : descendants.map(d => label(d.data, d));
+		const dx = 10;
+		const dy = width / (root.height + padding);
+		tree().nodeSize([dx, dy])(root);
+		let x0 = Infinity, x1 = -x0;
+		root.each(d => { if (d.x > x1) x1 = d.x; if (d.x < x0) x0 = d.x; });
+		if (height === undefined) height = x1 - x0 + dx * 2;
+		if (typeof curve !== "function") throw new Error(`Unsupported curve`);
+		const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1f3a6b';
+		const svg = d3.create("svg")
+			.attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
+			.attr("width", width).attr("height", height)
+			.attr("style", "max-width: 100%; height: auto;")
+			.attr("font-family", "'JetBrains Mono', ui-monospace, monospace")
+			.attr("font-size", 10);
+		const linkG = svg.append("g").attr("fill", "none").attr("stroke", stroke).attr("stroke-opacity", strokeOpacity).attr("stroke-linecap", strokeLinecap).attr("stroke-linejoin", strokeLinejoin).attr("stroke-width", strokeWidth);
+		const linkEls = linkG.selectAll("path").data(root.links()).join("path").attr("d", d3.link(curve).x(d => d.y).y(d => d.x));
+		const node = svg.append("g").selectAll("a").data(root.descendants()).join("a")
+			.attr("xlink:href", link == null ? null : d => link(d.data, d))
+			.attr("target", link == null ? null : linkTarget)
+			.attr("transform", d => `translate(${d.y},${d.x})`);
+		const circles = node.append("circle").attr("fill", d => d.children ? stroke : fill).attr("r", r);
+		if (title != null) node.append("title").text(d => title(d.data, d));
+		const texts = L ? node.append("text")
+			.attr("dy", "0.32em").attr("x", d => d.children ? -6 : 6)
+			.attr("text-anchor", d => d.children ? "end" : "start")
+			.attr("paint-order", "stroke").attr("stroke", halo).attr("stroke-width", haloWidth)
+			.attr("fill", (d, i) => link && link(d.data, d) ? accentColor : null)
+			.style("cursor", (d, i) => link && link(d.data, d) ? "pointer" : null)
+			.text((d, i) => L[i]) : null;
+		function getPathToRoot(d) {
+			const path = [];
+			let current = d;
+			while (current) { path.push(current); current = current.parent; }
+			return path;
+		}
+		node.on("mouseenter", function(event, d) {
+			const pathNodes = getPathToRoot(d);
+			const pathSet = new Set(pathNodes);
+			circles.attr("opacity", n => pathSet.has(n) ? 1 : 0.15)
+				.attr("r", n => n === d ? r * 2.5 : pathSet.has(n) ? r * 1.8 : r)
+				.attr("fill", n => pathSet.has(n) ? accentColor : (n.children ? stroke : fill));
+			if (texts) texts.attr("opacity", n => pathSet.has(n) ? 1 : 0.15)
+				.style("font-weight", n => pathSet.has(n) ? "bold" : "normal");
+			linkEls.attr("stroke-opacity", l => pathSet.has(l.source) && pathSet.has(l.target) ? 1 : 0.08)
+				.attr("stroke", l => pathSet.has(l.source) && pathSet.has(l.target) ? accentColor : stroke)
+				.attr("stroke-width", l => pathSet.has(l.source) && pathSet.has(l.target) ? 3 : strokeWidth);
+		})
+		.on("mouseleave", function() {
+			circles.attr("opacity", 1).attr("r", r).attr("fill", d => d.children ? stroke : fill);
+			if (texts) texts.attr("opacity", 1).style("font-weight", "normal");
+			linkEls.attr("stroke-opacity", strokeOpacity).attr("stroke", stroke).attr("stroke-width", strokeWidth);
+		});
+		return svg.node();
+	}
+
+	if (!vizUrlComplex) { document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.'; }
+	else fetch(vizUrlComplex)
+		.then(res => res.json())
+		.then(json => { objData2 = json.paths; complexUrls = json.urls; })
+		.then(() => {
+			const d3Data = restructureData(objData2);
+			const d3Data2 = d3.stratify()(d3Data);
+			const chart = Tree(d3Data2, { label: d => d.id, title: (d, n) => `${n.ancestors().reverse().map(d => d.data.id).join(".")}`, link: (d) => complexUrls[d.id] || null, linkTarget: "_self", sort: (a, b) => d3.descending(a.height, b.height), tree: d3.tidy, width: findWidth(objData2), margin: 20, padding: 2, curve: d3.curveStep });
+			document.querySelector("#complexTree2").append(chart);
+		})
+		.catch(error => {
+			console.error('Error fetching data:', error);
+			document.getElementById('complexTree2').textContent = 'No connections in database, cannot make an extended tree.';
+		});
+
+	d3.select("#downloadImmediateTree").on('click', function () {
+		const svgElement = d3.select("#simpleTree svg").node();
+		let scholarName = "{{ scholar_detail.name_full|escapejs }}".replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
+		saveSvgAsPng(svgElement, `${scholarName}_simpleTree.png`, { scale: 2, backgroundColor: "#FFFFFF" });
+	});
+	d3.select("#downloadExtendedTree").on('click', function () {
+		const container = document.getElementById("complexTree2");
+		let scholarName = "{{ scholar_detail.name_full|escapejs }}".replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
+		const originalStyle = container.style.cssText;
+		container.style.overflow = 'visible';
+		container.style.height = 'auto';
+		html2canvas(container, { scale: 2, backgroundColor: '#FFFFFF', useCORS: true, allowTaint: true }).then(canvas => {
+			const link = document.createElement("a");
+			link.download = `${scholarName}_extendedTree.png`;
+			link.href = canvas.toDataURL("image/png");
+			link.click();
+			container.style.cssText = originalStyle;
+		});
+	});
+</script>
+
+<style>
+@media (max-width: 1024px) {
+	.profile-head { grid-template-columns: 80px 1fr !important; gap: 20px !important; }
+	.profile-head > div:last-child { grid-column: 1 / -1; }
+	.profile-head > div:first-child { width: 80px !important; height: 80px !important; font-size: 28px !important; }
+	.tab-content-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+	.tab-content-grid aside { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--line); padding-top: 24px; }
+	.related-grid { grid-template-columns: 1fr !important; }
+}
+</style>
 {% endblock main %}
-
-</html>
