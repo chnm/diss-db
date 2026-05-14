@@ -1,7 +1,9 @@
 from collections import defaultdict
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Max, Min
 from django.http import Http404, JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from django.views.generic.edit import UpdateView
@@ -22,6 +24,7 @@ from .forms import (
 )
 from .models import (
     CommitteeMember,
+    Department,
     Dissertation,
     DissertationLink,
     GeographicEmphasis,
@@ -36,15 +39,96 @@ from .tables import ComMemTable, DissTable, ScholarTable
 
 
 def index(request):
-    return render(request, "index.html")
+    recent_dissertations = (
+        Dissertation.objects.select_related("author", "school")
+        .prefetch_related("committeemember_set__scholar")
+        .order_by("-year", "-id")[:6]
+    )
+
+    # Annotate each dissertation with its advisor
+    recent_with_advisors = []
+    for diss in recent_dissertations:
+        advisor = None
+        for cm in diss.committeemember_set.all():
+            if cm.role == CommitteeMember.CHAIR:
+                advisor = cm.scholar
+                break
+        recent_with_advisors.append({"dissertation": diss, "advisor": advisor})
+
+    # Top advisors by number of dissertations chaired
+    top_advisor_data = (
+        CommitteeMember.objects.filter(role="chair")
+        .values("scholar_id")
+        .annotate(advised_count=Count("id"))
+        .order_by("-advised_count")[:5]
+    )
+    top_advisor_map = {d["scholar_id"]: d["advised_count"] for d in top_advisor_data}
+    top_advisor_scholars = Scholar.objects.filter(pk__in=top_advisor_map.keys())
+    top_advisors = sorted(
+        [{"scholar": s, "advised_count": top_advisor_map[s.pk]} for s in top_advisor_scholars],
+        key=lambda x: -x["advised_count"],
+    )
+
+    # Stats
+    diss_count = Dissertation.objects.count()
+    scholar_count = Scholar.objects.count()
+    advisor_count = (
+        CommitteeMember.objects.filter(role="chair")
+        .values("scholar")
+        .distinct()
+        .count()
+    )
+    institution_count = Dissertation.objects.values("school").distinct().count()
+    year_range = Dissertation.objects.aggregate(
+        first_year=Min("year"), last_year=Max("year")
+    )
+
+    # Decade counts
+    from django.db.models import F, IntegerField
+    from django.db.models.functions import Floor
+
+    decade_counts = (
+        Dissertation.objects.annotate(
+            decade=Floor(F("year") / 10) * 10,
+        )
+        .values("decade")
+        .annotate(count=Count("id"))
+        .order_by("decade")
+    )
+    decades = [
+        {"label": f"{int(d['decade'])}s", "count": d["count"], "decade": int(d["decade"])}
+        for d in decade_counts
+    ]
+
+    # Geographic emphases for "browse by field" on home page (with diss counts)
+    geo_emphases = (
+        GeographicEmphasis.objects.filter(parent__isnull=True)
+        .annotate(diss_count=Count("dissertations"))
+        .order_by("name")
+    )
+
+    context = {
+        "active_nav": "home",
+        "recent_dissertations": recent_with_advisors,
+        "top_advisors": top_advisors,
+        "diss_count": diss_count,
+        "scholar_count": scholar_count,
+        "advisor_count": advisor_count,
+        "institution_count": institution_count,
+        "first_year": year_range.get("first_year"),
+        "last_year": year_range.get("last_year"),
+        "decades": decades,
+        "geo_emphases": geo_emphases,
+    }
+    return render(request, "index.html", context)
 
 
 def about(request):
-    return render(request, "about.html")
+    return render(request, "about.html", {"active_nav": "about"})
 
 
 def contributing(request):
-    return render(request, "contributing.html")
+    return render(request, "contributing.html", {"active_nav": "contribute"})
 
 def network_viz(request):
     schools = School.objects.all()
@@ -316,18 +400,16 @@ def get_viz_data_complex(request, pk):
     return JsonResponse({"paths": data, "urls": urls})
 
 
-# @api_view(['GET'])
-# def api_root(request, format=None):
-#     return Response({
-#         'scholars': reverse('scholar-list-api', request=request, format=format)
-#     })
-
-
 class FilteredScholarListView(SingleTableMixin, FilterView):
     table_class = ScholarTable
     model = Scholar
     filterset_class = ScholarFilter
     template_name = "dissertations/scholar_filter.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_nav"] = "scholars"
+        return context
 
 
 class ScholarCreateView(LoginRequiredMixin, generic.CreateView):
@@ -370,6 +452,7 @@ class FilteredDissertationListView(SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["active_nav"] = "dissertations"
         context["geographic_tree"] = _build_emphasis_tree(GeographicEmphasis)
         context["thematic_tree"] = _build_emphasis_tree(ThematicEmphasis)
         # Pass currently selected IDs so Alpine can check them on page load
@@ -384,22 +467,51 @@ class FilteredComMemListView(SingleTableMixin, FilterView):
     filterset_class = ComMemFilter
     template_name = "dissertations/committeemember_filter.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_nav"] = "committee"
+        return context
 
-# class DissDetailView(generic.DetailView):
-#     model = Dissertation
-#     context_object_name = "dissertation_detail"
-#     template_name = 'dissertations/dissertation_detail.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         current_diss = self.get_object()
-#
-#         try:
-#             context["advisor"] = CommitteeMember.objects.get(dissertation=current_diss)
-#         except:
-#             context["advisor"] = "information not available"
-#         return context
+
+def diss_detail_redirect(request, pk):
+    """Redirect dissertation detail URLs to the author's scholar profile."""
+    diss = get_object_or_404(Dissertation, pk=pk)
+    return redirect(diss.author.get_absolute_url())
+
+
+def department_list_api(request):
+    """Return departments filtered by school_id query param."""
+    school_id = request.GET.get("school_id")
+    if school_id:
+        depts = Department.objects.filter(school_id=school_id).order_by("name")
+    else:
+        depts = Department.objects.select_related("school").order_by("school__name", "name")
+    data = [{"id": d.pk, "name": d.name, "school_id": d.school_id} for d in depts]
+    return JsonResponse(data, safe=False)
+
+
+@require_http_methods(["POST"])
+def department_create_api(request):
+    """Create a new department. Requires authentication."""
+    import json as _json
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=403)
+    try:
+        body = _json.loads(request.body)
+    except _json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    name = body.get("name", "").strip()
+    school_id = body.get("school_id")
+    if not name or not school_id:
+        return JsonResponse({"error": "name and school_id are required"}, status=400)
+    try:
+        school = School.objects.get(pk=school_id)
+    except School.DoesNotExist:
+        return JsonResponse({"error": "School not found"}, status=404)
+    # Check for existing department with same name at same school
+    dept, created = Department.objects.get_or_create(name=name, school=school)
+    return JsonResponse({"id": dept.pk, "name": dept.name, "school_id": dept.school_id}, status=201 if created else 200)
 
 
 class ScholarDetailView(generic.DetailView):
@@ -409,6 +521,7 @@ class ScholarDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["active_nav"] = "scholars"
 
         scholar = self.object
 
@@ -433,17 +546,162 @@ class ScholarDetailView(generic.DetailView):
             )
 
         except Dissertation.DoesNotExist:
-            context["dissertation"] = "information not available"
+            context["dissertation"] = None
             context["advisors"] = None
             context["readers"] = None
 
-        advisees = CommitteeMember.objects.filter(
-            role="chair", scholar=scholar.id
-        ).select_related("dissertation__author")
+        # Advisees - dissertations this scholar chaired
+        advisees = (
+            CommitteeMember.objects.filter(role="chair", scholar=scholar.id)
+            .select_related("dissertation__author", "dissertation__school")
+            .order_by("-dissertation__year")
+        )
         context["advisees"] = advisees if advisees.exists() else None
+        context["advisee_count"] = advisees.count()
+
+        # Committees served on (as reader)
+        committees_served = (
+            CommitteeMember.objects.filter(role="reader", scholar=scholar.id)
+            .select_related("dissertation__author", "dissertation__school")
+            .order_by("-dissertation__year")
+        )
+        context["committees_served"] = committees_served if committees_served.exists() else None
+        context["committee_count"] = committees_served.count()
+
+        # Lineage chain (walk up advisor chain)
+        lineage = []
+        current = scholar
+        visited_ids = set()
+        while current and current.pk not in visited_ids:
+            visited_ids.add(current.pk)
+            try:
+                cur_diss = Dissertation.objects.get(author=current)
+                advisor_cm = CommitteeMember.objects.filter(
+                    dissertation=cur_diss, role="chair"
+                ).select_related("scholar").first()
+                if advisor_cm:
+                    lineage.append(advisor_cm.scholar)
+                    current = advisor_cm.scholar
+                else:
+                    break
+            except Dissertation.DoesNotExist:
+                break
+        context["lineage"] = lineage
+        context["lineage_depth"] = len(lineage)
+
+        # Frequent co-readers
+        if advisees.exists():
+            diss_ids = [a.dissertation_id for a in advisees]
+            co_readers = (
+                CommitteeMember.objects.filter(
+                    dissertation_id__in=diss_ids, role="reader"
+                )
+                .exclude(scholar=scholar)
+                .values("scholar__id", "scholar__name_first", "scholar__name_last")
+                .annotate(count=Count("id"))
+                .order_by("-count")[:4]
+            )
+            context["co_readers"] = co_readers
+        else:
+            context["co_readers"] = []
 
         websites = ScholarWebsite.objects.filter(scholar=scholar.id)
         context["websites"] = websites if websites.exists() else None
+
+        # Related dissertations: hybrid scoring (content + structure)
+        if context.get("dissertation") and context["dissertation"]:
+            from django.contrib.postgres.search import (
+                SearchQuery,
+                SearchRank,
+                SearchVector,
+            )
+            from django.db.models import Case, Value, When
+            from django.db.models import FloatField as FF
+
+            diss = context["dissertation"]
+
+            # Build sets for structural bonus scoring
+            advisor_ids = set()
+            if context.get("advisors"):
+                advisor_ids = {a.scholar_id for a in context["advisors"]}
+            same_advisor_diss_ids = set(
+                CommitteeMember.objects.filter(
+                    role="chair", scholar_id__in=advisor_ids
+                )
+                .exclude(dissertation=diss)
+                .values_list("dissertation_id", flat=True)
+            ) if advisor_ids else set()
+
+            diss_geo_ids = set(diss.geographic_emphases.values_list("pk", flat=True))
+            diss_thematic_ids = set(diss.thematic_emphases.values_list("pk", flat=True))
+
+            # Full-text search on title + abstract
+            vector = SearchVector("title", weight="A") + SearchVector(
+                "abstract", weight="B"
+            )
+            query = SearchQuery(diss.title, search_type="websearch")
+
+            candidates = (
+                Dissertation.objects.exclude(pk=diss.pk)
+                .select_related("author", "school")
+                .annotate(
+                    text_rank=SearchRank(vector, query),
+                )
+            )
+
+            # Score in Python so we can combine text rank + structural bonuses
+            scored = []
+            for c in candidates.filter(text_rank__gt=0.001).order_by("-text_rank")[:50]:
+                score = float(c.text_rank)
+
+                # Bonus: same advisor (+0.5)
+                if c.pk in same_advisor_diss_ids:
+                    score += 0.5
+
+                # Bonus: same school (+0.2)
+                if c.school_id == diss.school_id:
+                    score += 0.2
+
+                # Bonus: shared emphasis tags (+0.1 each)
+                if diss_geo_ids or diss_thematic_ids:
+                    c_geo = set(c.geographic_emphases.values_list("pk", flat=True))
+                    c_thematic = set(c.thematic_emphases.values_list("pk", flat=True))
+                    shared = len(diss_geo_ids & c_geo) + len(diss_thematic_ids & c_thematic)
+                    score += shared * 0.1
+
+                scored.append((score, c))
+
+            scored.sort(key=lambda x: -x[0])
+            related = [c for _, c in scored[:3]]
+
+            # Fallback if full-text search returned fewer than 3
+            if len(related) < 3:
+                fallback_exclude = {diss.pk} | {r.pk for r in related}
+                # Try same advisor
+                if len(related) < 3 and same_advisor_diss_ids:
+                    for did in same_advisor_diss_ids - fallback_exclude:
+                        if len(related) >= 3:
+                            break
+                        try:
+                            related.append(
+                                Dissertation.objects.select_related("author", "school").get(pk=did)
+                            )
+                            fallback_exclude.add(did)
+                        except Dissertation.DoesNotExist:
+                            pass
+                # Then same school
+                if len(related) < 3:
+                    school_fill = (
+                        Dissertation.objects.filter(school=diss.school)
+                        .exclude(pk__in=fallback_exclude)
+                        .select_related("author", "school")
+                        .order_by("-year")[: 3 - len(related)]
+                    )
+                    related.extend(school_fill)
+
+            context["related_dissertations"] = related
+        else:
+            context["related_dissertations"] = []
 
         return context
 
