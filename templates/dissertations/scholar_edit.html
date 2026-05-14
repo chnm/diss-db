@@ -1,76 +1,69 @@
 {% extends "base.html" %}
 
 {% block title %}
-    <title>Edit Scholar – {{ object.name_full }}</title>
+<title>Edit Scholar – {{ object.name_full }}</title>
 {% endblock title %}
 
 {% block main %}
-    <div class="max-w-3xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Edit Scholar: {{ object.name_full }}</h1>
-            <a href="{{ object.get_absolute_url }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
-        </div>
+<div class="section-header">
+	<div class="flex items-end justify-between">
+		<div>
+			<h1 class="font-serif text-display-sm">Edit Scholar: {{ object.name_full }}</h1>
+		</div>
+		<a href="{{ object.get_absolute_url }}" class="font-mono text-xs font-medium text-mute">Cancel</a>
+	</div>
+</div>
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+<section class="page-section py-9 max-w-[900px]">
+	<form method="post" novalidate>
+		{% csrf_token %}
 
-            {% if form.non_field_errors %}
-                <div class="mb-4 p-4 rounded-md bg-red-50 text-red-700 text-sm">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
+		{% if form.non_field_errors %}
+		<div class="mb-4 p-4 bg-paper3 border-l-[3px] border-red-700 text-red-700 text-sm">
+			{{ form.non_field_errors }}
+		</div>
+		{% endif %}
 
-        <!-- Scholar fields -->
-            <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Name</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="{{ form.name_first.id_for_label }}" class="block text-sm font-medium text-gray-700">First name</label>
-                        {{ form.name_first }}
-                        {% if form.name_first.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_first.errors.as_text }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.name_middle.id_for_label }}" class="block text-sm font-medium text-gray-700">Middle name</label>
-                        {{ form.name_middle }}
-                        {% if form.name_middle.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_middle.errors.as_text }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.name_last.id_for_label }}" class="block text-sm font-medium text-gray-700">Last name</label>
-                        {{ form.name_last }}
-                        {% if form.name_last.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_last.errors.as_text }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.name_suffix.id_for_label }}" class="block text-sm font-medium text-gray-700">Suffix</label>
-                        {{ form.name_suffix }}
-                        {% if form.name_suffix.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name_suffix.errors.as_text }}</p>{% endif %}
-                    </div>
-                </div>
+		<div class="card mb-6">
+			<div class="font-mono text-sm font-medium text-accent mb-4">Name</div>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+				<div>
+					<label for="{{ form.name_first.id_for_label }}" class="form-label">First name</label>
+					{{ form.name_first }}
+					{% if form.name_first.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_first.errors.as_text }}</p>{% endif %}
+				</div>
+				<div>
+					<label for="{{ form.name_middle.id_for_label }}" class="form-label">Middle name</label>
+					{{ form.name_middle }}
+				</div>
+				<div>
+					<label for="{{ form.name_last.id_for_label }}" class="form-label">Last name</label>
+					{{ form.name_last }}
+					{% if form.name_last.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_last.errors.as_text }}</p>{% endif %}
+				</div>
+				<div>
+					<label for="{{ form.name_suffix.id_for_label }}" class="form-label">Suffix</label>
+					{{ form.name_suffix }}
+				</div>
+			</div>
 
-                <h2 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Affiliation &amp; Identifier</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="{{ form.affiliation.id_for_label }}" class="block text-sm font-medium text-gray-700">Current affiliation</label>
-                        {{ form.affiliation }}
-                        {% if form.affiliation.errors %}<p class="mt-1 text-sm text-red-600">{{ form.affiliation.errors.as_text }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.orcid.id_for_label }}" class="block text-sm font-medium text-gray-700">ORCID</label>
-                        {{ form.orcid }}
-                        {% if form.orcid.errors %}<p class="mt-1 text-sm text-red-600">{{ form.orcid.errors.as_text }}</p>{% endif %}
-                    </div>
-                </div>
-            </div>
+			<div class="font-mono text-sm font-medium text-accent mb-4 mt-6 pt-4 border-t border-line2">Affiliation &amp; Identifier</div>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+				<div>
+					<label for="{{ form.affiliation.id_for_label }}" class="form-label">Current affiliation</label>
+					{{ form.affiliation }}
+				</div>
+				<div>
+					<label for="{{ form.orcid.id_for_label }}" class="form-label">ORCID</label>
+					{{ form.orcid }}
+				</div>
+			</div>
+		</div>
 
-            <div class="flex gap-3">
-                <button type="submit"
-                        class="inline-flex items-center px-5 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Save changes
-                </button>
-                <a href="{{ object.get_absolute_url }}"
-                   class="inline-flex items-center px-5 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    Cancel
-                </a>
-            </div>
-        </form>
-    </div>
+		<div class="flex gap-2.5">
+			<button type="submit" class="btn-primary">Save changes</button>
+			<a href="{{ object.get_absolute_url }}" class="btn-subtle">Cancel</a>
+		</div>
+	</form>
+</section>
 {% endblock main %}

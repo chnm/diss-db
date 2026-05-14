@@ -1,64 +1,157 @@
 {% extends "base.html" %}
 
 {% block title %}
-    <title>Add Dissertation – {{ author.name_full }}</title>
+<title>Add Dissertation – {{ author.name_full }}</title>
 {% endblock title %}
 
 {% block main %}
-    <div class="max-w-3xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Add Dissertation for {{ author.name_full }}</h1>
-            <a href="{{ author.get_absolute_url }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
-        </div>
+<div class="section-header">
+	<div class="flex items-end justify-between">
+		<div>
+			<h1 class="font-serif text-display-sm">Add Dissertation for {{ author.name_full }}</h1>
+		</div>
+		<a href="{{ author.get_absolute_url }}" class="font-mono text-xs font-medium text-mute">Cancel</a>
+	</div>
+</div>
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+<section class="page-section py-9 max-w-[900px]">
+	<form method="post" novalidate>
+		{% csrf_token %}
 
-            {% if form.non_field_errors %}
-                <div class="mb-4 p-4 rounded-md bg-red-50 text-red-700 text-sm">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
+		{% if form.non_field_errors %}
+		<div class="mb-4 p-4 bg-paper3 border-l-[3px] border-red-700 text-red-700 text-sm">
+			{{ form.non_field_errors }}
+		</div>
+		{% endif %}
 
-            <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
-                <div class="mb-4">
-                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">Title</label>
-                    {{ form.title }}
-                    {% if form.title.errors %}<p class="mt-1 text-sm text-red-600">{{ form.title.errors.as_text }}</p>{% endif %}
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="{{ form.year.id_for_label }}" class="block text-sm font-medium text-gray-700">Year</label>
-                        {{ form.year }}
-                        {% if form.year.errors %}<p class="mt-1 text-sm text-red-600">{{ form.year.errors.as_text }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.school.id_for_label }}" class="block text-sm font-medium text-gray-700">Institution</label>
-                        {{ form.school }}
-                        {% if form.school.errors %}<p class="mt-1 text-sm text-red-600">{{ form.school.errors.as_text }}</p>{% endif %}
-                    </div>
-                </div>
-                <div>
-                    <label for="{{ form.abstract.id_for_label }}" class="block text-sm font-medium text-gray-700">Abstract</label>
-                    {{ form.abstract }}
-                    {% if form.abstract.errors %}<p class="mt-1 text-sm text-red-600">{{ form.abstract.errors.as_text }}</p>{% endif %}
-                </div>
-            </div>
+		<div class="card mb-6">
+			<div class="font-mono text-sm font-medium text-accent mb-4">Metadata</div>
+			<div class="mb-4">
+				<label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+				{{ form.title }}
+				{% if form.title.errors %}<p class="mt-1 text-meta text-red-700">{{ form.title.errors.as_text }}</p>{% endif %}
+			</div>
+			<div class="grid grid-cols-3 gap-4 mb-4">
+				<div>
+					<label for="{{ form.year.id_for_label }}" class="form-label">Year</label>
+					{{ form.year }}
+					{% if form.year.errors %}<p class="mt-1 text-meta text-red-700">{{ form.year.errors.as_text }}</p>{% endif %}
+				</div>
+				<div>
+					<label for="{{ form.school.id_for_label }}" class="form-label">Institution</label>
+					{{ form.school }}
+					{% if form.school.errors %}<p class="mt-1 text-meta text-red-700">{{ form.school.errors.as_text }}</p>{% endif %}
+				</div>
+				<div>
+					<div class="flex items-baseline justify-between mb-1">
+						<label for="{{ form.department.id_for_label }}" class="form-label mb-0">Department</label>
+						<button type="button" id="open-dept-modal" class="font-mono text-xs font-medium text-accent bg-transparent border-none cursor-pointer text-[10px]">+ New</button>
+					</div>
+					{{ form.department }}
+					{% if form.department.errors %}<p class="mt-1 text-meta text-red-700">{{ form.department.errors.as_text }}</p>{% endif %}
+				</div>
+			</div>
+			<div>
+				<label for="{{ form.abstract.id_for_label }}" class="form-label">Abstract</label>
+				{{ form.abstract }}
+				{% if form.abstract.errors %}<p class="mt-1 text-meta text-red-700">{{ form.abstract.errors.as_text }}</p>{% endif %}
+			</div>
+		</div>
 
-        <!-- Areas of Emphasis -->
-            {% include "dissertations/_emphasis_picker.html" %}
+		{% include "dissertations/_emphasis_picker.html" %}
 
-            <div class="flex gap-3">
-                <button type="submit"
-                        class="inline-flex items-center px-5 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Save dissertation
-                </button>
-                <a href="{{ author.get_absolute_url }}"
-                   class="inline-flex items-center px-5 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    Cancel
-                </a>
-            </div>
-        </form>
-    </div>
+		{# Department modal #}
+		<div id="dept-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-ink/50">
+			<div class="card w-full max-w-[420px] mx-4">
+				<div class="font-mono text-sm font-medium text-accent mb-4">Add Department</div>
+				<div class="flex flex-col gap-3">
+					<div>
+						<label class="form-label">Department name <span class="text-red-700">*</span></label>
+						<input id="dept-modal-name" type="text" class="form-input" placeholder="e.g. Department of History">
+					</div>
+					<p class="font-mono text-meta-sm text-mute m-0" id="dept-modal-school-label">
+						Will be added to the currently selected institution.
+					</p>
+					<p id="dept-modal-error" class="hidden text-meta text-red-700"></p>
+				</div>
+				<div class="flex justify-end gap-2.5 mt-5">
+					<button type="button" id="dept-modal-cancel" class="btn-subtle">Cancel</button>
+					<button type="button" id="dept-modal-submit" class="btn-primary">Create</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex gap-2.5">
+			<button type="submit" class="btn-primary">Save dissertation</button>
+			<a href="{{ author.get_absolute_url }}" class="btn-subtle">Cancel</a>
+		</div>
+	</form>
+</section>
+
+<script>
+(function() {
+	function getCsrfToken() {
+		const input = document.querySelector('[name=csrfmiddlewaretoken]');
+		return input ? input.value : '';
+	}
+
+	const deptModal = document.getElementById('dept-modal');
+	const deptError = document.getElementById('dept-modal-error');
+	const deptSelect = document.getElementById('{{ form.department.id_for_label }}');
+	const schoolSelect = document.getElementById('{{ form.school.id_for_label }}');
+
+	function refreshDepartments(schoolId) {
+		if (!deptSelect) return;
+		const currentVal = deptSelect.value;
+		while (deptSelect.options.length > 1) deptSelect.remove(1);
+		if (!schoolId) return;
+		fetch('/api/departments/?school_id=' + schoolId)
+			.then(r => r.json())
+			.then(depts => {
+				depts.forEach(d => {
+					const opt = new Option(d.name, d.id);
+					deptSelect.add(opt);
+					if (String(d.id) === String(currentVal)) opt.selected = true;
+				});
+			});
+	}
+
+	if (schoolSelect) {
+		schoolSelect.addEventListener('change', function() { refreshDepartments(this.value); });
+		if (schoolSelect.value) refreshDepartments(schoolSelect.value);
+	}
+
+	document.getElementById('open-dept-modal').addEventListener('click', function () {
+		if (!schoolSelect || !schoolSelect.value) { alert('Please select an institution first.'); return; }
+		document.getElementById('dept-modal-name').value = '';
+		document.getElementById('dept-modal-school-label').textContent = 'Will be added to: ' + schoolSelect.options[schoolSelect.selectedIndex].text;
+		deptError.classList.add('hidden');
+		deptModal.classList.remove('hidden');
+		document.getElementById('dept-modal-name').focus();
+	});
+
+	document.getElementById('dept-modal-cancel').addEventListener('click', function () { deptModal.classList.add('hidden'); });
+	deptModal.addEventListener('click', function (e) { if (e.target === deptModal) deptModal.classList.add('hidden'); });
+
+	document.getElementById('dept-modal-submit').addEventListener('click', function () {
+		const name = document.getElementById('dept-modal-name').value.trim();
+		if (!name) { deptError.textContent = 'Department name is required.'; deptError.classList.remove('hidden'); return; }
+		fetch('/api/departments/create/', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+			body: JSON.stringify({ name: name, school_id: schoolSelect.value }),
+		})
+		.then(r => { if (!r.ok) return r.json().then(e => { throw e; }); return r.json(); })
+		.then(dept => {
+			deptModal.classList.add('hidden');
+			const opt = new Option(dept.name, dept.id, true, true);
+			deptSelect.add(opt);
+		})
+		.catch(err => {
+			deptError.textContent = err.error || 'An error occurred.';
+			deptError.classList.remove('hidden');
+		});
+	});
+}());
+</script>
 {% endblock main %}

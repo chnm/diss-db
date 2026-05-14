@@ -9,9 +9,9 @@ from .models import (
     ScholarWebsite,
 )
 
-INPUT_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-TEXTAREA_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-SELECT_CLASSES = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+INPUT_CLASSES = "mt-1 block w-full border border-line bg-paper3 px-3 py-2 text-sm font-sans focus:border-accent focus:outline-none"
+TEXTAREA_CLASSES = "mt-1 block w-full border border-line bg-paper3 px-3 py-2 text-sm font-sans focus:border-accent focus:outline-none"
+SELECT_CLASSES = "mt-1 block w-full border border-line bg-paper3 px-3 py-2 text-sm font-sans focus:border-accent focus:outline-none"
 
 
 class ScholarForm(forms.ModelForm):
@@ -60,6 +60,7 @@ class DissertationForm(forms.ModelForm):
             "title",
             "year",
             "school",
+            "department",
             "abstract",
             "thematic_emphases",
             "geographic_emphases",
@@ -68,6 +69,7 @@ class DissertationForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"class": INPUT_CLASSES}),
             "year": forms.NumberInput(attrs={"class": INPUT_CLASSES}),
             "school": forms.Select(attrs={"class": SELECT_CLASSES}),
+            "department": forms.Select(attrs={"class": SELECT_CLASSES}),
             "abstract": forms.Textarea(attrs={"class": TEXTAREA_CLASSES, "rows": 6}),
         }
 
