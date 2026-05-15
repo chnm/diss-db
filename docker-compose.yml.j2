@@ -26,7 +26,7 @@ services:
     command: >
         sh -c "poetry run python3 manage.py migrate &&
                poetry run python3 manage.py runserver 0.0.0.0:8000"
-    {% if service.volumes | default([]) | length > 0) %}
+    {% if service.volumes | default([]) | length > 0 %}
 
     volumes:
 {% for vol in service.volumes %}
@@ -57,7 +57,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    {% if service.volumes | default([]) | length > 0) %}
+    {% if service.volumes | default([]) | length > 0 %}
 
     volumes:
 {% for vol in service.volumes %}
@@ -77,7 +77,7 @@ services:
       - {{ env.key }}={{ env.value }}
 {% endfor %}
     {% endif %}
-    {% if service.volumes | default([]) | length > 0) %}
+    {% if service.volumes | default([]) | length > 0 %}
 
     volumes:
 {% for vol in service.volumes %}
