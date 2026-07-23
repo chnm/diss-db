@@ -3,46 +3,46 @@
 {% load dissdb_tags %}
 
 {% block title %}
-<title>Committee Members - The History Dissertation Database</title>
+    <title>Committee Members - The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
-<div class="section-header">
-	<div class="flex items-end justify-between">
-		<div>
-			<h1 class="font-serif text-display-lg">Committee Members</h1>
-		</div>
-		{% if table.paginator %}
-		<div class="font-mono text-xs text-mute text-right">
-			showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
-		</div>
-		{% endif %}
-	</div>
-</div>
+    <div class="section-header">
+        <div class="flex items-end justify-between">
+            <div>
+                <h1 class="font-serif text-display-lg">Committee Members</h1>
+            </div>
+            {% if table.paginator %}
+                <div class="font-mono text-xs text-mute text-right">
+                    showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
-{% if filter %}
-<form action="" method="get" class="filter-bar">
-	<span class="font-mono text-xs font-medium text-mute">Filter</span>
+    {% if filter %}
+        <form action="" method="get" class="filter-bar">
+            <span class="text-sm font-semibold text-ink2">Filter</span>
 
-	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label for="id_scholar" class="text-xs text-mute whitespace-nowrap">Scholar:</label>
-		{{ filter.form.scholar }}
-	</div>
+            <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
+                <label for="id_scholar" class="text-xs text-mute whitespace-nowrap">Scholar:</label>
+                {{ filter.form.scholar }}
+            </div>
 
-	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label for="id_dissertation" class="text-xs text-mute whitespace-nowrap">Dissertation:</label>
-		{{ filter.form.dissertation }}
-	</div>
+            <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
+                <label for="id_dissertation" class="text-xs text-mute whitespace-nowrap">Dissertation:</label>
+                {{ filter.form.dissertation }}
+            </div>
 
-	<div class="flex-1"></div>
-	<button type="submit" class="btn-primary">Apply</button>
-	<a href="{{ request.path }}" class="btn-subtle">Reset</a>
-</form>
-{% endif %}
+            <div class="flex-1"></div>
+            <button type="submit" class="btn-primary">Apply</button>
+            <a href="{{ request.path }}" class="btn-subtle">Reset</a>
+        </form>
+    {% endif %}
 
-{% render_table table %}
+    {% render_table table %}
 
-<style>
-	#id_scholar, #id_dissertation { border: none; outline: none; background: transparent; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink); width: 160px; padding: 0; }
-</style>
+    <style>
+        #id_scholar, #id_dissertation { border: none; outline: none; background: transparent; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--ink); width: 160px; padding: 0; }
+    </style>
 {% endblock main %}

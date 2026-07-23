@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load dissdb_tags %}
+
+{% block title %}
+    <title>{% if query %}Search: {{ query }}{% else %}Search{% endif %} - The History Dissertation Database</title>
+{% endblock title %}
+
+{% block main %}
+    <header class="section-header">
+        <p class="kicker text-mute mb-3">Catalogue search</p>
+        <h1 class="font-serif text-display-lg m-0">Search the collection</h1>
+        <form method="get" action="{% url 'search' %}" class="hero-search mt-7" role="search">
+            <input type="search" name="q" value="{{ query }}" placeholder="Title, scholar, institution, or field" aria-label="Search the catalogue" autofocus>
+            <button type="submit">Search</button>
+        </form>
+        <p class="text-sm text-mute mt-3 mb-0">
+            Need a narrower query? <a href="{% url 'dissertations' %}" class="text-accent underline underline-offset-4">Use advanced dissertation filters</a>
+        </p>
+    </header>
+
+    {% if searched %}
+        <section class="search-results page-section py-10">
+            <div class="flex items-baseline justify-between gap-6 pb-4 border-b-2 border-ink">
+                <h2 class="font-serif text-display-sm font-medium m-0">Results for “{{ query }}”</h2>
+                <p class="font-mono text-xs text-mute m-0 whitespace-nowrap">{{ total_count|intcomma_plain }} match{{ total_count|pluralize:"es" }}</p>
+            </div>
+
+            {% if total_count %}
+                <div class="search-result-grid grid grid-cols-2 gap-x-14 gap-y-12 pt-9">
+                    <section aria-labelledby="dissertation-results">
+                        <div class="search-group-heading">
+                            <h3 id="dissertation-results">Dissertations</h3>
+                            <span>{{ search_counts.dissertations|intcomma_plain }}</span>
+                        </div>
+                        {% for dissertation in dissertations %}
+                            <a href="{{ dissertation.author.get_absolute_url }}" class="search-result">
+                                <span class="search-result-title">{{ dissertation.title }}</span>
+                                <span class="search-result-meta">{{ dissertation.year }} · {{ dissertation.author.name_full }} · {{ dissertation.school.name }}</span>
+                            </a>
+                        {% empty %}
+                            <p class="search-empty">No dissertation titles matched.</p>
+                        {% endfor %}
+                        {% if search_counts.dissertations > 6 %}
+                            <a href="{% url 'dissertations' %}?title={{ query|urlencode }}" class="search-more">View all {{ search_counts.dissertations|intcomma_plain }} dissertation matches →</a>
+                        {% endif %}
+                    </section>
+
+                    <section aria-labelledby="scholar-results">
+                        <div class="search-group-heading">
+                            <h3 id="scholar-results">Scholars</h3>
+                            <span>{{ search_counts.scholars|intcomma_plain }}</span>
+                        </div>
+                        {% for scholar in scholars %}
+                            <a href="{{ scholar.get_absolute_url }}" class="search-result">
+                                <span class="search-result-title">{{ scholar.name_full }}</span>
+                                {% if scholar.affiliation %}<span class="search-result-meta">{{ scholar.affiliation }}</span>{% endif %}
+                            </a>
+                        {% empty %}
+                            <p class="search-empty">No scholar names matched.</p>
+                        {% endfor %}
+                        {% if search_counts.scholars > 6 %}
+                            <a href="{% url 'scholars' %}?name={{ query|urlencode }}" class="search-more">View all {{ search_counts.scholars|intcomma_plain }} scholar matches →</a>
+                        {% endif %}
+                    </section>
+
+                    <section aria-labelledby="institution-results">
+                        <div class="search-group-heading">
+                            <h3 id="institution-results">Institutions</h3>
+                            <span>{{ search_counts.schools|intcomma_plain }}</span>
+                        </div>
+                        {% for school in schools %}
+                            <a href="{% url 'dissertations' %}?school={{ school.name|urlencode }}" class="search-result">
+                                <span class="search-result-title">{{ school.name }}</span>
+                                <span class="search-result-meta">{{ school.dissertation_count|intcomma_plain }} dissertation{{ school.dissertation_count|pluralize }}</span>
+                            </a>
+                        {% empty %}
+                            <p class="search-empty">No institutions matched.</p>
+                        {% endfor %}
+                    </section>
+
+                    <section aria-labelledby="field-results">
+                        <div class="search-group-heading">
+                            <h3 id="field-results">Fields</h3>
+                            <span>{{ search_counts.fields|intcomma_plain }}</span>
+                        </div>
+                        {% for item in fields %}
+                            <a href="{% url 'dissertations' %}?{{ item.url_param }}={{ item.field.pk }}" class="search-result">
+                                <span class="search-result-title">{{ item.label }}</span>
+                                <span class="search-result-meta">{{ item.kind }} · {{ item.field.dissertation_count|intcomma_plain }} dissertation{{ item.field.dissertation_count|pluralize }}</span>
+                            </a>
+                        {% empty %}
+                            <p class="search-empty">No geographic or thematic fields matched.</p>
+                        {% endfor %}
+                    </section>
+                </div>
+            {% else %}
+                <div class="py-16 max-w-[620px]">
+                    <h2 class="font-serif text-display-sm font-medium mb-3">No records found</h2>
+                    <p class="text-ink2 text-body leading-relaxed mt-0">Try a surname, a shorter phrase from a dissertation title, an institution name, or a broad field such as “labor” or “Europe.”</p>
+                </div>
+            {% endif %}
+        </section>
+    {% else %}
+        <section class="page-section py-14 max-w-[760px]">
+            <p class="font-serif text-title-lg leading-relaxed text-ink2 m-0">Enter a title, scholar, institution, or field to search across the catalogue.</p>
+        </section>
+    {% endif %}
+{% endblock main %}

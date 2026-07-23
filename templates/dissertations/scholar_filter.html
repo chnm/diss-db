@@ -3,51 +3,51 @@
 {% load dissdb_tags %}
 
 {% block title %}
-<title>Scholars - The History Dissertation Database</title>
+    <title>Scholars - The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
-<div class="section-header">
-	<div class="flex items-end justify-between">
-		<div>
-			<h1 class="font-serif text-display-lg">Scholars</h1>
-		</div>
-		<div class="flex items-center gap-4">
-			{% if request.user.is_authenticated %}
-			<a href="{% url 'scholar-create' %}" class="btn-primary">+ Add Scholar</a>
-			{% endif %}
-			{% if table.paginator %}
-			<div class="font-mono text-xs text-mute text-right">
-				showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
+    <div class="section-header">
+        <div class="flex items-end justify-between">
+            <div>
+                <h1 class="font-serif text-display-lg">Scholars</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'scholar-create' %}" class="btn-primary">+ Add Scholar</a>
+                {% endif %}
+                {% if table.paginator %}
+                    <div class="font-mono text-xs text-mute text-right">
+                        showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-{% if filter %}
-<form action="" method="get" class="filter-bar">
-	<span class="font-mono text-xs font-medium text-mute">Filter</span>
+    {% if filter %}
+        <form action="" method="get" class="filter-bar">
+            <span class="text-sm font-semibold text-ink2">Filter</span>
 
-	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label for="id_name" class="text-xs text-mute whitespace-nowrap">Name:</label>
-		{{ filter.form.name }}
-	</div>
+            <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
+                <label for="id_name" class="text-xs text-mute whitespace-nowrap">Name:</label>
+                {{ filter.form.name }}
+            </div>
 
-	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label for="id_school" class="text-xs text-mute whitespace-nowrap">Institution:</label>
-		{{ filter.form.school }}
-	</div>
+            <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
+                <label for="id_school" class="text-xs text-mute whitespace-nowrap">Institution:</label>
+                {{ filter.form.school }}
+            </div>
 
-	<div class="flex-1"></div>
-	<button type="submit" class="btn-primary">Apply</button>
-	<a href="{{ request.path }}" class="btn-subtle">Reset</a>
-</form>
-{% endif %}
+            <div class="flex-1"></div>
+            <button type="submit" class="btn-primary">Apply</button>
+            <a href="{{ request.path }}" class="btn-subtle">Reset</a>
+        </form>
+    {% endif %}
 
-{% render_table table %}
+    {% render_table table %}
 
-<style>
-	#id_name, #id_school { border: none; outline: none; background: transparent; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink); width: 160px; padding: 0; }
-</style>
+    <style>
+        #id_name, #id_school { border: none; outline: none; background: transparent; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--ink); width: 160px; padding: 0; }
+    </style>
 {% endblock main %}

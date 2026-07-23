@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Network Atlas · Homepage study</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="atlas">
+    <div class="study-bar study-bar-light"><a href="index.html">← All concepts</a><span>02 · Network Atlas</span></div>
+    <div class="atlas-shell">
+      <header class="atlas-header">
+        <a class="atlas-name" href="#"><span>History</span><span>Dissertation</span><span>Database</span></a>
+        <nav><a href="#">Search</a><a href="#">Browse</a><a href="#">About the data</a></nav>
+        <p class="atlas-edition">Public beta<br>July 2026</p>
+      </header>
+
+      <main>
+        <section class="atlas-hero">
+          <div class="atlas-copy">
+            <p class="atlas-kicker">1873—2022 · 58,683 dissertations</p>
+            <h1>A map of<br>who trained<br>whom.</h1>
+            <p>Explore the dissertations, advisors, and committee relationships that shaped historical scholarship in the United States.</p>
+            <form><input type="search" aria-label="Search the network" placeholder="Search the network"><button>↗</button></form>
+            <p class="atlas-hint">Titles · people · institutions · fields</p>
+          </div>
+
+          <figure class="atlas-network">
+            <svg viewBox="0 0 720 640" role="img" aria-label="Sample scholarly genealogy network">
+              <g class="atlas-links">
+                <path d="M102 122L270 208L427 112L610 196"/>
+                <path d="M270 208L184 344L352 390L500 304L610 196"/>
+                <path d="M184 344L88 500M184 344L242 548M352 390L242 548M352 390L430 524M500 304L430 524M500 304L626 466"/>
+              </g>
+              <g class="atlas-nodes">
+                <circle cx="102" cy="122" r="7"/><circle cx="270" cy="208" r="10"/>
+                <circle cx="427" cy="112" r="6"/><circle cx="610" cy="196" r="7"/>
+                <circle cx="184" cy="344" r="9"/><circle class="atlas-focus" cx="352" cy="390" r="16"/>
+                <circle cx="500" cy="304" r="8"/><circle cx="88" cy="500" r="6"/>
+                <circle cx="242" cy="548" r="7"/><circle cx="430" cy="524" r="9"/><circle cx="626" cy="466" r="6"/>
+              </g>
+              <g class="atlas-labels">
+                <text x="76" y="101">C. M. Andrews</text><text x="238" y="185">L. W. Labaree</text>
+                <text x="395" y="92">P. H. Buck</text><text x="575" y="175">M. Curti</text>
+                <text x="145" y="326">E. Morgan</text><text class="label-focus" x="374" y="386">John Demos</text>
+                <text x="478" y="284">O. Handlin</text><text x="38" y="527">J. M. Murrin</text>
+                <text x="207" y="578">L. T. Ulrich</text><text x="405" y="557">J. Lepore</text>
+                <text x="593" y="495">D. Hall</text>
+              </g>
+            </svg>
+            <figcaption><span>Selected record</span><strong>John Demos</strong><em>2 advisors · 18 recorded advisees · 41 committee relationships</em><a href="#">View scholar record →</a></figcaption>
+          </figure>
+        </section>
+
+        <section class="atlas-paths">
+          <div class="atlas-path-title"><span>Ways into the collection</span><p>Choose a starting point</p></div>
+          <a href="#"><b>01</b><span><strong>Find a dissertation</strong><em>Search 149 years of doctoral work by title, year, institution, or field.</em></span><i>→</i></a>
+          <a href="#"><b>02</b><span><strong>Trace a lineage</strong><em>Follow advisor relationships across generations and universities.</em></span><i>→</i></a>
+          <a href="#"><b>03</b><span><strong>Examine a department</strong><em>See the scholars and committee networks connected to an institution.</em></span><i>→</i></a>
+        </section>
+
+        <section class="atlas-footer-stats">
+          <p><span>60,130</span> scholars represented</p>
+          <p><span>27,751</span> committee relationships</p>
+          <p><span>204</span> degree-granting institutions</p>
+          <p><a href="#">Read about scope and coverage →</a></p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

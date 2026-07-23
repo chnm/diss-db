@@ -1,11 +1,12 @@
 from django import template
-from django.db.models import Q
 
 register = template.Library()
 
 
 @register.simple_tag
 def site_counts():
+    from django.db.models import Max, Min
+
     from dissdb.models import CommitteeMember, Dissertation, Scholar
 
     diss_count = Dissertation.objects.count()
@@ -17,11 +18,17 @@ def site_counts():
         .count()
     )
     institution_count = Dissertation.objects.values("school").distinct().count()
+    coverage = Dissertation.objects.aggregate(
+        first_year=Min("year"),
+        last_year=Max("year"),
+    )
     return {
         "dissertations": diss_count,
         "scholars": scholar_count,
         "advisors": advisor_count,
         "institutions": institution_count,
+        "first_year": coverage["first_year"],
+        "last_year": coverage["last_year"],
     }
 
 

@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Max, Min
+from django.db.models import Count, Max, Min, Q
 from django.http import Http404, JsonResponse
-from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
+from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import UpdateView
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
@@ -65,7 +65,10 @@ def index(request):
     top_advisor_map = {d["scholar_id"]: d["advised_count"] for d in top_advisor_data}
     top_advisor_scholars = Scholar.objects.filter(pk__in=top_advisor_map.keys())
     top_advisors = sorted(
-        [{"scholar": s, "advised_count": top_advisor_map[s.pk]} for s in top_advisor_scholars],
+        [
+            {"scholar": s, "advised_count": top_advisor_map[s.pk]}
+            for s in top_advisor_scholars
+        ],
         key=lambda x: -x["advised_count"],
     )
 
@@ -84,7 +87,7 @@ def index(request):
     )
 
     # Decade counts
-    from django.db.models import F, IntegerField
+    from django.db.models import F
     from django.db.models.functions import Floor
 
     decade_counts = (
@@ -96,24 +99,21 @@ def index(request):
         .order_by("-decade")
     )
     decades = [
-        {"label": f"{int(d['decade'])}s", "count": d["count"], "decade": int(d["decade"])}
+        {
+            "label": f"{int(d['decade'])}s",
+            "count": d["count"],
+            "decade": int(d["decade"]),
+        }
         for d in decade_counts
     ]
-    # Bar width as a percentage of the busiest decade (for the browse bar chart)
-    decade_max = max((d["count"] for d in decades), default=0)
-    for d in decades:
-        d["pct"] = round(d["count"] / decade_max * 100) if decade_max else 0
 
     # Geographic emphases for "browse by field" on home page (with diss counts),
-    # ordered by volume so the browse bar chart descends
+    # ordered by volume
     geo_emphases = list(
         GeographicEmphasis.objects.filter(parent__isnull=True)
         .annotate(diss_count=Count("dissertations"))
         .order_by("-diss_count", "name")
     )
-    geo_max = max((g.diss_count for g in geo_emphases), default=0)
-    for g in geo_emphases:
-        g.pct = round(g.diss_count / geo_max * 100) if geo_max else 0
 
     context = {
         "active_nav": "home",
@@ -129,6 +129,96 @@ def index(request):
         "geo_emphases": geo_emphases,
     }
     return render(request, "index.html", context)
+
+
+def _matching_scholars(query):
+    """Match each search term against any part of a scholar's public name."""
+    scholars = Scholar.objects.all()
+    for term in query.split():
+        scholars = scholars.filter(
+            Q(name_first__icontains=term)
+            | Q(name_middle__icontains=term)
+            | Q(name_last__icontains=term)
+            | Q(name_suffix__icontains=term)
+            | Q(affiliation__icontains=term)
+        )
+    return scholars
+
+
+def search(request):
+    """Search the catalogue across its principal public record types."""
+    query = request.GET.get("q", "").strip()
+    context = {
+        "active_nav": "search",
+        "query": query,
+        "searched": bool(query),
+    }
+    if not query:
+        return render(request, "search.html", context)
+
+    dissertations = (
+        Dissertation.objects.filter(title__icontains=query)
+        .select_related("author", "school")
+        .order_by("-year", "title")
+    )
+    scholars = _matching_scholars(query).order_by(
+        "name_last", "name_first", "name_middle"
+    )
+    schools = (
+        School.objects.filter(name__icontains=query)
+        .annotate(dissertation_count=Count("dissertation", distinct=True))
+        .order_by("-dissertation_count", "name")
+    )
+
+    geographic_fields = (
+        GeographicEmphasis.objects.filter(name__icontains=query)
+        .annotate(dissertation_count=Count("dissertations", distinct=True))
+        .filter(dissertation_count__gt=0)
+    )
+    thematic_fields = (
+        ThematicEmphasis.objects.filter(name__icontains=query)
+        .annotate(dissertation_count=Count("dissertations", distinct=True))
+        .filter(dissertation_count__gt=0)
+    )
+    fields = sorted(
+        [
+            {
+                "kind": "Geographic",
+                "label": field.display_name,
+                "url_param": "geographic_emphases",
+                "field": field,
+            }
+            for field in geographic_fields
+        ]
+        + [
+            {
+                "kind": "Thematic",
+                "label": field.name,
+                "url_param": "thematic_emphases",
+                "field": field,
+            }
+            for field in thematic_fields
+        ],
+        key=lambda item: (-item["field"].dissertation_count, item["label"]),
+    )
+
+    search_counts = {
+        "dissertations": dissertations.count(),
+        "scholars": scholars.count(),
+        "schools": schools.count(),
+        "fields": len(fields),
+    }
+    context.update(
+        {
+            "dissertations": dissertations[:6],
+            "scholars": scholars[:6],
+            "schools": schools[:6],
+            "fields": fields[:6],
+            "search_counts": search_counts,
+            "total_count": sum(search_counts.values()),
+        }
+    )
+    return render(request, "search.html", context)
 
 
 def api_docs(request):
@@ -158,12 +248,12 @@ def about(request):
 def contributing(request):
     return render(request, "contributing.html", {"active_nav": "contribute"})
 
+
 def network_viz(request):
     schools = School.objects.all()
 
-    return render(request, "network_viz.html", {
-        "schools": schools
-    })
+    return render(request, "network_viz.html", {"schools": schools})
+
 
 def get_school_network_data(request, school_id):
     try:
@@ -172,11 +262,7 @@ def get_school_network_data(request, school_id):
         return JsonResponse({"error": "School not found"}, status=404)
 
     # 1. Load all dissertations for this school in one query.
-    dissertations = (
-        Dissertation.objects
-        .filter(school=school)
-        .select_related("author")
-    )
+    dissertations = Dissertation.objects.filter(school=school).select_related("author")
 
     if not dissertations.exists():
         return JsonResponse({"nodes": [], "links": []})
@@ -184,24 +270,24 @@ def get_school_network_data(request, school_id):
     dissertation_ids = [d.id for d in dissertations]
 
     # 2. Load all committee memberships for those dissertations in one query (avoids N+1).
-    committee_members = (
-        CommitteeMember.objects
-        .filter(dissertation_id__in=dissertation_ids)
-        .select_related("scholar", "dissertation__author")
-    )
+    committee_members = CommitteeMember.objects.filter(
+        dissertation_id__in=dissertation_ids
+    ).select_related("scholar", "dissertation__author")
 
     # 3. Build node registry and link list in memory.
     ROLE_PRIORITY = {"advisor": 3, "author": 2, "committee": 1}
 
-    node_registry = {}   # name_full -> dict
+    node_registry = {}  # name_full -> dict
     links = []
 
     def upsert_node(scholar, group):
         """Add scholar to registry or upgrade their group if higher priority."""
         key = scholar.name_full
-        current_priority = ROLE_PRIORITY.get(
-            node_registry[key]["group"], 0
-        ) if key in node_registry else 0
+        current_priority = (
+            ROLE_PRIORITY.get(node_registry[key]["group"], 0)
+            if key in node_registry
+            else 0
+        )
         if ROLE_PRIORITY[group] > current_priority:
             node_registry[key] = {
                 "id": scholar.name_full,
@@ -221,18 +307,22 @@ def get_school_network_data(request, school_id):
 
         if cm.role == CommitteeMember.CHAIR:
             upsert_node(member, "advisor")
-            links.append({
-                "source": author.name_full,
-                "target": member.name_full,
-                "relationship": "advisor",
-            })
+            links.append(
+                {
+                    "source": author.name_full,
+                    "target": member.name_full,
+                    "relationship": "advisor",
+                }
+            )
         elif cm.role == CommitteeMember.READER:
             upsert_node(member, "committee")
-            links.append({
-                "source": author.name_full,
-                "target": member.name_full,
-                "relationship": "committee member",
-            })
+            links.append(
+                {
+                    "source": author.name_full,
+                    "target": member.name_full,
+                    "relationship": "committee member",
+                }
+            )
 
     nodes = list(node_registry.values())
 
@@ -513,7 +603,9 @@ def department_list_api(request):
     if school_id:
         depts = Department.objects.filter(school_id=school_id).order_by("name")
     else:
-        depts = Department.objects.select_related("school").order_by("school__name", "name")
+        depts = Department.objects.select_related("school").order_by(
+            "school__name", "name"
+        )
     data = [{"id": d.pk, "name": d.name, "school_id": d.school_id} for d in depts]
     return JsonResponse(data, safe=False)
 
@@ -539,7 +631,10 @@ def department_create_api(request):
         return JsonResponse({"error": "School not found"}, status=404)
     # Check for existing department with same name at same school
     dept, created = Department.objects.get_or_create(name=name, school=school)
-    return JsonResponse({"id": dept.pk, "name": dept.name, "school_id": dept.school_id}, status=201 if created else 200)
+    return JsonResponse(
+        {"id": dept.pk, "name": dept.name, "school_id": dept.school_id},
+        status=201 if created else 200,
+    )
 
 
 class ScholarDetailView(generic.DetailView):
@@ -593,7 +688,9 @@ class ScholarDetailView(generic.DetailView):
             .select_related("dissertation__author", "dissertation__school")
             .order_by("-dissertation__year")
         )
-        context["committees_served"] = committees_served if committees_served.exists() else None
+        context["committees_served"] = (
+            committees_served if committees_served.exists() else None
+        )
         context["committee_count"] = committees_served.count()
 
         # Lineage chain (walk up advisor chain)
@@ -604,9 +701,11 @@ class ScholarDetailView(generic.DetailView):
             visited_ids.add(current.pk)
             try:
                 cur_diss = Dissertation.objects.get(author=current)
-                advisor_cm = CommitteeMember.objects.filter(
-                    dissertation=cur_diss, role="chair"
-                ).select_related("scholar").first()
+                advisor_cm = (
+                    CommitteeMember.objects.filter(dissertation=cur_diss, role="chair")
+                    .select_related("scholar")
+                    .first()
+                )
                 if advisor_cm:
                     lineage.append(advisor_cm.scholar)
                     current = advisor_cm.scholar
@@ -643,8 +742,6 @@ class ScholarDetailView(generic.DetailView):
                 SearchRank,
                 SearchVector,
             )
-            from django.db.models import Case, Value, When
-            from django.db.models import FloatField as FF
 
             diss = context["dissertation"]
 
@@ -652,13 +749,17 @@ class ScholarDetailView(generic.DetailView):
             advisor_ids = set()
             if context.get("advisors"):
                 advisor_ids = {a.scholar_id for a in context["advisors"]}
-            same_advisor_diss_ids = set(
-                CommitteeMember.objects.filter(
-                    role="chair", scholar_id__in=advisor_ids
+            same_advisor_diss_ids = (
+                set(
+                    CommitteeMember.objects.filter(
+                        role="chair", scholar_id__in=advisor_ids
+                    )
+                    .exclude(dissertation=diss)
+                    .values_list("dissertation_id", flat=True)
                 )
-                .exclude(dissertation=diss)
-                .values_list("dissertation_id", flat=True)
-            ) if advisor_ids else set()
+                if advisor_ids
+                else set()
+            )
 
             diss_geo_ids = set(diss.geographic_emphases.values_list("pk", flat=True))
             diss_thematic_ids = set(diss.thematic_emphases.values_list("pk", flat=True))
@@ -694,7 +795,9 @@ class ScholarDetailView(generic.DetailView):
                 if diss_geo_ids or diss_thematic_ids:
                     c_geo = set(c.geographic_emphases.values_list("pk", flat=True))
                     c_thematic = set(c.thematic_emphases.values_list("pk", flat=True))
-                    shared = len(diss_geo_ids & c_geo) + len(diss_thematic_ids & c_thematic)
+                    shared = len(diss_geo_ids & c_geo) + len(
+                        diss_thematic_ids & c_thematic
+                    )
                     score += shared * 0.1
 
                 scored.append((score, c))
@@ -712,7 +815,9 @@ class ScholarDetailView(generic.DetailView):
                             break
                         try:
                             related.append(
-                                Dissertation.objects.select_related("author", "school").get(pk=did)
+                                Dissertation.objects.select_related(
+                                    "author", "school"
+                                ).get(pk=did)
                             )
                             fallback_exclude.add(did)
                         except Dissertation.DoesNotExist:
