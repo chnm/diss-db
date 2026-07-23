@@ -6,207 +6,159 @@
 {% endblock title %}
 
 {% block main %}
-{# Hero #}
-    <section class="hero-section grid grid-cols-[1.15fr_0.85fr] gap-14 items-center pt-[64px] pb-14 px-page border-b border-line">
-        <div class="max-w-[700px]">
-            <h1 class="font-serif font-medium text-display-xl leading-[1.05] tracking-[-1.2px] mb-7 mt-0">
-                A catalogue of doctoral history, <span class="text-accent">{{ first_year }}–{{ last_year }}.</span>
-            </h1>
-            <p class="font-sans text-[19px] leading-[1.6] text-ink2 max-w-[680px] m-0">
-                Search dissertations, trace advisor relationships, and examine the committee networks that shaped the discipline.
-            </p>
-            <form method="get" action="{% url 'search' %}" class="hero-search mt-8" role="search">
-                <input type="search" name="q" placeholder="Search titles, scholars, institutions, or fields…" aria-label="Search the catalogue">
-                <button type="submit">Search</button>
-            </form>
-            <p class="text-sm text-mute mt-3 mb-0">
-                Search across the catalogue. <a href="{% url 'dissertations' %}" class="text-accent underline underline-offset-4">Open advanced filters</a>
-            </p>
-        </div>
-
-	{# Abstract genealogy motif — decorative, deterministic, and dependency-free #}
-        <div id="hero-tree" class="min-h-[340px] flex items-center" aria-hidden="true">
-            <svg viewBox="0 0 480 340" class="w-full h-auto" role="presentation">
-                <g fill="none" stroke="var(--line)" stroke-width="1.2">
-                    <path d="M240 22V62M240 62H82V102M240 62V102M240 62H398V102" />
-                    <path d="M82 102V142M82 142H38V188M82 142H126V188" />
-                    <path d="M38 188V226M38 226H18V282M38 226H64V282" />
-                    <path d="M126 188V232M126 232H104V288M126 232H150V288" />
-                    <path d="M240 102V150M240 150H188V196M240 150H292V196" />
-                    <path d="M188 196V240M188 240H168V292M188 240H212V292" />
-                    <path d="M292 196V234M292 234H262V286M292 234H326V286" />
-                    <path d="M398 102V146M398 146H362V194M398 146H438V194" />
-                    <path d="M362 194V238M362 238H346V292M362 238H382V292" />
-                    <path d="M438 194V244M438 244H420V292M438 244H458V292" />
-                </g>
-
-                <path d="M240 22V150H292V234H326V286" fill="none" stroke="var(--accent)" stroke-width="2.2" />
-
-                <g fill="var(--mute)" opacity="0.55">
-                    <circle cx="82" cy="102" r="2.5" />
-                    <circle cx="38" cy="188" r="2" />
-                    <circle cx="126" cy="188" r="2" />
-                    <circle cx="188" cy="196" r="2" />
-                    <circle cx="398" cy="102" r="2.5" />
-                    <circle cx="362" cy="194" r="2" />
-                    <circle cx="438" cy="194" r="2" />
-                    <circle cx="18" cy="282" r="1.5" />
-                    <circle cx="64" cy="282" r="1.5" />
-                    <circle cx="104" cy="288" r="1.5" />
-                    <circle cx="150" cy="288" r="1.5" />
-                    <circle cx="168" cy="292" r="1.5" />
-                    <circle cx="212" cy="292" r="1.5" />
-                    <circle cx="262" cy="286" r="1.5" />
-                    <circle cx="346" cy="292" r="1.5" />
-                    <circle cx="382" cy="292" r="1.5" />
-                    <circle cx="420" cy="292" r="1.5" />
-                    <circle cx="458" cy="292" r="1.5" />
-                </g>
-
-                <g fill="var(--accent)">
-                    <circle cx="240" cy="22" r="4.5" />
-                    <circle cx="240" cy="102" r="3.2" />
-                    <circle cx="240" cy="150" r="3.2" />
-                    <circle cx="292" cy="196" r="3.2" />
-                    <circle cx="292" cy="234" r="3.2" />
-                    <circle cx="326" cy="286" r="4" />
-                </g>
-            </svg>
-        </div>
-    </section>
-
-{# Recently catalogued + sidebar #}
-    <section class="mid-section grid grid-cols-[2fr_1fr] gap-16 pt-2 pb-14 px-page">
-        <div>
-            <div class="flex items-baseline justify-between mb-[18px] pb-3 border-b-2 border-ink">
-                <h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] m-0">Most recent records</h2>
-                <a href="{% url 'dissertations' %}" class="text-sm font-semibold no-underline text-accent">Browse all {{ diss_count|intcomma_plain }} →</a>
+    <div class="catalogue-home">
+        <section class="catalogue-home-hero">
+            <div class="catalogue-home-intro">
+                <h1>Follow the people,<br>ideas, and institutions<br>behind the discipline.</h1>
+                <p>Discover doctoral work and trace the advisor relationships that connect generations of historians.</p>
             </div>
-            {% for item in recent_dissertations %}
-                <a href="{{ item.dissertation.author.get_absolute_url }}" class="grid grid-cols-[64px_1fr_170px] gap-6 py-[22px] border-b border-line2 no-underline text-ink items-start">
-                    <div class="font-mono text-meta text-accent font-semibold pt-[5px]">{{ item.dissertation.year }}</div>
+
+            <div class="catalogue-home-search">
+                <p class="catalogue-home-search-scope">Search everything</p>
+                <form method="get" action="{% url 'search' %}" role="search">
+                    <label for="catalogue-query">What are you looking for?</label>
                     <div>
-                        <div class="font-serif text-title-lg font-medium leading-[1.25] tracking-[-0.2px] mb-[5px]">{{ item.dissertation.title }}</div>
-                        <div class="text-[14px] text-ink2">
-                            <span class="font-serif italic">by</span>
-                            <span class="text-accent">{{ item.dissertation.author.name_full }}</span>
-                            <span class="text-mute mx-2">·</span>{{ item.dissertation.school }}
-                        </div>
+                        <input id="catalogue-query" type="search" name="q" placeholder="Try a name, title, institution, or field">
+                        <button type="submit">Look it up</button>
                     </div>
-                    <div class="pt-1 text-right">
-                        {% if item.advisor %}
-                            <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-1">Advised by</div>
-                            <div class="font-serif text-[14px] italic">{{ item.advisor.name_full }}</div>
-                        {% endif %}
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
+                </form>
+                <p class="catalogue-home-examples">
+                    Popular starting points:
+                    <a href="{% url 'search' %}?q=Atlantic+World">Atlantic World</a> ·
+                    <a href="{% url 'search' %}?q=Eric+Foner">Eric Foner</a> ·
+                    <a href="{% url 'search' %}?q=Columbia+University">Columbia University</a>
+                </p>
+                <a href="{% url 'dissertations' %}" class="catalogue-home-advanced">Advanced dissertation filters →</a>
+            </div>
+        </section>
 
-        <aside>
-		{# By the numbers #}
-            <div class="mb-9">
-                <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3 pb-2 border-b-2 border-ink">Collection summary</div>
-                <div class="grid grid-cols-2">
-                    {% with stats="dissertations,scholars,advisors,institutions" %}
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ diss_count|intcomma_plain }}</div>
-                            <div class="text-xs text-mute mt-1">dissertations</div>
-                        </div>
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ scholar_count|intcomma_plain }}</div>
-                            <div class="text-xs text-mute mt-1">scholars</div>
-                        </div>
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ advisor_count|intcomma_plain }}</div>
-                            <div class="text-xs text-mute mt-1">advisors</div>
-                        </div>
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ institution_count|intcomma_plain }}</div>
-                            <div class="text-xs text-mute mt-1">institutions</div>
-                        </div>
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ first_year }}</div>
-                            <div class="text-xs text-mute mt-1">first record</div>
-                        </div>
-                        <div class="py-[14px] rule-soft">
-                            <div class="stat-number">{{ last_year }}</div>
-                            <div class="text-xs text-mute mt-1">most recent</div>
-                        </div>
-                    {% endwith %}
-                </div>
+        <section class="catalogue-home-stats" aria-label="Collection statistics">
+            <div>
+                <strong>{{ diss_count|intcomma_plain }}</strong>
+                <span>Dissertations</span>
+            </div>
+            <div>
+                <strong>{{ scholar_count|intcomma_plain }}</strong>
+                <span>Scholars</span>
+            </div>
+            <div>
+                <strong>{{ advisor_count|intcomma_plain }}</strong>
+                <span>Recorded advisors</span>
+            </div>
+            <div>
+                <strong>{{ institution_count|intcomma_plain }}</strong>
+                <span>Institutions</span>
+            </div>
+        </section>
+
+        <section class="catalogue-home-lineage">
+            <div class="catalogue-home-lineage-copy">
+                <p class="catalogue-home-kicker">A database of relationships</p>
+                <h2>Trace scholarly<br>lineages.</h2>
+                <p>Committee records reveal connections between advisors and students, allowing researchers to follow intellectual lineages across generations and institutions.</p>
+                <a href="{% url 'scholars' %}">Find a scholar to begin →</a>
             </div>
 
-		{# Top advisors #}
-            {% if top_advisors %}
-                <div class="mb-9">
-                    <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-1 pb-2 border-b-2 border-ink">Top advisors</div>
-                    {% for adv in top_advisors %}
-                        <a href="{{ adv.scholar.get_absolute_url }}" class="flex items-baseline justify-between py-3 rule-soft text-ink">
-                            <span>
-                                <span class="font-mono text-meta-sm text-mute mr-[10px]">{{ forloop.counter|stringformat:"02d" }}</span>
-                                <span class="font-serif text-[18px] font-medium">{{ adv.scholar.name_full }}</span>
-                            </span>
-                            <span class="font-mono text-[12px] text-accent">{{ adv.advised_count }}</span>
+			{# Abstract genealogy motif — decorative, deterministic, and dependency-free #}
+            <div class="catalogue-home-tree" aria-hidden="true">
+                <svg viewBox="0 0 480 340" role="presentation">
+                    <g class="tree-branches">
+                        <path d="M240 22V62M240 62H82V102M240 62V102M240 62H398V102"></path>
+                        <path d="M82 102V142M82 142H38V188M82 142H126V188"></path>
+                        <path d="M38 188V226M38 226H18V282M38 226H64V282"></path>
+                        <path d="M126 188V232M126 232H104V288M126 232H150V288"></path>
+                        <path d="M240 102V150M240 150H188V196M240 150H292V196"></path>
+                        <path d="M188 196V240M188 240H168V292M188 240H212V292"></path>
+                        <path d="M292 196V234M292 234H262V286M292 234H326V286"></path>
+                        <path d="M398 102V146M398 146H362V194M398 146H438V194"></path>
+                        <path d="M362 194V238M362 238H346V292M362 238H382V292"></path>
+                        <path d="M438 194V244M438 244H420V292M438 244H458V292"></path>
+                    </g>
+                    <path class="tree-highlight" d="M240 22V150H292V234H326V286"></path>
+                    <g class="tree-nodes">
+                        <circle cx="82" cy="102" r="2.5"></circle>
+                        <circle cx="38" cy="188" r="2"></circle>
+                        <circle cx="126" cy="188" r="2"></circle>
+                        <circle cx="188" cy="196" r="2"></circle>
+                        <circle cx="398" cy="102" r="2.5"></circle>
+                        <circle cx="362" cy="194" r="2"></circle>
+                        <circle cx="438" cy="194" r="2"></circle>
+                        <circle cx="18" cy="282" r="1.5"></circle>
+                        <circle cx="64" cy="282" r="1.5"></circle>
+                        <circle cx="104" cy="288" r="1.5"></circle>
+                        <circle cx="150" cy="288" r="1.5"></circle>
+                        <circle cx="168" cy="292" r="1.5"></circle>
+                        <circle cx="212" cy="292" r="1.5"></circle>
+                        <circle cx="262" cy="286" r="1.5"></circle>
+                        <circle cx="346" cy="292" r="1.5"></circle>
+                        <circle cx="382" cy="292" r="1.5"></circle>
+                        <circle cx="420" cy="292" r="1.5"></circle>
+                        <circle cx="458" cy="292" r="1.5"></circle>
+                    </g>
+                    <g class="tree-highlight-nodes">
+                        <circle cx="240" cy="22" r="4.5"></circle>
+                        <circle cx="240" cy="102" r="3.2"></circle>
+                        <circle cx="240" cy="150" r="3.2"></circle>
+                        <circle cx="292" cy="196" r="3.2"></circle>
+                        <circle cx="292" cy="234" r="3.2"></circle>
+                        <circle cx="326" cy="286" r="4"></circle>
+                    </g>
+                </svg>
+            </div>
+        </section>
+
+        <section class="catalogue-home-record-browser">
+            <div class="catalogue-home-recent">
+                <div class="catalogue-home-section-head">
+                    <div>
+                        <p class="catalogue-home-kicker">From the catalogue</p>
+                        <h2>Most recent records</h2>
+                    </div>
+                    <a href="{% url 'dissertations' %}">Browse all {{ diss_count|intcomma_plain }} →</a>
+                </div>
+
+                {% for item in recent_dissertations %}
+                    <a href="{{ item.dissertation.author.get_absolute_url }}" class="catalogue-home-record">
+                        <time>{{ item.dissertation.year }}</time>
+                        <div>
+                            <h3>{{ item.dissertation.title }}</h3>
+                            <p>{{ item.dissertation.author.name_full }} · {{ item.dissertation.school }}</p>
+                        </div>
+                        {% if item.advisor %}
+                            <p class="catalogue-home-advisor">
+                                <span>Advised by</span>
+                                {{ item.advisor.name_full }}
+                            </p>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <aside class="catalogue-home-decades">
+                <div class="catalogue-home-section-head">
+                    <div>
+                        <p class="catalogue-home-kicker">Shape of the collection</p>
+                        <h2>Records by decade</h2>
+                    </div>
+                </div>
+                <div class="catalogue-home-decade-list">
+                    {% for decade in decades %}
+                        <a href="{% url 'dissertations' %}?year_min={{ decade.decade }}&year_max={{ decade.decade|add:9 }}">
+                            <span>{{ decade.label }}</span>
+                            <i style="--decade-width: {% widthratio decade.count diss_count 500 %}%"></i>
+                            <b>{{ decade.count|intcomma_plain }}</b>
                         </a>
                     {% endfor %}
                 </div>
-            {% endif %}
+                <p>Coverage reflects available records and varies by institution and period. <a href="{% url 'about' %}">About the data →</a></p>
+            </aside>
+        </section>
 
-        </aside>
-    </section>
-
-{# Browse rails #}
-    <section class="browse-section grid grid-cols-3 gap-12 items-start pb-6 px-page">
-        <div>
-            <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-[14px]">Browse by decade</div>
-            {% for d in decades %}
-                <a href="{% url 'dissertations' %}?year_min={{ d.decade }}&year_max={{ d.decade|add:9 }}" class="browse-row no-underline text-ink">
-                    <div class="browse-head">
-                        <span class="browse-label">{{ d.label }}</span>
-                        <span class="browse-count">{{ d.count|intcomma_plain }}</span>
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
-        <div>
-            <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-[14px]">Browse by field</div>
-            {% for geo in geo_emphases %}
-                <a href="{% url 'dissertations' %}?geographic_emphases={{ geo.pk }}" class="browse-row no-underline text-ink">
-                    <div class="browse-head">
-                        <span class="browse-label">{{ geo.display_name }}</span>
-                        <span class="browse-count">{{ geo.diss_count|intcomma_plain }}</span>
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
-        <div class="border-t-2 border-ink pt-5 self-start">
-            <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-[14px]">Improve the collection</div>
-            <div class="font-serif text-title-lg leading-[1.3] mb-3">
-                Corrections and new records are reviewed by the editorial team.
-            </div>
-            <p class="text-[14px] text-ink2 mt-0 mb-[18px]">
-                Submit a missing dissertation, correct an advisor, or add a scholar to the catalogue.
-            </p>
-            <a href="{% url 'contributing' %}" class="text-sm font-semibold no-underline text-accent underline underline-offset-4">Contributor guide →</a>
-        </div>
-    </section>
-
-    <style>
-        @media (max-width: 1024px) {
-            .hero-section { grid-template-columns: 1fr !important; gap: 24px !important; padding: 40px 24px 40px !important; }
-            .hero-section h1 { font-size: 42px !important; }
-            #hero-tree { min-height: 280px !important; max-width: 640px; }
-            .mid-section { grid-template-columns: 1fr !important; gap: 40px !important; padding: 8px 24px 40px !important; }
-            .browse-section { grid-template-columns: 1fr !important; gap: 24px !important; padding: 0 24px 24px !important; }
-        }
-        @media (max-width: 640px) {
-            .hero-section { padding: 24px 16px !important; }
-            .hero-section h1 { font-size: 32px !important; }
-            #hero-tree { display: none; }
-            .mid-section { padding: 8px 16px 24px !important; }
-            .browse-section { padding: 0 16px 16px !important; }
-            .mid-section > div > a { grid-template-columns: 1fr !important; gap: 8px !important; }
-        }
-    </style>
+        <section class="catalogue-home-contribute">
+            <p class="catalogue-home-kicker">A collaboratively maintained resource</p>
+            <h2>Help improve the catalogue.</h2>
+            <p>Corrections and new records are reviewed by the editorial team.</p>
+            <a href="{% url 'contributing' %}">Read the contributor guide →</a>
+        </section>
+    </div>
 {% endblock main %}

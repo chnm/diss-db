@@ -13,7 +13,7 @@
                 <h1 class="font-serif text-display-lg">Committee Members</h1>
             </div>
             {% if table.paginator %}
-                <div class="font-mono text-xs text-mute text-right">
+                <div class="font-mono text-sm text-mute text-right">
                     showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
                 </div>
             {% endif %}
@@ -25,12 +25,12 @@
             <span class="text-sm font-semibold text-ink2">Filter</span>
 
             <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
-                <label for="id_scholar" class="text-xs text-mute whitespace-nowrap">Scholar:</label>
+                <label for="id_scholar" class="text-sm text-mute whitespace-nowrap">Scholar:</label>
                 {{ filter.form.scholar }}
             </div>
 
             <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
-                <label for="id_dissertation" class="text-xs text-mute whitespace-nowrap">Dissertation:</label>
+                <label for="id_dissertation" class="text-sm text-mute whitespace-nowrap">Dissertation:</label>
                 {{ filter.form.dissertation }}
             </div>
 

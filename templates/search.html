@@ -13,7 +13,7 @@
             <input type="search" name="q" value="{{ query }}" placeholder="Title, scholar, institution, or field" aria-label="Search the catalogue" autofocus>
             <button type="submit">Search</button>
         </form>
-        <p class="text-sm text-mute mt-3 mb-0">
+        <p class="text-base text-mute mt-3 mb-0">
             Need a narrower query? <a href="{% url 'dissertations' %}" class="text-accent underline underline-offset-4">Use advanced dissertation filters</a>
         </p>
     </header>
@@ -22,7 +22,7 @@
         <section class="search-results page-section py-10">
             <div class="flex items-baseline justify-between gap-6 pb-4 border-b-2 border-ink">
                 <h2 class="font-serif text-display-sm font-medium m-0">Results for “{{ query }}”</h2>
-                <p class="font-mono text-xs text-mute m-0 whitespace-nowrap">{{ total_count|intcomma_plain }} match{{ total_count|pluralize:"es" }}</p>
+                <p class="font-mono text-sm text-mute m-0 whitespace-nowrap">{{ total_count|intcomma_plain }} match{{ total_count|pluralize:"es" }}</p>
             </div>
 
             {% if total_count %}

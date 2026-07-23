@@ -55,23 +55,6 @@ def index(request):
                 break
         recent_with_advisors.append({"dissertation": diss, "advisor": advisor})
 
-    # Top advisors by number of dissertations chaired
-    top_advisor_data = (
-        CommitteeMember.objects.filter(role="chair")
-        .values("scholar_id")
-        .annotate(advised_count=Count("id"))
-        .order_by("-advised_count")[:5]
-    )
-    top_advisor_map = {d["scholar_id"]: d["advised_count"] for d in top_advisor_data}
-    top_advisor_scholars = Scholar.objects.filter(pk__in=top_advisor_map.keys())
-    top_advisors = sorted(
-        [
-            {"scholar": s, "advised_count": top_advisor_map[s.pk]}
-            for s in top_advisor_scholars
-        ],
-        key=lambda x: -x["advised_count"],
-    )
-
     # Stats
     diss_count = Dissertation.objects.count()
     scholar_count = Scholar.objects.count()
@@ -107,18 +90,9 @@ def index(request):
         for d in decade_counts
     ]
 
-    # Geographic emphases for "browse by field" on home page (with diss counts),
-    # ordered by volume
-    geo_emphases = list(
-        GeographicEmphasis.objects.filter(parent__isnull=True)
-        .annotate(diss_count=Count("dissertations"))
-        .order_by("-diss_count", "name")
-    )
-
     context = {
         "active_nav": "home",
         "recent_dissertations": recent_with_advisors,
-        "top_advisors": top_advisors,
         "diss_count": diss_count,
         "scholar_count": scholar_count,
         "advisor_count": advisor_count,
@@ -126,7 +100,6 @@ def index(request):
         "first_year": year_range.get("first_year"),
         "last_year": year_range.get("last_year"),
         "decades": decades,
-        "geo_emphases": geo_emphases,
     }
     return render(request, "index.html", context)
 
@@ -715,22 +688,6 @@ class ScholarDetailView(generic.DetailView):
                 break
         context["lineage"] = lineage
         context["lineage_depth"] = len(lineage)
-
-        # Frequent co-readers
-        if advisees.exists():
-            diss_ids = [a.dissertation_id for a in advisees]
-            co_readers = (
-                CommitteeMember.objects.filter(
-                    dissertation_id__in=diss_ids, role="reader"
-                )
-                .exclude(scholar=scholar)
-                .values("scholar__id", "scholar__name_first", "scholar__name_last")
-                .annotate(count=Count("id"))
-                .order_by("-count")[:4]
-            )
-            context["co_readers"] = co_readers
-        else:
-            context["co_readers"] = []
 
         websites = ScholarWebsite.objects.filter(scholar=scholar.id)
         context["websites"] = websites if websites.exists() else None

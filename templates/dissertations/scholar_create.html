@@ -1,121 +1,121 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>Add Scholar – The History Dissertation Database</title>
+    <title>Add Scholar – The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
-<div class="section-header">
-	<div class="flex items-end justify-between">
-		<div>
-			<h1 class="font-serif text-display-sm">Add Scholar</h1>
-		</div>
-		<a href="{% url 'scholars' %}" class="font-mono text-xs font-medium text-mute">Cancel</a>
-	</div>
-</div>
+    <div class="section-header">
+        <div class="flex items-end justify-between">
+            <div>
+                <h1 class="font-serif text-display-sm">Add Scholar</h1>
+            </div>
+            <a href="{% url 'scholars' %}" class="font-mono text-sm font-medium text-mute">Cancel</a>
+        </div>
+    </div>
 
-<section class="page-section py-9 max-w-[900px]"
-	x-data="{
-		firstName: '',
-		lastName: '',
-		matches: [],
-		_timeout: null,
-		search() {
-			clearTimeout(this._timeout);
-			if (this.lastName.length < 2) { this.matches = []; return; }
-			this._timeout = setTimeout(() => {
-				let q = (this.lastName + ' ' + this.firstName).trim();
-				fetch('/scholars/api/?q=' + encodeURIComponent(q))
-					.then(r => r.json())
-					.then(data => { this.matches = data; });
-			}, 300);
-		}
-	}">
-	<form method="post" novalidate>
-		{% csrf_token %}
+    <section class="page-section py-9 max-w-[900px]"
+             x-data="{
+                     firstName: '',
+                     lastName: '',
+                     matches: [],
+                     _timeout: null,
+                     search() {
+                     clearTimeout(this._timeout);
+                     if (this.lastName.length < 2) { this.matches = []; return; }
+                     this._timeout = setTimeout(() => {
+                     let q = (this.lastName + ' ' + this.firstName).trim();
+                     fetch('/scholars/api/?q=' + encodeURIComponent(q))
+                     .then(r => r.json())
+                     .then(data => { this.matches = data; });
+                     }, 300);
+                     }
+                     }">
+        <form method="post" novalidate>
+            {% csrf_token %}
 
-		{% if form.non_field_errors %}
-		<div class="mb-4 p-4 bg-paper3 border-l-[3px] border-red-700 text-red-700 text-sm">
-			{{ form.non_field_errors }}
-		</div>
-		{% endif %}
+            {% if form.non_field_errors %}
+                <div class="mb-4 p-4 bg-paper3 border-l-[3px] border-red-700 text-red-700 text-sm">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
-		<div class="card mb-6">
-			<div class="font-mono text-sm font-medium text-accent mb-4">Name</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-				<div>
-					<label for="{{ form.name_first.id_for_label }}" class="form-label">First name <span class="text-red-700">*</span></label>
-					{{ form.name_first }}
-					{% if form.name_first.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_first.errors.as_text }}</p>{% endif %}
-				</div>
-				<div>
-					<label for="{{ form.name_middle.id_for_label }}" class="form-label">Middle name</label>
-					{{ form.name_middle }}
-				</div>
-				<div>
-					<label for="{{ form.name_last.id_for_label }}" class="form-label">Last name <span class="text-red-700">*</span></label>
-					{{ form.name_last }}
-					{% if form.name_last.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_last.errors.as_text }}</p>{% endif %}
-				</div>
-				<div>
-					<label for="{{ form.name_suffix.id_for_label }}" class="form-label">Suffix</label>
-					{{ form.name_suffix }}
-				</div>
-			</div>
+            <div class="card mb-6">
+                <div class="font-mono text-sm font-medium text-accent mb-4">Name</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="{{ form.name_first.id_for_label }}" class="form-label">First name <span class="text-red-700">*</span></label>
+                        {{ form.name_first }}
+                        {% if form.name_first.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_first.errors.as_text }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.name_middle.id_for_label }}" class="form-label">Middle name</label>
+                        {{ form.name_middle }}
+                    </div>
+                    <div>
+                        <label for="{{ form.name_last.id_for_label }}" class="form-label">Last name <span class="text-red-700">*</span></label>
+                        {{ form.name_last }}
+                        {% if form.name_last.errors %}<p class="mt-1 text-meta text-red-700">{{ form.name_last.errors.as_text }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.name_suffix.id_for_label }}" class="form-label">Suffix</label>
+                        {{ form.name_suffix }}
+                    </div>
+                </div>
 
-			<div x-show="matches.length > 0" x-cloak class="card-callout mt-2">
-				<div class="font-mono text-sm font-medium text-accent mb-2">Possible existing scholars</div>
-				<ul class="m-0 pl-4">
-					<template x-for="match in matches" :key="match.id">
-						<li class="mb-1">
-							<a :href="match.url" class="text-accent text-sm" x-text="match.name_full"></a>
-						</li>
-					</template>
-				</ul>
-				<p class="font-mono text-meta-sm text-mute mt-2 mb-0">
-					If the scholar you're adding is listed above, click their name instead of creating a duplicate.
-				</p>
-			</div>
+                <div x-show="matches.length > 0" x-cloak class="card-callout mt-2">
+                    <div class="font-mono text-sm font-medium text-accent mb-2">Possible existing scholars</div>
+                    <ul class="m-0 pl-4">
+                        <template x-for="match in matches" :key="match.id">
+                            <li class="mb-1">
+                                <a :href="match.url" class="text-accent text-sm" x-text="match.name_full"></a>
+                            </li>
+                        </template>
+                    </ul>
+                    <p class="font-mono text-meta-sm text-mute mt-2 mb-0">
+                        If the scholar you're adding is listed above, click their name instead of creating a duplicate.
+                    </p>
+                </div>
 
-			<div class="font-mono text-sm font-medium text-accent mb-4 mt-6 pt-4 border-t border-line2">Affiliation &amp; Identifier</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-				<div>
-					<label for="{{ form.affiliation.id_for_label }}" class="form-label">Current affiliation</label>
-					{{ form.affiliation }}
-				</div>
-				<div>
-					<label for="{{ form.orcid.id_for_label }}" class="form-label">ORCID</label>
-					{{ form.orcid }}
-				</div>
-			</div>
-		</div>
+                <div class="font-mono text-sm font-medium text-accent mb-4 mt-6 pt-4 border-t border-line2">Affiliation &amp; Identifier</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.affiliation.id_for_label }}" class="form-label">Current affiliation</label>
+                        {{ form.affiliation }}
+                    </div>
+                    <div>
+                        <label for="{{ form.orcid.id_for_label }}" class="form-label">ORCID</label>
+                        {{ form.orcid }}
+                    </div>
+                </div>
+            </div>
 
-		<div class="flex gap-2.5">
-			<button type="submit" class="btn-primary">Save scholar</button>
-			<a href="{% url 'scholars' %}" class="btn-subtle">Cancel</a>
-		</div>
-	</form>
-</section>
+            <div class="flex gap-2.5">
+                <button type="submit" class="btn-primary">Save scholar</button>
+                <a href="{% url 'scholars' %}" class="btn-subtle">Cancel</a>
+            </div>
+        </form>
+    </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-	const firstInput = document.getElementById('{{ form.name_first.id_for_label }}');
-	const lastInput = document.getElementById('{{ form.name_last.id_for_label }}');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstInput = document.getElementById('{{ form.name_first.id_for_label }}');
+            const lastInput = document.getElementById('{{ form.name_last.id_for_label }}');
 
-	if (firstInput) {
-		firstInput.addEventListener('input', (e) => {
-			const comp = Alpine.$data(firstInput.closest('[x-data]'));
-			comp.firstName = e.target.value;
-			comp.search();
-		});
-	}
-	if (lastInput) {
-		lastInput.addEventListener('input', (e) => {
-			const comp = Alpine.$data(lastInput.closest('[x-data]'));
-			comp.lastName = e.target.value;
-			comp.search();
-		});
-	}
-});
-</script>
+            if (firstInput) {
+                firstInput.addEventListener('input', (e) => {
+                    const comp = Alpine.$data(firstInput.closest('[x-data]'));
+                    comp.firstName = e.target.value;
+                    comp.search();
+                });
+            }
+            if (lastInput) {
+                lastInput.addEventListener('input', (e) => {
+                    const comp = Alpine.$data(lastInput.closest('[x-data]'));
+                    comp.lastName = e.target.value;
+                    comp.search();
+                });
+            }
+        });
+    </script>
 {% endblock main %}

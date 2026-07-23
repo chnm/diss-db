@@ -1,338 +1,338 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>Committee Networks - The History Dissertation Database</title>
+    <title>Committee Networks - The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
 {# Header #}
-<section style="padding: 56px 64px 28px; border-bottom: 1px solid var(--line);">
-	<h1 class="font-serif" style="font-size: 48px; margin: 0; font-weight: 500; letter-spacing: -0.6px;">Committee Networks</h1>
-</section>
+    <section style="padding: 56px 64px 28px; border-bottom: 1px solid var(--line);">
+        <h1 class="font-serif" style="font-size: 48px; margin: 0; font-weight: 500; letter-spacing: -0.6px;">Committee Networks</h1>
+    </section>
 
 {# School selector #}
-<div style="padding: 20px 64px; border-bottom: 1px solid var(--line); background: var(--paper2); display: flex; align-items: center; gap: 12px;">
-	<span class="font-mono text-xs font-medium" style="color: var(--mute);">School</span>
-	<select name="school_id" id="school_id" onchange="loadSchool(this.value)"
-		style="flex: 1; max-width: 400px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper3); font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--ink);">
-		<option value="">-- Choose a school --</option>
-		{% for school in schools %}
-		<option value="{{ school.id }}">{{ school.name }}</option>
-		{% endfor %}
-	</select>
-</div>
+    <div style="padding: 20px 64px; border-bottom: 1px solid var(--line); background: var(--paper2); display: flex; align-items: center; gap: 12px;">
+        <span class="font-mono text-sm font-medium" style="color: var(--mute);">School</span>
+        <select name="school_id" id="school_id" onchange="loadSchool(this.value)"
+                style="flex: 1; max-width: 400px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper3); font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--ink);">
+            <option value="">-- Choose a school --</option>
+            {% for school in schools %}
+                <option value="{{ school.id }}">{{ school.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
 {# Viz container #}
-<div id="viz-container" class="hidden" style="padding: 0 64px 32px;">
-	<div id="card" style="border: 1px solid var(--line); overflow: hidden; margin-top: 24px;">
+    <div id="viz-container" class="hidden" style="padding: 0 64px 32px;">
+        <div id="card" style="border: 1px solid var(--line); overflow: hidden; margin-top: 24px;">
 		{# Controls bar #}
-		<div id="controls" style="display: flex; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--line2); background: var(--paper3); flex-wrap: wrap;">
-			<span class="font-mono text-xs font-medium" style="color: var(--mute);">Filter</span>
-			<input type="text" id="search" placeholder="Search name…"
-				oninput="doSearch(this.value)"
-				style="flex: 1; min-width: 140px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper3); font-family: 'Source Sans 3', sans-serif; font-size: 13px; color: var(--ink);">
+            <div id="controls" style="display: flex; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--line2); background: var(--paper3); flex-wrap: wrap;">
+                <span class="font-mono text-sm font-medium" style="color: var(--mute);">Filter</span>
+                <input type="text" id="search" placeholder="Search name…"
+                       oninput="doSearch(this.value)"
+                       style="flex: 1; min-width: 140px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper3); font-family: 'Source Sans 3', sans-serif; font-size: 13px; color: var(--ink);">
 
-			<div style="display: flex; align-items: center; gap: 4px;" class="font-mono" >
-				<svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="var(--accent)" fill-opacity="0.13" stroke="var(--accent)" stroke-width="1.5"/></svg>
-				<span style="font-size: 10px; color: var(--mute);">Author</span>
-			</div>
-			<div style="display: flex; align-items: center; gap: 4px;" class="font-mono">
-				<svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="#1D9E7533" stroke="#1D9E75" stroke-width="1.5"/></svg>
-				<span style="font-size: 10px; color: var(--mute);">Advisor</span>
-			</div>
-			<div style="display: flex; align-items: center; gap: 4px;" class="font-mono">
-				<svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="#D85A3033" stroke="#D85A30" stroke-width="1.5"/></svg>
-				<span style="font-size: 10px; color: var(--mute);">Committee</span>
-			</div>
-		</div>
+                <div style="display: flex; align-items: center; gap: 4px;" class="font-mono" >
+                    <svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="var(--accent)" fill-opacity="0.13" stroke="var(--accent)" stroke-width="1.5"/></svg>
+                    <span style="font-size: 12px; color: var(--mute);">Author</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;" class="font-mono">
+                    <svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="#ddc66f33" stroke="#b59d42" stroke-width="1.5"/></svg>
+                    <span style="font-size: 12px; color: var(--mute);">Advisor</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;" class="font-mono">
+                    <svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="#756c6033" stroke="#756c60" stroke-width="1.5"/></svg>
+                    <span style="font-size: 12px; color: var(--mute);">Committee</span>
+                </div>
+            </div>
 
 		{# Info bar #}
-		<div id="info-box" style="padding: 8px 24px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--mute); border-bottom: 1px solid var(--line2); min-height: 32px;">
-			Hover a node to explore · Drag to reposition · Scroll to zoom
-		</div>
+            <div id="info-box" style="padding: 8px 24px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mute); border-bottom: 1px solid var(--line2); min-height: 32px;">
+                Hover a node to explore · Drag to reposition · Scroll to zoom
+            </div>
 
-		<svg id="graph" style="width: 100%; height: 620px; display: block; background: var(--paper3);"></svg>
+            <svg id="graph" style="width: 100%; height: 620px; display: block; background: var(--paper3);"></svg>
 
-		<div style="padding: 8px 24px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--mute); text-align: right;">
-			Node size = number of connections
-		</div>
-	</div>
-</div>
+            <div style="padding: 8px 24px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mute); text-align: right;">
+                Node size = number of connections
+            </div>
+        </div>
+    </div>
 
-<div id="viz-empty" class="hidden" style="padding: 48px 64px; text-align: center;">
-	<span class="font-serif" style="font-size: 22px; font-style: italic; color: var(--mute);">No committee data found for this school.</span>
-</div>
+    <div id="viz-empty" class="hidden" style="padding: 48px 64px; text-align: center;">
+        <span class="font-serif" style="font-size: 22px; font-style: italic; color: var(--mute);">No committee data found for this school.</span>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script>
-	const C = {
-		author:   'var(--accent)',
-		advisor:  '#1D9E75',
-		committee:'#D85A30',
-		linkAdv:  'rgba(29,158,117,0.35)',
-		linkCom:  'rgba(90,88,82,0.12)',
-		linkHi:   'rgba(31,58,107,0.6)',
-	};
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script>
+        const C = {
+            author:   'var(--accent)',
+            advisor:  '#b59d42',
+            committee:'#756c60',
+            linkAdv:  'rgba(181,157,66,0.45)',
+            linkCom:  'rgba(117,108,96,0.18)',
+            linkHi:   'rgba(146,59,50,0.68)',
+        };
 
-	function nodeColor(d) {
-		if (d.group === 'advisor')   return C.advisor;
-		if (d.group === 'committee') return C.committee;
-		return C.author;
-	}
+        function nodeColor(d) {
+            if (d.group === 'advisor')   return C.advisor;
+            if (d.group === 'committee') return C.committee;
+            return C.author;
+        }
 
-	let _link, _nodeG, _nodes, _links, _zoom, _svg;
+        let _link, _nodeG, _nodes, _links, _zoom, _svg;
 
-	async function loadSchool(schoolId) {
-		if (!schoolId) return;
+        async function loadSchool(schoolId) {
+            if (!schoolId) return;
 
-		const container = document.getElementById('viz-container');
-		const empty     = document.getElementById('viz-empty');
-		const infoBox   = document.getElementById('info-box');
+            const container = document.getElementById('viz-container');
+            const empty     = document.getElementById('viz-empty');
+            const infoBox   = document.getElementById('info-box');
 
-		container.classList.add('hidden');
-		empty.classList.add('hidden');
-		document.getElementById('search').value = '';
+            container.classList.add('hidden');
+            empty.classList.add('hidden');
+            document.getElementById('search').value = '';
 
-		infoBox.textContent = 'Loading…';
+            infoBox.textContent = 'Loading…';
 
-		try {
-			const res = await fetch(`/api/school-network/${schoolId}/`);
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const data = await res.json();
+            try {
+                const res = await fetch(`/api/school-network/${schoolId}/`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
 
-			if (data.nodes.length === 0) {
-				empty.classList.remove('hidden');
-				return;
-			}
+                if (data.nodes.length === 0) {
+                    empty.classList.remove('hidden');
+                    return;
+                }
 
-			container.classList.remove('hidden');
-			renderGraph(data);
+                container.classList.remove('hidden');
+                renderGraph(data);
 
-		} catch (err) {
-			console.error('Failed to load school network:', err);
-			infoBox.textContent = 'Error loading data — check the console.';
-			container.classList.remove('hidden');
-		}
-	}
+            } catch (err) {
+                console.error('Failed to load school network:', err);
+                infoBox.textContent = 'Error loading data — check the console.';
+                container.classList.remove('hidden');
+            }
+        }
 
-	function renderGraph(raw) {
-		const svgEl  = document.getElementById('graph');
-		const W      = svgEl.parentElement.clientWidth;
-		const H      = 620;
+        function renderGraph(raw) {
+            const svgEl  = document.getElementById('graph');
+            const W      = svgEl.parentElement.clientWidth;
+            const H      = 620;
 
-		svgEl.setAttribute('width',  W);
-		svgEl.setAttribute('height', H);
-		d3.select('#graph').selectAll('*').remove();
+            svgEl.setAttribute('width',  W);
+            svgEl.setAttribute('height', H);
+            d3.select('#graph').selectAll('*').remove();
 
-		const degMap = {};
-		raw.links.forEach(l => {
-			degMap[l.source] = (degMap[l.source] || 0) + 1;
-			degMap[l.target] = (degMap[l.target] || 0) + 1;
-		});
-		function radius(id) { return 5 + Math.sqrt(degMap[id] || 0) * 2.8; }
+            const degMap = {};
+            raw.links.forEach(l => {
+                degMap[l.source] = (degMap[l.source] || 0) + 1;
+                degMap[l.target] = (degMap[l.target] || 0) + 1;
+            });
+            function radius(id) { return 5 + Math.sqrt(degMap[id] || 0) * 2.8; }
 
-		const svg  = d3.select('#graph');
-		const g    = svg.append('g');
+            const svg  = d3.select('#graph');
+            const g    = svg.append('g');
 
-		const nodes = raw.nodes.map(d => ({...d}));
-		const links = raw.links.map(d => ({...d}));
+            const nodes = raw.nodes.map(d => ({...d}));
+            const links = raw.links.map(d => ({...d}));
 
-		const sim = d3.forceSimulation(nodes)
-			.force('link',      d3.forceLink(links).id(d => d.id).distance(d => 60 + radius(d.target.id || d.target) * 4))
-			.force('charge',    d3.forceManyBody().strength(-280))
-			.force('center',    d3.forceCenter(W / 2, H / 2))
-			.force('collision', d3.forceCollide().radius(d => radius(d.id) + 10));
+            const sim = d3.forceSimulation(nodes)
+                .force('link',      d3.forceLink(links).id(d => d.id).distance(d => 60 + radius(d.target.id || d.target) * 4))
+                .force('charge',    d3.forceManyBody().strength(-280))
+                .force('center',    d3.forceCenter(W / 2, H / 2))
+                .force('collision', d3.forceCollide().radius(d => radius(d.id) + 10));
 
-		const link = g.append('g')
-			.selectAll('line')
-			.data(links)
-			.join('line')
-			.attr('stroke',           l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom)
-			.attr('stroke-width',     l => l.relationship === 'advisor' ? 1.5 : 0.8)
-			.attr('stroke-dasharray', l => l.relationship === 'advisor' ? null : '3 2');
+            const link = g.append('g')
+                .selectAll('line')
+                .data(links)
+                .join('line')
+                .attr('stroke',           l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom)
+                .attr('stroke-width',     l => l.relationship === 'advisor' ? 1.5 : 0.8)
+                .attr('stroke-dasharray', l => l.relationship === 'advisor' ? null : '3 2');
 
-		const nodeG = g.append('g')
-			.selectAll('g')
-			.data(nodes)
-			.join('g')
-			.attr('cursor', 'pointer')
-			.call(d3.drag()
-				.on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-				.on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
-				.on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+            const nodeG = g.append('g')
+                .selectAll('g')
+                .data(nodes)
+                .join('g')
+                .attr('cursor', 'pointer')
+                .call(d3.drag()
+                        .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                        .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
+                        .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
 
-		nodeG.append('circle')
-			.attr('r',            d => radius(d.id))
-			.attr('fill',         d => nodeColor(d) + '22')
-			.attr('stroke',       d => nodeColor(d))
-			.attr('stroke-width', d => d.group === 'advisor' ? 2 : 1.2);
+            nodeG.append('circle')
+                .attr('r',            d => radius(d.id))
+                .attr('fill',         d => nodeColor(d) + '22')
+                .attr('stroke',       d => nodeColor(d))
+                .attr('stroke-width', d => d.group === 'advisor' ? 2 : 1.2);
 
-		nodeG.append('text')
-			.attr('text-anchor', 'middle')
-			.attr('dy', '0.35em')
-			.attr('font-size', '8px')
-			.attr('font-weight', '500')
-			.attr('font-family', "'Source Sans 3', sans-serif")
-			.attr('fill', d => nodeColor(d))
-			.attr('pointer-events', 'none')
-			.text(d => radius(d.id) > 12 ? d.id.split(' ').slice(-1)[0] : '');
+            nodeG.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('font-size', '9px')
+                .attr('font-weight', '500')
+                .attr('font-family', "'Source Sans 3', sans-serif")
+                .attr('fill', d => nodeColor(d))
+                .attr('pointer-events', 'none')
+                .text(d => radius(d.id) > 12 ? d.id.split(' ').slice(-1)[0] : '');
 
-		const tooltip = document.getElementById('tooltip');
-		const infoBox = document.getElementById('info-box');
+            const tooltip = document.getElementById('tooltip');
+            const infoBox = document.getElementById('info-box');
 
-		nodeG.on('mouseenter', function(e, d) {
-			const connIds = new Set();
-			links.forEach(l => {
-				const s = l.source.id || l.source;
-				const t = l.target.id || l.target;
-				if (s === d.id) connIds.add(t);
-				if (t === d.id) connIds.add(s);
-			});
+            nodeG.on('mouseenter', function(e, d) {
+                const connIds = new Set();
+                links.forEach(l => {
+                    const s = l.source.id || l.source;
+                    const t = l.target.id || l.target;
+                    if (s === d.id) connIds.add(t);
+                    if (t === d.id) connIds.add(s);
+                });
 
-			const deg  = connIds.size;
-			const role = d.group === 'advisor' ? 'Advisor'
-					: d.group === 'committee' ? 'Committee member'
-					: 'Author';
+                const deg  = connIds.size;
+                const role = d.group === 'advisor' ? 'Advisor'
+                    : d.group === 'committee' ? 'Committee member'
+                    : 'Author';
 
-			infoBox.textContent = `${d.id} · ${role} · ${deg} connection${deg !== 1 ? 's' : ''}`;
+                infoBox.textContent = `${d.id} · ${role} · ${deg} connection${deg !== 1 ? 's' : ''}`;
 
-			link
-				.attr('stroke', l => {
-					const s = l.source.id || l.source, t = l.target.id || l.target;
-					return (s === d.id || t === d.id) ? C.linkHi
-						: l.relationship === 'advisor' ? C.linkAdv : C.linkCom;
-				})
-				.attr('stroke-width', l => {
-					const s = l.source.id || l.source, t = l.target.id || l.target;
-					return (s === d.id || t === d.id) ? 2
-						: l.relationship === 'advisor' ? 1.5 : 0.8;
-				});
+                link
+                    .attr('stroke', l => {
+                        const s = l.source.id || l.source, t = l.target.id || l.target;
+                        return (s === d.id || t === d.id) ? C.linkHi
+                            : l.relationship === 'advisor' ? C.linkAdv : C.linkCom;
+                    })
+                    .attr('stroke-width', l => {
+                        const s = l.source.id || l.source, t = l.target.id || l.target;
+                        return (s === d.id || t === d.id) ? 2
+                            : l.relationship === 'advisor' ? 1.5 : 0.8;
+                    });
 
-			nodeG.select('circle').attr('opacity', n => n.id === d.id || connIds.has(n.id) ? 1 : 0.15);
-			nodeG.select('text').attr('opacity',   n => n.id === d.id || connIds.has(n.id) ? 1 : 0.15);
+                nodeG.select('circle').attr('opacity', n => n.id === d.id || connIds.has(n.id) ? 1 : 0.15);
+                nodeG.select('text').attr('opacity',   n => n.id === d.id || connIds.has(n.id) ? 1 : 0.15);
 
-			const advisorLinks   = links.filter(l => (l.source.id||l.source) === d.id && l.relationship === 'advisor').map(l => l.target.id||l.target);
-			const committeeLinks = links.filter(l => (l.source.id||l.source) === d.id && l.relationship === 'committee member').map(l => l.target.id||l.target);
-			const students       = links.filter(l => (l.target.id||l.target) === d.id && l.relationship === 'advisor').map(l => l.source.id||l.source);
+                const advisorLinks   = links.filter(l => (l.source.id||l.source) === d.id && l.relationship === 'advisor').map(l => l.target.id||l.target);
+                const committeeLinks = links.filter(l => (l.source.id||l.source) === d.id && l.relationship === 'committee member').map(l => l.target.id||l.target);
+                const students       = links.filter(l => (l.target.id||l.target) === d.id && l.relationship === 'advisor').map(l => l.source.id||l.source);
 
-			let html = `<strong>${d.id}</strong><br><span style="color:var(--mute)">${role}</span>`;
-			if (advisorLinks.length)   html += `<br><br><span style="color:var(--mute)">Advisor:</span><br>${advisorLinks.join('<br>')}`;
-			if (committeeLinks.length) html += `<br><br><span style="color:var(--mute)">Committee (${committeeLinks.length}):</span><br>${committeeLinks.slice(0,4).join('<br>')}${committeeLinks.length > 4 ? `<br>…+${committeeLinks.length-4} more` : ''}`;
-			if (students.length)       html += `<br><br><span style="color:var(--mute)">Students (${students.length}):</span><br>${students.slice(0,5).join('<br>')}${students.length > 5 ? `<br>…+${students.length-5} more` : ''}`;
+                let html = `<strong>${d.id}</strong><br><span style="color:var(--mute)">${role}</span>`;
+                if (advisorLinks.length)   html += `<br><br><span style="color:var(--mute)">Advisor:</span><br>${advisorLinks.join('<br>')}`;
+                if (committeeLinks.length) html += `<br><br><span style="color:var(--mute)">Committee (${committeeLinks.length}):</span><br>${committeeLinks.slice(0,4).join('<br>')}${committeeLinks.length > 4 ? `<br>…+${committeeLinks.length-4} more` : ''}`;
+                if (students.length)       html += `<br><br><span style="color:var(--mute)">Students (${students.length}):</span><br>${students.slice(0,5).join('<br>')}${students.length > 5 ? `<br>…+${students.length-5} more` : ''}`;
 
-			tooltip.innerHTML = html;
-			tooltip.style.display = 'block';
-			tooltip.style.left = (e.clientX + 14) + 'px';
-			tooltip.style.top  = (e.clientY - 10) + 'px';
-		})
-		.on('mousemove', function(e) {
-			tooltip.style.left = (e.clientX + 14) + 'px';
-			tooltip.style.top  = (e.clientY - 10) + 'px';
-		})
-		.on('mouseleave', function() {
-			link.attr('stroke',       l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom)
-				.attr('stroke-width', l => l.relationship === 'advisor' ? 1.5 : 0.8);
-			nodeG.select('circle').attr('opacity', 1);
-			nodeG.select('text').attr('opacity', 1);
-			tooltip.style.display = 'none';
-			infoBox.textContent = 'Hover a node to explore · Drag to reposition · Scroll to zoom';
-		});
+                tooltip.innerHTML = html;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 14) + 'px';
+                tooltip.style.top  = (e.clientY - 10) + 'px';
+            })
+                .on('mousemove', function(e) {
+                    tooltip.style.left = (e.clientX + 14) + 'px';
+                    tooltip.style.top  = (e.clientY - 10) + 'px';
+                })
+                .on('mouseleave', function() {
+                    link.attr('stroke',       l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom)
+                        .attr('stroke-width', l => l.relationship === 'advisor' ? 1.5 : 0.8);
+                    nodeG.select('circle').attr('opacity', 1);
+                    nodeG.select('text').attr('opacity', 1);
+                    tooltip.style.display = 'none';
+                    infoBox.textContent = 'Hover a node to explore · Drag to reposition · Scroll to zoom';
+                });
 
-		nodeG.on('click', function(e, d) {
-			if (d.scholar_id) {
-				window.location.href = d.url;
-			}
-		});
+            nodeG.on('click', function(e, d) {
+                if (d.scholar_id) {
+                    window.location.href = d.url;
+                }
+            });
 
-		sim.on('tick', () => {
-			link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-				.attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-			nodeG.attr('transform', d => `translate(${d.x},${d.y})`);
-		});
+            sim.on('tick', () => {
+                link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                nodeG.attr('transform', d => `translate(${d.x},${d.y})`);
+            });
 
-		_zoom = d3.zoom().scaleExtent([0.3, 4]).on('zoom', e => g.attr('transform', e.transform));
-		_svg  = svg;
-		svg.call(_zoom);
+            _zoom = d3.zoom().scaleExtent([0.3, 4]).on('zoom', e => g.attr('transform', e.transform));
+            _svg  = svg;
+            svg.call(_zoom);
 
-		_link  = link;
-		_nodeG = nodeG;
-		_nodes = nodes;
-		_links = links;
-	}
+            _link  = link;
+            _nodeG = nodeG;
+            _nodes = nodes;
+            _links = links;
+        }
 
-	function doSearch(val) {
-		if (!_nodeG) return;
-		const q = val.trim().toLowerCase();
+        function doSearch(val) {
+            if (!_nodeG) return;
+            const q = val.trim().toLowerCase();
 
-		if (!q) {
-			_nodeG.select('circle').attr('opacity', 1);
-			_nodeG.select('text').attr('opacity', 1);
-			_link.attr('stroke', l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom);
-			return;
-		}
+            if (!q) {
+                _nodeG.select('circle').attr('opacity', 1);
+                _nodeG.select('text').attr('opacity', 1);
+                _link.attr('stroke', l => l.relationship === 'advisor' ? C.linkAdv : C.linkCom);
+                return;
+            }
 
-		const matches   = new Set(_nodes.filter(d => d.id.toLowerCase().includes(q)).map(d => d.id));
-		const neighbors = new Set();
-		_links.forEach(l => {
-			const s = l.source.id||l.source, t = l.target.id||l.target;
-			if (matches.has(s)) neighbors.add(t);
-			if (matches.has(t)) neighbors.add(s);
-		});
+            const matches   = new Set(_nodes.filter(d => d.id.toLowerCase().includes(q)).map(d => d.id));
+            const neighbors = new Set();
+            _links.forEach(l => {
+                const s = l.source.id||l.source, t = l.target.id||l.target;
+                if (matches.has(s)) neighbors.add(t);
+                if (matches.has(t)) neighbors.add(s);
+            });
 
-		_nodeG.select('circle').attr('opacity', d => matches.has(d.id) ? 1 : neighbors.has(d.id) ? 0.5 : 0.1);
-		_nodeG.select('text').attr('opacity',   d => matches.has(d.id) ? 1 : 0.1);
-		_link.attr('stroke', l => {
-			const s = l.source.id||l.source, t = l.target.id||l.target;
-			return (matches.has(s) || matches.has(t)) ? C.linkHi : C.linkCom;
-		});
+            _nodeG.select('circle').attr('opacity', d => matches.has(d.id) ? 1 : neighbors.has(d.id) ? 0.5 : 0.1);
+            _nodeG.select('text').attr('opacity',   d => matches.has(d.id) ? 1 : 0.1);
+            _link.attr('stroke', l => {
+                const s = l.source.id||l.source, t = l.target.id||l.target;
+                return (matches.has(s) || matches.has(t)) ? C.linkHi : C.linkCom;
+            });
 
-		const matchedNodes = _nodes.filter(d => matches.has(d.id));
-		if (matchedNodes.length > 0) {
-			zoomToNodes(matchedNodes);
-		}
-	}
+            const matchedNodes = _nodes.filter(d => matches.has(d.id));
+            if (matchedNodes.length > 0) {
+                zoomToNodes(matchedNodes);
+            }
+        }
 
-	function zoomToNodes(matchedNodes) {
-		const svgEl = document.getElementById('graph');
-		const W = svgEl.clientWidth;
-		const H = svgEl.clientHeight;
+        function zoomToNodes(matchedNodes) {
+            const svgEl = document.getElementById('graph');
+            const W = svgEl.clientWidth;
+            const H = svgEl.clientHeight;
 
-		const xs = matchedNodes.map(d => d.x);
-		const ys = matchedNodes.map(d => d.y);
-		const x1 = Math.min(...xs), x2 = Math.max(...xs);
-		const y1 = Math.min(...ys), y2 = Math.max(...ys);
+            const xs = matchedNodes.map(d => d.x);
+            const ys = matchedNodes.map(d => d.y);
+            const x1 = Math.min(...xs), x2 = Math.max(...xs);
+            const y1 = Math.min(...ys), y2 = Math.max(...ys);
 
-		const cx = (x1 + x2) / 2;
-		const cy = (y1 + y2) / 2;
+            const cx = (x1 + x2) / 2;
+            const cy = (y1 + y2) / 2;
 
-		let scale;
-		if (matchedNodes.length === 1) {
-			scale = 2.5;
-		} else {
-			const padding = 80;
-			scale = Math.min(
-				0.9 * W / (x2 - x1 + padding),
-				0.9 * H / (y2 - y1 + padding),
-				4
-			);
-		}
+            let scale;
+            if (matchedNodes.length === 1) {
+                scale = 2.5;
+            } else {
+                const padding = 80;
+                scale = Math.min(
+                    0.9 * W / (x2 - x1 + padding),
+                    0.9 * H / (y2 - y1 + padding),
+                    4
+                );
+            }
 
-		_svg.transition()
-			.duration(600)
-			.call(
-				_zoom.transform,
-				d3.zoomIdentity
-					.translate(W / 2, H / 2)
-					.scale(scale)
-					.translate(-cx, -cy)
-			);
-	}
-</script>
-<div id="tooltip" style="
-	position: fixed; pointer-events: none; display: none;
-	background: var(--paper3); border: 1px solid var(--line);
-	padding: 8px 12px; font-family: 'Source Sans 3', sans-serif; font-size: 12px; color: var(--ink);
-	max-width: 220px; line-height: 1.6; z-index: 100;
-"></div>
+            _svg.transition()
+                .duration(600)
+                .call(
+                    _zoom.transform,
+                    d3.zoomIdentity
+                        .translate(W / 2, H / 2)
+                        .scale(scale)
+                        .translate(-cx, -cy)
+                );
+        }
+    </script>
+    <div id="tooltip" style="
+                             position: fixed; pointer-events: none; display: none;
+                             background: var(--paper3); border: 1px solid var(--line);
+                             padding: 8px 12px; font-family: 'Source Sans 3', sans-serif; font-size: 12px; color: var(--ink);
+                             max-width: 220px; line-height: 1.6; z-index: 100;
+                            "></div>
 
 {% endblock main %}

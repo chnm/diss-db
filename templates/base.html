@@ -1,6 +1,5 @@
 {% load static %}
 {% load tailwind_tags %}
-{% load dissdb_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,49 +20,62 @@
 
     <body>
 
-        {% site_counts as counts %}
         <div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-center text-sm py-2 px-4">
             This site is currently in beta. Data may be incomplete or contain errors.
         </div>
 
         {% block header %}
-            <header class="page-section border-b border-line pt-7 pb-6" x-data="{ mobileOpen: false }">
-                <div class="flex items-end justify-between mb-4">
-                    <a href="{% url 'index' %}" class="text-ink">
-                        <div class="font-serif text-3xl font-medium tracking-tight">
-                            The History Dissertation Database
-                        </div>
+            <header class="catalogue-site-header" x-data="{ mobileOpen: false }">
+                <div class="catalogue-site-masthead">
+                    <a href="{% url 'index' %}" class="catalogue-site-brand" aria-label="The History Dissertation Database home">
+                        <span class="catalogue-site-mark" aria-hidden="true">
+                            <svg viewBox="0 0 36 42" focusable="false">
+                                <path class="catalogue-mark-branch" d="M18 5v8M18 13 7 23M18 13l11 10M18 13v24M7 23v9M29 23v9"></path>
+                                <path class="catalogue-mark-lineage" d="M18 5v32"></path>
+                                <g class="catalogue-mark-nodes">
+                                    <circle cx="18" cy="5" r="2.5"></circle>
+                                    <circle cx="18" cy="13" r="2.5"></circle>
+                                    <circle cx="7" cy="23" r="2.5"></circle>
+                                    <circle cx="29" cy="23" r="2.5"></circle>
+                                    <circle cx="7" cy="32" r="2.5"></circle>
+                                    <circle cx="29" cy="32" r="2.5"></circle>
+                                </g>
+                                <g class="catalogue-mark-highlight-nodes">
+                                    <circle cx="18" cy="5" r="2.75"></circle>
+                                    <circle cx="18" cy="13" r="2.75"></circle>
+                                    <circle cx="18" cy="37" r="2.75"></circle>
+                                </g>
+                            </svg>
+                        </span>
+                        <span>The History<br>Dissertation Database</span>
                     </a>
-                    <div class="font-mono text-xs text-right hidden md:block text-mute leading-snug">
-                        {{ counts.dissertations|intcomma_plain }} dissertations<br>
-                        {{ counts.scholars|intcomma_plain }} scholars · {{ counts.advisors|intcomma_plain }} advisors
-                    </div>
-                </div>
-                <nav class="flex items-center gap-9">
-                    <div class="hidden md:flex items-center gap-9">
+
+                    <nav class="catalogue-site-nav" aria-label="Primary navigation">
                         {% with active_nav=active_nav|default:"" %}
-                            <a href="{% url 'dissertations' %}" class="font-sans text-sm font-semibold pb-1 border-b-2 {% if active_nav == 'dissertations' %}text-accent border-accent{% else %}text-ink2 border-transparent{% endif %}">Dissertations</a>
-                            <a href="{% url 'scholars' %}" class="font-sans text-sm font-semibold pb-1 border-b-2 {% if active_nav == 'scholars' %}text-accent border-accent{% else %}text-ink2 border-transparent{% endif %}">Scholars</a>
-                            <a href="{% url 'committeemembers' %}" class="font-sans text-sm font-semibold pb-1 border-b-2 {% if active_nav == 'committee' %}text-accent border-accent{% else %}text-ink2 border-transparent{% endif %}">Committee members</a>
-                            <a href="{% url 'about' %}" class="font-sans text-sm font-semibold pb-1 border-b-2 {% if active_nav == 'about' %}text-accent border-accent{% else %}text-ink2 border-transparent{% endif %}">About</a>
-                            <a href="{% url 'contributing' %}" class="font-sans text-sm font-semibold pb-1 border-b-2 {% if active_nav == 'contribute' %}text-accent border-accent{% else %}text-ink2 border-transparent{% endif %}">Contribute</a>
+                            <a href="{% url 'search' %}" {% if active_nav == 'search' %}aria-current="page"{% endif %}>Search</a>
+                            <a href="{% url 'dissertations' %}" {% if active_nav == 'dissertations' %}aria-current="page"{% endif %}>Dissertations</a>
+                            <a href="{% url 'scholars' %}" {% if active_nav == 'scholars' %}aria-current="page"{% endif %}>Scholars</a>
+                            <a href="{% url 'committeemembers' %}" {% if active_nav == 'committee' %}aria-current="page"{% endif %}>Committee members</a>
+                            <a href="{% url 'about' %}" {% if active_nav == 'about' %}aria-current="page"{% endif %}>About</a>
+                            <a href="{% url 'contributing' %}" {% if active_nav == 'contribute' %}aria-current="page"{% endif %}>Contribute</a>
                         {% endwith %}
-                    </div>
-                    <div class="flex-1"></div>
-                    <button type="button" class="md:hidden text-mute" :aria-expanded="mobileOpen" @click="mobileOpen = !mobileOpen" aria-label="Toggle mobile menu">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </nav>
+
+                    <button type="button" class="catalogue-site-menu" :aria-expanded="mobileOpen" @click="mobileOpen = !mobileOpen" aria-controls="mobile-navigation">
+                        <span>Menu</span>
+                        <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h16"></path>
                         </svg>
                     </button>
-                </nav>
-                <nav class="md:hidden mt-4" x-show="mobileOpen" x-transition @click.outside="mobileOpen = false" aria-label="Mobile navigation">
-                    <div class="flex flex-col gap-3 py-4">
-                        <a href="{% url 'dissertations' %}" class="font-sans text-base font-semibold text-ink2">Dissertations</a>
-                        <a href="{% url 'scholars' %}" class="font-sans text-base font-semibold text-ink2">Scholars</a>
-                        <a href="{% url 'committeemembers' %}" class="font-sans text-base font-semibold text-ink2">Committee members</a>
-                        <a href="{% url 'about' %}" class="font-sans text-base font-semibold text-ink2">About</a>
-                        <a href="{% url 'contributing' %}" class="font-sans text-base font-semibold text-ink2">Contribute</a>
-                    </div>
+                </div>
+
+                <nav id="mobile-navigation" class="catalogue-site-mobile-nav" x-cloak x-show="mobileOpen" x-transition @click.outside="mobileOpen = false" aria-label="Mobile navigation">
+                    <a href="{% url 'search' %}">Search</a>
+                    <a href="{% url 'dissertations' %}">Dissertations</a>
+                    <a href="{% url 'scholars' %}">Scholars</a>
+                    <a href="{% url 'committeemembers' %}">Committee members</a>
+                    <a href="{% url 'about' %}">About</a>
+                    <a href="{% url 'contributing' %}">Contribute</a>
                 </nav>
             </header>
         {% endblock header %}
@@ -77,14 +89,14 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 items-start">
                 <div>
                     <div class="font-serif text-xl font-medium mb-2">The History Dissertation Database</div>
-                    <div class="text-sm text-ink2 max-w-sm">
+                    <div class="text-base text-ink2 max-w-sm">
                         A working catalogue of doctoral dissertations in history. Data contributed by departments and the <a href="https://historians.org" class="text-ink2">American Historical Association</a>.
                         Created by the <a href="https://rrchnm.org" class="text-ink2">Roy Rosenzweig Center for History and New Media</a> at <a href="https://gmu.edu" class="text-ink2">George Mason University</a>
                     </div>
                 </div>
                 <nav>
-                    <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3">Explore</div>
-                    <div class="flex flex-col gap-1 text-sm text-ink2">
+                    <div class="font-mono text-sm font-medium uppercase tracking-wide text-mute mb-3">Explore</div>
+                    <div class="flex flex-col gap-1 text-base text-ink2">
                         <a href="{% url 'dissertations' %}" class="text-ink2">Dissertations</a>
                         <a href="{% url 'scholars' %}" class="text-ink2">Scholars</a>
                         <a href="{% url 'committeemembers' %}" class="text-ink2">Committee Members</a>
@@ -94,14 +106,14 @@
                     </div>
                 </nav>
                 <nav>
-                    <div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3">About</div>
-                    <div class="flex flex-col gap-1 text-sm text-ink2">
+                    <div class="font-mono text-sm font-medium uppercase tracking-wide text-mute mb-3">About</div>
+                    <div class="flex flex-col gap-1 text-base text-ink2">
                         <a href="{% url 'about' %}" class="text-ink2">About</a>
                         <a href="{% url 'contributing' %}" class="text-ink2">Contributing</a>
                         <a href="{% url 'api' %}" class="text-ink2">API</a>
                     </div>
                 </nav>
-                <div class="text-sm md:text-right">
+                <div class="text-base md:text-right">
                     {% if request.user.is_authenticated %}
                         <span class="text-mute mr-2">{{ request.user.username }}</span>
                         <a href="{% url 'admin:index' %}" class="text-ink2 mr-2">Admin</a>

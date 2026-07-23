@@ -17,7 +17,7 @@
                     <a href="{% url 'scholar-create' %}" class="btn-primary">+ Add Scholar</a>
                 {% endif %}
                 {% if table.paginator %}
-                    <div class="font-mono text-xs text-mute text-right">
+                    <div class="font-mono text-sm text-mute text-right">
                         showing <span class="text-ink">{{ table.page.start_index }}–{{ table.page.end_index }}</span> of <span class="text-ink">{{ table.paginator.count|intcomma_plain }}</span>
                     </div>
                 {% endif %}
@@ -30,12 +30,12 @@
             <span class="text-sm font-semibold text-ink2">Filter</span>
 
             <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
-                <label for="id_name" class="text-xs text-mute whitespace-nowrap">Name:</label>
+                <label for="id_name" class="text-sm text-mute whitespace-nowrap">Name:</label>
                 {{ filter.form.name }}
             </div>
 
             <div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5">
-                <label for="id_school" class="text-xs text-mute whitespace-nowrap">Institution:</label>
+                <label for="id_school" class="text-sm text-mute whitespace-nowrap">Institution:</label>
                 {{ filter.form.school }}
             </div>
 

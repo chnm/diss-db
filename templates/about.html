@@ -1,109 +1,111 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>About - The History Dissertation Database</title>
+    <title>About - The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
-<section class="page-section border-b border-line px-16 pb-7 pt-14">
-	<h1 class="font-serif text-display-lg m-0 font-medium tracking-tight">About</h1>
-</section>
+    <article class="catalogue-about">
+        <header class="catalogue-about-hero">
+            <div>
+                <p class="catalogue-about-kicker">About the collection</p>
+                <h1>A catalogue of historical scholarship—and the relationships behind it.</h1>
+            </div>
+            <p>
+                The History Dissertation Database brings together doctoral work in history with the
+                advisor, committee, and institutional connections that shaped it. It is both a research
+                tool and an evolving record of the discipline.
+            </p>
+        </header>
 
-<section class="about-grid page-section grid grid-cols-[2fr_1fr] gap-16 px-16 py-12">
-	<div>
-		<div class="font-serif text-body-lg leading-[1.65] text-ink">
-			<p class="mt-0">
-				The History Dissertation Database is a comprehensive resource for exploring the landscape of historical scholarship
-				through doctoral dissertations and the academic networks that shaped them.
-			</p>
+        <section class="catalogue-about-guide" aria-labelledby="collection-guide-heading">
+            <div class="catalogue-about-section-intro">
+                <p class="catalogue-about-kicker">Collection guide</p>
+                <h2 id="collection-guide-heading">What you can find</h2>
+            </div>
+            <dl class="catalogue-about-ledger">
+                <div>
+                    <dt>01</dt>
+                    <dd>
+                        <strong>Dissertation records</strong>
+                        <span>Titles, authors, institutions, departments, completion years, abstracts, and source links.</span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>02</dt>
+                    <dd>
+                        <strong>Committee relationships</strong>
+                        <span>Advisors and readers connected to the doctoral projects they helped guide.</span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>03</dt>
+                    <dd>
+                        <strong>Scholarly genealogies</strong>
+                        <span>Mentor-student relationships that can be followed across generations of historians.</span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>04</dt>
+                    <dd>
+                        <strong>Fields and institutions</strong>
+                        <span>Geographic and thematic emphases alongside the universities where this work was produced.</span>
+                    </dd>
+                </div>
+            </dl>
+        </section>
 
-			<div class="rule-heavy mt-10">
-				<h2 class="font-serif text-heading m-0 font-medium tracking-tight">What's in the Database</h2>
-			</div>
-			<p>This database contains detailed information about history dissertations, including:</p>
-			<ul class="mb-6 pl-5">
-				<li class="mb-2"><strong>Dissertation metadata:</strong> titles, authors, institutions, and completion years</li>
-				<li class="mb-2"><strong>Committee information:</strong> advisors and committee members who guided each project</li>
-				<li class="mb-2"><strong>Academic genealogies:</strong> mentor-student relationships across generations of scholars</li>
-				<li class="mb-2"><strong>Institutional networks:</strong> connections between universities and their scholarly communities</li>
-			</ul>
+        <section class="catalogue-about-use" aria-labelledby="using-heading">
+            <div class="catalogue-about-section-intro">
+                <p class="catalogue-about-kicker">Using the database</p>
+                <h2 id="using-heading">Two ways into the collection</h2>
+            </div>
+            <div class="catalogue-about-paths">
+                <a href="{% url 'dissertations' %}">
+                    <span>Browse the records</span>
+                    <strong>Search dissertations by title, author, institution, year, or field.</strong>
+                    <em>Explore dissertations →</em>
+                </a>
+                <a href="{% url 'scholars' %}">
+                    <span>Follow the people</span>
+                    <strong>Start with a scholar and trace advisors, students, and committee service.</strong>
+                    <em>Explore scholars →</em>
+                </a>
+            </div>
+        </section>
 
-			<div class="rule-heavy mt-10">
-				<h2 class="font-serif text-heading m-0 font-medium tracking-tight">How to Use This Resource</h2>
-			</div>
-			<div class="mb-8 grid grid-cols-2 gap-[28px]">
-				<div class="pt-4">
-					<div class="font-serif text-[20px] font-medium mb-2">Browse Dissertations</div>
-					<p class="text-[15px] text-ink2 m-0">
-						Search and filter through dissertations by title, author, institution, or year.
-						Click on any dissertation to view detailed information including committee members and advisor relationships.
-					</p>
-				</div>
-				<div class="pt-4">
-					<div class="font-serif text-[20px] font-medium mb-2">Explore Academic Networks</div>
-					<p class="text-[15px] text-ink2 m-0">
-						Discover scholars who served as dissertation advisors and committee members.
-						View interactive visualizations showing academic family trees and scholarly genealogies.
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+        <section class="catalogue-about-project">
+            <div class="catalogue-about-project-copy">
+                <p class="catalogue-about-kicker">The project</p>
+                <h2>Built collaboratively, maintained as public scholarship.</h2>
+                <p>
+                    The database is developed and maintained by the
+                    <a href="https://rrchnm.org">Roy Rosenzweig Center for History and New Media</a>
+                    at George Mason University, in collaboration with the
+                    <a href="https://historians.org">American Historical Association</a>.
+                    Records draw on contributed and archival data and may vary in completeness by institution and period.
+                </p>
+                <a class="catalogue-about-project-link" href="{% url 'contributing' %}">Learn how to contribute →</a>
+            </div>
 
-	<aside>
-		{# About the project #}
-		<div class="card-callout border border-line bg-paper3 p-6 mb-6">
-			<div class="font-mono text-xs font-medium uppercase tracking-wide text-accent mb-3.5">About the project</div>
-			<div class="font-serif text-[16px] leading-[1.6] text-ink">
-				<p class="mt-0">
-					Developed and maintained by the
-					<a href="https://rrchnm.org" class="text-accent">Roy Rosenzweig Center for History and New Media</a>
-					at George Mason University in collaboration with the <a href="https://historians.org" class="text-accent">American Historical Association</a>.
-				</p>
-			</div>
-		</div>
-
-		{# Team #}
-		<div class="mb-6">
-			<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-3 pb-2 border-b-2 border-ink">Project team</div>
-			<div class="py-3 border-b border-line2">
-				<div class="font-serif text-[18px] font-medium">Savannah Scott</div>
-				<div class="font-mono text-meta-sm text-mute">Lead developer, RRCHNM &middot; 2024–present</div>
-			</div>
-			<div class="py-3 border-b border-line2">
-				<div class="font-serif text-[18px] font-medium">Jason Heppler</div>
-				<div class="font-mono text-meta-sm text-mute">Senior developer/scholar, RRCHNM &middot; 2024–present</div>
-			</div>
-			<div class="py-3 border-b border-line2">
-				<div class="font-serif text-[18px] font-medium">Lincoln Mullen</div>
-				<div class="font-mono text-meta-sm text-mute">Executive director, RRCHNM &middot; 2024–present</div>
-			</div>
-		</div>
-
-		{# Contribute CTA #}
-		<div class="card-callout bg-paper2 p-[22px] border border-line">
-			<div class="font-mono text-xs font-medium uppercase tracking-wide text-accent mb-2.5">Contribute</div>
-			<div class="font-serif text-body-lg leading-[1.4] mb-3 font-medium">
-				Help us build a more complete picture of historical scholarship.
-			</div>
-			<a href="{% url 'contributing' %}" class="font-mono text-xs font-medium text-ink underline underline-offset-4">Contributor guide →</a>
-		</div>
-
-		{# Technical #}
-		<div class="mt-6">
-			<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-2">Technical</div>
-			<p class="text-[14px] text-ink2 m-0">
-				Built with Django. Visualizations powered by D3.js and Observable Plot.
-				For technical questions or data inquiries, contact the
-				<a href="https://rrchnm.org" class="text-accent">RRCHNM team</a>.
-			</p>
-		</div>
-	</aside>
-</section>
-
-<style>
-@media (max-width: 1024px) {
-	.about-grid { grid-template-columns: 1fr !important; gap: 40px !important; padding: 32px 24px !important; }
-}
-</style>
+            <aside class="catalogue-about-team" aria-labelledby="team-heading">
+                <p class="catalogue-about-kicker" id="team-heading">Project team</p>
+                <div>
+                    <strong>Savannah Scott</strong>
+                    <span>Lead developer, RRCHNM · 2024–present</span>
+                </div>
+                <div>
+                    <strong>Jason Heppler</strong>
+                    <span>Senior developer/scholar, RRCHNM · 2024–present</span>
+                </div>
+                <div>
+                    <strong>Lincoln Mullen</strong>
+                    <span>Executive director, RRCHNM · 2024–present</span>
+                </div>
+                <p class="catalogue-about-technical">
+                    Built with Django. Visualizations powered by D3.js and Observable Plot.
+                </p>
+            </aside>
+        </section>
+    </article>
 {% endblock main %}
