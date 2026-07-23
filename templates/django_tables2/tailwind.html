@@ -7,6 +7,9 @@
 
 {% block table %}
 <table {% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+    {% if table.caption %}
+    <caption class="sr-only">{{ table.caption }}</caption>
+    {% endif %}
     {% block table.thead %}
     {% if table.show_header %}
     <thead>
@@ -31,7 +34,7 @@
         {% block table.tbody.row %}
         <tr class="{% if forloop.counter|divisibleby:2 %}even-row{% endif %}">
             {% for column, cell in row.items %}
-            <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
+            <td data-label="{{ column.header }}" {{ column.attrs.td.as_html }}>{{ cell }}</td>
             {% endfor %}
         </tr>
         {% endblock table.tbody.row %}
@@ -96,80 +99,4 @@
 {% endif %}
 
 </div>
-
-<style>
-.archive-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-.archive-table thead tr {
-    border-bottom: 2px solid var(--ink);
-}
-.archive-table th {
-    padding: 14px 24px;
-    text-align: left;
-    font-family: 'JetBrains Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--mute);
-}
-.archive-table th a {
-    color: inherit;
-}
-.archive-table tbody tr {
-    border-bottom: 1px solid var(--line2);
-}
-.archive-table tbody tr.even-row {
-    background: rgba(255,255,255,0.4);
-}
-.archive-table td {
-    padding: 18px 24px;
-    vertical-align: top;
-}
-.archive-table td a {
-    color: var(--accent);
-}
-.empty-cell {
-    padding: 48px 24px;
-    text-align: center;
-    color: var(--mute);
-    font-size: 22px;
-    font-style: italic;
-}
-.table-pagination {
-    padding: 32px 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.page-links {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.page-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 8px 14px;
-    min-width: 36px;
-    text-align: center;
-    border: 1px solid var(--line);
-    color: var(--ink2);
-    display: inline-block;
-}
-.page-btn.active {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-}
-.page-ellipsis {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 8px 6px;
-    color: var(--mute);
-}
-</style>
 {% endblock table-wrapper %}

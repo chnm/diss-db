@@ -55,8 +55,19 @@ INSTALLED_APPS = [
     "dissdb",
     "django_tables2",
     "django_filters",
+    "rest_framework",
     "simple_history",
 ]
+
+# Django REST Framework
+# Only a throttle *rate* for the public API scope is defined here; throttling is
+# applied per-view (ScopedRateThrottle) so the site's internal AJAX endpoints
+# are not affected. Pagination and filter backends are also set per-view.
+REST_FRAMEWORK = {
+    "DEFAULT_THROTTLE_RATES": {
+        "api-v1": "120/min",
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

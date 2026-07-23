@@ -127,7 +127,7 @@
 					{% if dissertation.geographic_emphases.all %}
 					<tr>
 						<td>Fields</td>
-						<td>{% for tag in dissertation.geographic_emphases.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+						<td>{% for tag in dissertation.geographic_emphases.all %}{{ tag.display_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
 					</tr>
 					{% endif %}
 					{% if dissertation.thematic_emphases.all %}

@@ -93,19 +93,27 @@ def index(request):
         )
         .values("decade")
         .annotate(count=Count("id"))
-        .order_by("decade")
+        .order_by("-decade")
     )
     decades = [
         {"label": f"{int(d['decade'])}s", "count": d["count"], "decade": int(d["decade"])}
         for d in decade_counts
     ]
+    # Bar width as a percentage of the busiest decade (for the browse bar chart)
+    decade_max = max((d["count"] for d in decades), default=0)
+    for d in decades:
+        d["pct"] = round(d["count"] / decade_max * 100) if decade_max else 0
 
-    # Geographic emphases for "browse by field" on home page (with diss counts)
-    geo_emphases = (
+    # Geographic emphases for "browse by field" on home page (with diss counts),
+    # ordered by volume so the browse bar chart descends
+    geo_emphases = list(
         GeographicEmphasis.objects.filter(parent__isnull=True)
         .annotate(diss_count=Count("dissertations"))
-        .order_by("name")
+        .order_by("-diss_count", "name")
     )
+    geo_max = max((g.diss_count for g in geo_emphases), default=0)
+    for g in geo_emphases:
+        g.pct = round(g.diss_count / geo_max * 100) if geo_max else 0
 
     context = {
         "active_nav": "home",
@@ -121,6 +129,26 @@ def index(request):
         "geo_emphases": geo_emphases,
     }
     return render(request, "index.html", context)
+
+
+def api_docs(request):
+    """Human-readable documentation for the public read-only API (v1)."""
+    example_diss = Dissertation.objects.order_by("-year", "-id").first()
+    example_scholar = (
+        Scholar.objects.filter(committeemember__role=CommitteeMember.CHAIR)
+        .distinct()
+        .first()
+        or Scholar.objects.first()
+    )
+    return render(
+        request,
+        "api.html",
+        {
+            "active_nav": "api",
+            "example_diss_id": example_diss.pk if example_diss else 1,
+            "example_scholar_id": example_scholar.pk if example_scholar else 1,
+        },
+    )
 
 
 def about(request):
@@ -435,7 +463,7 @@ def _build_emphasis_tree(model):
             nodes.append(
                 {
                     "id": item.pk,
-                    "name": item.name,
+                    "name": getattr(item, "display_name", item.name),
                     "children": _subtree(item.pk),
                 }
             )

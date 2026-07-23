@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>dissdb · screen preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Bone + indigo palette — the committed direction.
+       Mirrors the variables in archive.html. */
+    :root {
+      --paper:  #f4f1ec;
+      --paper2: #e9e5dd;
+      --paper3: #fbfaf6;
+      --ink:    #141822;
+      --ink2:   #313644;
+      --mute:   #6f7585;
+      --line:   #c8cad2;
+      --line2:  #e0e2e8;
+      --accent: #1f3a6b;
+      --avatar: #d8dbe2;
+    }
+    html, body { margin: 0; background: var(--paper); }
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* Screen picker — fixed top bar with one button per screen.
+       Each button sets the location hash; the script below renders
+       the matching component into #root. No canvas, no zoom — just
+       a single page at its real size, the way the developer will
+       implement it. */
+    .picker {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; border-bottom: 1px solid var(--line);
+      padding: 10px 24px; display: flex; gap: 8px; align-items: center;
+      font-family: "JetBrains Mono", monospace;
+    }
+    .picker > .label {
+      font-size: 11px; color: var(--mute);
+      text-transform: uppercase; letter-spacing: 0.14em;
+      padding-right: 8px;
+    }
+    .picker button {
+      border: 1px solid var(--line); background: transparent; cursor: pointer;
+      padding: 6px 12px; font-family: inherit; font-size: 12px;
+      color: var(--ink2);
+    }
+    .picker button[aria-pressed="true"] {
+      background: var(--ink); color: var(--paper);
+      border-color: var(--ink);
+    }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav class="picker" role="group" aria-label="Screen">
+    <span class="label">Screen</span>
+    <button data-screen="home" aria-pressed="true">Home</button>
+    <button data-screen="diss-table">Dissertations</button>
+    <button data-screen="scholars">Scholars</button>
+    <button data-screen="committee">Committee</button>
+    <button data-screen="diss">Single dissertation</button>
+    <button data-screen="scholar">Scholar profile</button>
+  </nav>
+  <div id="root"></div>
+
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="archive.jsx"></script>
+  <script type="text/babel">
+    const SCREENS = {
+      'home':       window.A.Home,
+      'diss-table': window.A.DissTable,
+      'scholars':   window.A.Scholars,
+      'committee':  window.A.Committee,
+      'diss':       window.A.Diss,
+      'scholar':    window.A.Scholar,
+    };
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    function render() {
+      const id = (location.hash || '#home').slice(1);
+      const C = SCREENS[id] || SCREENS.home;
+      document.querySelectorAll('.picker button').forEach(b =>
+        b.setAttribute('aria-pressed', String(b.dataset.screen === id)));
+      root.render(<C />);
+    }
+    document.querySelectorAll('.picker button').forEach(b =>
+      b.addEventListener('click', () => { location.hash = b.dataset.screen; }));
+    window.addEventListener('hashchange', render);
+    render();
+  </script>
+</body>
+</html>

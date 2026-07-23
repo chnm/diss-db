@@ -41,26 +41,26 @@
 	}">
 
 	{# Row 1: text filters + year + buttons #}
-	<div class="page-section flex items-center gap-3 flex-wrap py-5">
+	<div class="filter-row page-section flex items-center gap-3 flex-wrap py-5">
 		<span class="font-mono text-xs font-medium text-mute">Filter</span>
 
-		<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-			<label class="text-xs text-mute whitespace-nowrap">Title:</label>
+		<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+			<label for="id_title" class="text-xs text-mute whitespace-nowrap">Title:</label>
 			{{ filter.form.title }}
 		</div>
 
-		<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-			<label class="text-xs text-mute whitespace-nowrap">Author:</label>
+		<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+			<label for="id_author" class="text-xs text-mute whitespace-nowrap">Author:</label>
 			{{ filter.form.author }}
 		</div>
 
-		<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-			<label class="text-xs text-mute whitespace-nowrap">Institution:</label>
+		<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+			<label for="id_school" class="text-xs text-mute whitespace-nowrap">Institution:</label>
 			{{ filter.form.school }}
 		</div>
 
-		<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-			<label class="text-xs text-mute whitespace-nowrap">Year:</label>
+		<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+			<span class="text-xs text-mute whitespace-nowrap">Year:</span>
 			{{ filter.form.year }}
 		</div>
 
@@ -70,7 +70,7 @@
 	</div>
 
 	{# Row 2: emphasis filters #}
-	<div class="page-section flex items-start gap-6 pb-5">
+	<div class="emphasis-row page-section flex items-start gap-6 pb-5">
 		<span class="font-mono text-xs font-medium text-mute pt-1.5">Emphasis</span>
 
 		{# Geographic #}
@@ -80,7 +80,7 @@
 				<span class="text-mute ml-1" x-text="gSelected.length ? '(' + gSelected.length + ')' : ''" ></span>
 				<span class="opacity-50">▾</span>
 			</summary>
-			<div class="absolute z-20 card min-w-[380px] max-h-[400px] overflow-y-auto top-full left-0 mt-1">
+			<div class="emphasis-popover emphasis-popover-geographic absolute z-20 card min-w-[380px] max-h-[400px] overflow-y-auto top-full left-0 mt-1">
 				<template x-for="node in gTree" :key="node.id">
 					<div class="mt-1" x-data="{ open: false }">
 						<div class="flex items-center gap-1">
@@ -115,7 +115,7 @@
 				<span class="text-mute ml-1" x-text="tSelected.length ? '(' + tSelected.length + ')' : ''"></span>
 				<span class="opacity-50">▾</span>
 			</summary>
-			<div class="absolute z-20 card min-w-[420px] max-h-[400px] overflow-y-auto top-full left-0 mt-1">
+			<div class="emphasis-popover emphasis-popover-thematic absolute z-20 card min-w-[420px] max-h-[400px] overflow-y-auto top-full left-0 mt-1">
 				<div class="grid grid-cols-2 gap-1">
 					<template x-for="item in tItems" :key="item.id">
 						<label class="flex items-center gap-1.5 text-meta cursor-pointer">

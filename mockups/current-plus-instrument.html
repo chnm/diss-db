@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Current + Instrument elements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---- current design tokens (unchanged) ---- */
+  :root{
+    --paper:#f4f1ec; --paper2:#e9e5dd; --paper3:#fbfaf6;
+    --ink:#141822; --ink2:#313644; --mute:#6f7585;
+    --line:#c8cad2; --line2:#e0e2e8; --accent:#1f3a6b;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Sans 3",sans-serif;font-size:16px;line-height:1.55}
+  a{color:inherit;text-decoration:none}
+  em{font-style:italic}
+  .page{padding:0 64px}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+
+  /* header (matches live base.html) */
+  .beta{background:#fef3c7;border-bottom:1px solid #fcd34d;color:#92700e;text-align:center;font-size:14px;padding:8px}
+  header{border-bottom:1px solid var(--line);padding:28px 64px 24px}
+  header .top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+  header .wordmark{font-family:"EB Garamond",serif;font-size:30px;font-weight:500;letter-spacing:-.4px}
+  header .counts{font-family:"JetBrains Mono",monospace;font-size:12px;text-align:right;color:var(--mute);line-height:1.5}
+  header nav{display:flex;gap:36px}
+  header nav a{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.02em;text-transform:uppercase;color:var(--ink2);padding-bottom:4px;border-bottom:2px solid transparent}
+  header nav a.active{color:var(--accent);border-color:var(--accent)}
+  header nav a:hover{color:var(--accent)}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;padding:72px 64px 56px}
+  .hero h1{font-family:"EB Garamond",serif;font-weight:500;font-size:60px;line-height:1.05;letter-spacing:-1.2px;margin:0 0 28px}
+  .hero h1 em{color:var(--accent)}
+  .hero p{font-size:18px;line-height:1.6;color:var(--ink2);max-width:540px;margin:0}
+
+  /* >>> BORROWED FROM INSTRUMENT #1: search box + pills, restyled in Archive language <<< */
+  .search{display:flex;border:1px solid var(--ink);background:var(--paper3);margin-top:30px;max-width:540px}
+  .search input{flex:1;border:0;background:transparent;padding:14px 16px;font-family:"Source Sans 3",sans-serif;font-size:15px;color:var(--ink);outline:none}
+  .search input::placeholder{color:var(--mute)}
+  .search button{border:0;background:var(--ink);color:var(--paper);font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:0 22px;cursor:pointer;transition:background .15s}
+  .search button:hover{background:var(--accent)}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .pills a{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line);background:var(--paper3);padding:7px 12px}
+  .pills a:hover{border-color:var(--accent);color:var(--accent)}
+  .pills a .arrow{color:var(--mute)}
+  .pills a:hover .arrow{color:var(--accent)}
+
+  .tree-frame{position:relative;background:var(--paper3);border:1px solid var(--line);padding:10px}
+  .tree-cap{margin-top:10px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+
+  /* mid section (unchanged from current) */
+  .mid{display:grid;grid-template-columns:2fr 1fr;gap:64px;padding:8px 64px 56px}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:6px}
+  .sec-head h2{font-family:"EB Garamond",serif;font-weight:500;font-size:30px;letter-spacing:-.4px;margin:0}
+  .sec-head a{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--accent)}
+  .diss{display:grid;grid-template-columns:64px 1fr 170px;gap:24px;padding:22px 0;border-bottom:1px solid var(--line2);align-items:start}
+  .diss:hover .dt{color:var(--accent)}
+  .diss .yr{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;color:var(--accent);padding-top:5px}
+  .diss .dt{font-family:"EB Garamond",serif;font-weight:500;font-size:22px;line-height:1.25;letter-spacing:-.2px;margin-bottom:5px;transition:color .15s}
+  .diss .by{font-size:14px;color:var(--ink2)}
+  .diss .by .name{color:var(--accent)}
+  .diss .by .dot{color:var(--mute);margin:0 8px}
+  .diss .adv{text-align:right;padding-top:2px}
+  .diss .adv .lbl{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+  .diss .adv .an{font-family:"EB Garamond",serif;font-style:italic;font-size:14px}
+
+  aside .block{margin-bottom:36px}
+  .a-head{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--mute);border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:6px}
+  .stats{display:grid;grid-template-columns:1fr 1fr}
+  .stat{padding:14px 0;border-bottom:1px solid var(--line2)}
+  .stat .n{font-family:"EB Garamond",serif;font-weight:500;font-size:30px;line-height:1;letter-spacing:-.4px}
+  .stat .l{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--mute);margin-top:5px}
+  .adv-row{display:flex;align-items:baseline;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line2)}
+  .adv-row .rk{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--mute);margin-right:10px}
+  .adv-row .nm{font-family:"EB Garamond",serif;font-weight:500;font-size:18px}
+  .adv-row .ct{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+  .callout{background:var(--paper2);border:1px solid var(--line);padding:22px}
+  .callout .lbl{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .callout p{font-family:"EB Garamond",serif;font-size:19px;line-height:1.4;font-weight:500;margin:0 0 12px}
+  .callout a{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:2px}
+
+  /* browse rails */
+  .rails{display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;padding:0 64px 64px}
+  .r-head{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--mute);margin-bottom:18px}
+
+  /* >>> BORROWED FROM INSTRUMENT #2: horizontal bar chart, restyled in Archive language <<< */
+  .bar-row{display:block;padding:11px 0;border-bottom:1px solid var(--line2)}
+  .bar-row .row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .bar-row .bl{font-family:"EB Garamond",serif;font-size:19px}
+  .bar-row .bc{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mute)}
+  .bar-row .track{height:6px;background:var(--line2)}
+  .bar-row .track i{display:block;height:6px;background:var(--accent)}
+  .bar-row:hover .bl{color:var(--accent)}
+  .bar-row:hover .track i{background:var(--ink)}
+
+  .promo{background:var(--paper2);border:1px solid var(--line);padding:24px;align-self:start}
+  .promo .r-head{color:var(--accent);margin-bottom:14px}
+  .promo h3{font-family:"EB Garamond",serif;font-size:22px;line-height:1.3;font-weight:500;margin:0 0 12px}
+  .promo p{font-size:14px;color:var(--ink2);margin:0 0 18px}
+  .promo a{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:2px}
+
+  footer{background:var(--paper2);border-top:1px solid var(--line);padding:40px 64px 52px;margin-top:8px}
+  footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px}
+  footer .fn{font-family:"EB Garamond",serif;font-size:20px;font-weight:500;margin-bottom:8px}
+  footer p{font-size:14px;color:var(--ink2);max-width:360px;margin:0}
+  footer .fh{font-family:"JetBrains Mono",monospace;font-size:12px;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+  footer .fl{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink2)}
+
+  @media(max-width:1024px){.hero,.mid,.rails,footer .cols{grid-template-columns:1fr}.hero h1{font-size:42px}}
+</style>
+</head>
+<body>
+
+<div class="beta">This site is currently in beta. Data may be incomplete or contain errors.</div>
+
+<header>
+  <div class="top">
+    <div class="wordmark">The History Dissertation Database</div>
+    <div class="counts">12,847 dissertations<br>9,214 scholars · 1,506 advisors</div>
+  </div>
+  <nav>
+    <a class="active" href="#">Dissertations</a>
+    <a href="#">Scholars</a>
+    <a href="#">Committee Members</a>
+    <a href="#">About</a>
+    <a href="#">Contribute</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Tracing the <em>scholarly<br>genealogies</em> of history.</h1>
+    <p>Browse over a century of doctoral dissertations, their authors, advisors, and the committee members who shape the discipline.</p>
+
+    <!-- search box + pills (from The Instrument, Archive-styled) -->
+    <div class="search">
+      <input type="text" placeholder="Search titles, scholars, advisors…">
+      <button>Search</button>
+    </div>
+    <div class="pills">
+      <a href="#">Browse catalogue <span class="arrow">→</span></a>
+      <a href="#">Scholars</a>
+      <a href="#">Committee</a>
+      <a href="#">API</a>
+    </div>
+  </div>
+
+  <div>
+    <div class="tree-frame">
+      <svg viewBox="0 0 520 380" width="100%" height="auto" style="display:block">
+        <g fill="none" stroke="var(--mute)" stroke-opacity=".4" stroke-width="1">
+          <path d="M260,40 V80 H120 V120 M260,80 V120 M260,80 H400 V120"/>
+          <path d="M120,120 V150 H70 V180 M120,150 H170 V180"/>
+          <path d="M260,120 V150 H230 V180 M260,150 H300 V180"/>
+          <path d="M400,120 V150 H360 V180 M400,150 H440 V180"/>
+          <path d="M70,180 V210 H50 V240 M70,210 H95 V240"/>
+          <path d="M300,180 V210 H285 V240 M300,210 H325 V240"/>
+          <path d="M440,180 V210 H460 V240"/>
+        </g>
+        <g fill="none" stroke="var(--accent)" stroke-width="2">
+          <path d="M260,40 V80 H400 V120 V150 H300 V180 V210 H285 V240"/>
+        </g>
+        <g font-family="'JetBrains Mono',monospace" font-size="8.5" fill="var(--mute)">
+          <circle cx="260" cy="40" r="5" fill="var(--accent)"/><text x="260" y="28" text-anchor="middle" fill="var(--accent)">ADVISOR</text>
+          <circle cx="120" cy="120" r="3"/><circle cx="260" cy="120" r="3"/><circle cx="400" cy="120" r="3.5" fill="var(--accent)"/>
+          <circle cx="70" cy="180" r="2.5"/><circle cx="170" cy="180" r="2.5"/><circle cx="230" cy="180" r="2.5"/>
+          <circle cx="300" cy="180" r="3.5" fill="var(--accent)"/><circle cx="360" cy="180" r="2.5"/><circle cx="440" cy="180" r="2.5"/>
+          <circle cx="50" cy="240" r="2"/><circle cx="95" cy="240" r="2"/>
+          <circle cx="285" cy="240" r="3.5" fill="var(--accent)"/><circle cx="325" cy="240" r="2"/><circle cx="460" cy="240" r="2"/>
+          <text x="285" y="258" text-anchor="middle" fill="var(--accent)">ADVISEE</text>
+        </g>
+      </svg>
+    </div>
+    <div class="tree-cap">Advisor → advisee, five generations</div>
+  </div>
+</section>
+
+<section class="mid">
+  <div>
+    <div class="sec-head"><h2>Recently catalogued</h2><a href="#">See all 12,847 →</a></div>
+    <a class="diss" href="#">
+      <div class="yr">2024</div>
+      <div><div class="dt">Cartographies of Dissent: Mapping Radical Print Culture in the Antebellum North</div>
+        <div class="by"><em>by</em> <span class="name">Miriam Okafor</span><span class="dot">·</span>Yale University</div></div>
+      <div class="adv"><div class="lbl">Advised by</div><div class="an">Jill Lepore</div></div>
+    </a>
+    <a class="diss" href="#">
+      <div class="yr">2023</div>
+      <div><div class="dt">The Ledger and the Lash: Accounting Practices on Caribbean Plantations, 1780–1834</div>
+        <div class="by"><em>by</em> <span class="name">David Reyes</span><span class="dot">·</span>Harvard University</div></div>
+      <div class="adv"><div class="lbl">Advised by</div><div class="an">Vincent Brown</div></div>
+    </a>
+    <a class="diss" href="#">
+      <div class="yr">2023</div>
+      <div><div class="dt">Steam, Smoke, and Sovereignty: Railroads and the Osage Nation</div>
+        <div class="by"><em>by</em> <span class="name">Anna Whitcomb</span><span class="dot">·</span>University of Chicago</div></div>
+      <div class="adv"><div class="lbl">Advised by</div><div class="an">Pekka Hämäläinen</div></div>
+    </a>
+    <a class="diss" href="#">
+      <div class="yr">2022</div>
+      <div><div class="dt">Kitchen Debates: Domestic Labor and Cold War Diplomacy</div>
+        <div class="by"><em>by</em> <span class="name">Lena Fischer</span><span class="dot">·</span>Columbia University</div></div>
+      <div class="adv"><div class="lbl">Advised by</div><div class="an">Elizabeth Cohen</div></div>
+    </a>
+    <a class="diss" href="#">
+      <div class="yr">2022</div>
+      <div><div class="dt">Salt and Empire: The Political Ecology of the Sahel, 1890–1960</div>
+        <div class="by"><em>by</em> <span class="name">Kwame Mensah</span><span class="dot">·</span>Princeton University</div></div>
+      <div class="adv"><div class="lbl">Advised by</div><div class="an">Emmanuel Akyeampong</div></div>
+    </a>
+  </div>
+
+  <aside>
+    <div class="block">
+      <div class="a-head">By the numbers</div>
+      <div class="stats">
+        <div class="stat"><div class="n">12,847</div><div class="l">dissertations</div></div>
+        <div class="stat"><div class="n">9,214</div><div class="l">scholars</div></div>
+        <div class="stat"><div class="n">1,506</div><div class="l">advisors</div></div>
+        <div class="stat"><div class="n">214</div><div class="l">institutions</div></div>
+        <div class="stat"><div class="n">1883</div><div class="l">first record</div></div>
+        <div class="stat"><div class="n">2024</div><div class="l">most recent</div></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="a-head">Most prolific advisors</div>
+      <a class="adv-row" href="#"><span><span class="rk">01</span><span class="nm">Jill Lepore</span></span><span class="ct">34</span></a>
+      <a class="adv-row" href="#"><span><span class="rk">02</span><span class="nm">Eric Foner</span></span><span class="ct">31</span></a>
+      <a class="adv-row" href="#"><span><span class="rk">03</span><span class="nm">Pekka Hämäläinen</span></span><span class="ct">28</span></a>
+      <a class="adv-row" href="#"><span><span class="rk">04</span><span class="nm">Vincent Brown</span></span><span class="ct">24</span></a>
+      <a class="adv-row" href="#"><span><span class="rk">05</span><span class="nm">Drew Gilpin Faust</span></span><span class="ct">22</span></a>
+    </div>
+    <div class="callout">
+      <div class="lbl">Field note</div>
+      <p>Spotted a missing committee member or a wrong year? Help us correct the record.</p>
+      <a href="#">Contributor guide →</a>
+    </div>
+  </aside>
+</section>
+
+<section class="rails">
+  <!-- browse by decade as a horizontal bar chart -->
+  <div>
+    <div class="r-head">Browse by decade</div>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">2010s</span><span class="bc">3,891</span></div><div class="track"><i style="width:100%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">2000s</span><span class="bc">2,760</span></div><div class="track"><i style="width:71%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">1990s</span><span class="bc">1,845</span></div><div class="track"><i style="width:47%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">2020s</span><span class="bc">1,204</span></div><div class="track"><i style="width:31%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">1980s</span><span class="bc">1,102</span></div><div class="track"><i style="width:28%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">1970s</span><span class="bc">988</span></div><div class="track"><i style="width:25%"></i></div></a>
+  </div>
+
+  <!-- browse by field as a horizontal bar chart -->
+  <div>
+    <div class="r-head">Browse by field</div>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">North America</span><span class="bc">4,210</span></div><div class="track"><i style="width:100%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">Europe</span><span class="bc">3,102</span></div><div class="track"><i style="width:74%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">Asia</span><span class="bc">1,689</span></div><div class="track"><i style="width:40%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">Latin America</span><span class="bc">1,411</span></div><div class="track"><i style="width:34%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">Africa</span><span class="bc">1,204</span></div><div class="track"><i style="width:29%"></i></div></a>
+    <a class="bar-row" href="#"><div class="row"><span class="bl">Middle East</span><span class="bc">742</span></div><div class="track"><i style="width:18%"></i></div></a>
+  </div>
+
+  <div class="promo">
+    <div class="r-head">Contribute</div>
+    <h3>Did your committee miss a record? Help us fill the gaps.</h3>
+    <p>Add dissertations, correct an advisor, or submit a new scholar. Every edit is reviewed by the editorial team.</p>
+    <a href="#">Read the guide →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="cols">
+    <div>
+      <div class="fn">The History Dissertation Database</div>
+      <p>A working catalogue of doctoral dissertations in history. Data contributed by departments and the American Historical Association. Created by the Roy Rosenzweig Center for History and New Media at George Mason University.</p>
+    </div>
+    <div><div class="fh">Explore</div><div class="fl"><a href="#">Dissertations</a><a href="#">Scholars</a><a href="#">Committee Members</a></div></div>
+    <div><div class="fh">About</div><div class="fl"><a href="#">About</a><a href="#">Contributing</a></div></div>
+    <div><div class="fh">Access</div><div class="fl"><a href="#">Log in</a></div></div>
+  </div>
+</footer>
+
+</body>
+</html>

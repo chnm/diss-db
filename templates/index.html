@@ -10,15 +10,21 @@
 <section class="hero-section grid grid-cols-[1fr_1fr] gap-10 items-start pt-[72px] pb-14 px-page">
 	<div>
 		<h1 class="font-serif font-medium text-display-xl leading-[1.05] tracking-[-1.2px] mb-7 mt-0">
-			Tracing the scholarly</br>
-      geneologies of <em class="text-accent">history</em>.
+			Tracing the <em class="text-accent">scholarly<br>
+			genealogies</em> of history.
 		</h1>
 		<p class="font-sans text-[18px] leading-[1.6] text-ink2 max-w-[540px] m-0">
-			Browse fifty years of doctoral dissertations, their authors, advisors, and the committee members who shape the discipline.
+			Browse over a century of doctoral dissertations, their authors, advisors, and the committee members who shape the discipline.
 		</p>
-		<div class="flex gap-3 mt-8">
-			<a href="{% url 'dissertations' %}" class="btn-primary no-underline">Browse the catalogue</a>
-			<a href="{% url 'scholars' %}" class="btn-secondary no-underline">Search a scholar</a>
+		<form method="get" action="{% url 'dissertations' %}" class="hero-search mt-8" role="search">
+			<input type="text" name="title" placeholder="Search dissertations by title…" aria-label="Search dissertations by title">
+			<button type="submit">Search</button>
+		</form>
+		<div class="pill-row mt-3.5">
+			<a href="{% url 'dissertations' %}" class="pill no-underline">Browse catalogue →</a>
+			<a href="{% url 'scholars' %}" class="pill no-underline">Scholars</a>
+			<a href="{% url 'committeemembers' %}" class="pill no-underline">Committee</a>
+			<a href="{% url 'api' %}" class="pill no-underline">API</a>
 		</div>
 	</div>
 
@@ -30,7 +36,7 @@
 <section class="mid-section grid grid-cols-[2fr_1fr] gap-16 pt-2 pb-14 px-page">
 	<div>
 		<div class="flex items-baseline justify-between mb-[18px] pb-3 border-b-2 border-ink">
-			<h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] m-0">Recently catalogued</h2>
+			<h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] m-0">Latest dissertations</h2>
 			<a href="{% url 'dissertations' %}" class="font-mono text-xs font-medium uppercase tracking-wide no-underline text-accent">See all {{ diss_count|intcomma_plain }} →</a>
 		</div>
 		{% for item in recent_dissertations %}
@@ -91,6 +97,7 @@
 		{# Top advisors #}
 		{% if top_advisors %}
 		<div class="mb-9">
+			<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-1 pb-2 border-b-2 border-ink">Top advisors</div>
 			{% for adv in top_advisors %}
 			<a href="{{ adv.scholar.get_absolute_url }}" class="flex items-baseline justify-between py-3 rule-soft text-ink">
 				<span>
@@ -119,18 +126,24 @@
 	<div>
 		<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-[14px]">Browse by decade</div>
 		{% for d in decades %}
-		<a href="{% url 'dissertations' %}?year_min={{ d.decade }}&year_max={{ d.decade|add:9 }}" class="flex justify-between items-baseline py-[10px] rule-soft no-underline text-ink">
-			<span class="font-serif text-title-lg">{{ d.label }}</span>
-			<span class="font-mono text-[12px] text-mute">{{ d.count|intcomma_plain }}</span>
+		<a href="{% url 'dissertations' %}?year_min={{ d.decade }}&year_max={{ d.decade|add:9 }}" class="bar-row no-underline text-ink">
+			<div class="bar-head">
+				<span class="bar-label">{{ d.label }}</span>
+				<span class="bar-count">{{ d.count|intcomma_plain }}</span>
+			</div>
+			<div class="bar-track"><div class="bar-fill" style="width: {{ d.pct }}%"></div></div>
 		</a>
 		{% endfor %}
 	</div>
 	<div>
 		<div class="font-mono text-xs font-medium uppercase tracking-wide text-mute mb-[14px]">Browse by field</div>
 		{% for geo in geo_emphases %}
-		<a href="{% url 'dissertations' %}?geographic_emphases={{ geo.pk }}" class="flex justify-between items-baseline py-[7px] rule-soft text-ink">
-			<span class="font-serif text-[17px]">{{ geo.name }}</span>
-			<span class="font-mono text-xs text-mute">{{ geo.diss_count|intcomma_plain }}</span>
+		<a href="{% url 'dissertations' %}?geographic_emphases={{ geo.pk }}" class="bar-row no-underline text-ink">
+			<div class="bar-head">
+				<span class="bar-label">{{ geo.display_name }}</span>
+				<span class="bar-count">{{ geo.diss_count|intcomma_plain }}</span>
+			</div>
+			<div class="bar-track"><div class="bar-fill" style="width: {{ geo.pct }}%"></div></div>
 		</a>
 		{% endfor %}
 	</div>
@@ -156,6 +169,7 @@
 @media (max-width: 640px) {
 	.hero-section { padding: 24px 16px !important; }
 	.hero-section h1 { font-size: 32px !important; }
+	#hero-tree { display: none; }
 	.mid-section { padding: 8px 16px 24px !important; }
 	.browse-section { padding: 0 16px 16px !important; }
 	.mid-section > div > a { grid-template-columns: 1fr !important; gap: 8px !important; }

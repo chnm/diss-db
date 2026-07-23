@@ -7,7 +7,7 @@ class DissTable(tables.Table):
     caption = "History dissertations"
 
     title = tables.Column(
-        verbose_name="Title & Author",
+        verbose_name="Title",
         attrs={
             "td": {"style": "font-family: 'EB Garamond', serif; font-size: 18px; font-weight: 500; line-height: 1.3;"},
         },

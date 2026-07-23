@@ -50,3 +50,10 @@ urlpatterns = [
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
+
+# Public read-only API (v1) + its human-readable documentation page.
+# Kept out of format_suffix_patterns above; the DRF router handles suffixes.
+urlpatterns += [
+    path("api/", views.api_docs, name="api"),
+    path("api/v1/", include("dissdb.api.urls")),
+]

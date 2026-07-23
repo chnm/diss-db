@@ -29,13 +29,13 @@
 <form action="" method="get" class="filter-bar">
 	<span class="font-mono text-xs font-medium text-mute">Filter</span>
 
-	<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label class="text-xs text-mute whitespace-nowrap">Name:</label>
+	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+		<label for="id_name" class="text-xs text-mute whitespace-nowrap">Name:</label>
 		{{ filter.form.name }}
 	</div>
 
-	<div class="flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
-		<label class="text-xs text-mute whitespace-nowrap">Institution:</label>
+	<div class="filter-control flex items-center gap-2 border border-line px-3 py-1.5 font-mono">
+		<label for="id_school" class="text-xs text-mute whitespace-nowrap">Institution:</label>
 		{{ filter.form.school }}
 	</div>
 

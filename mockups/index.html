@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Directions — History Dissertation Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f1ec;--ink:#141822;--ink2:#313644;--mute:#6f7585;--line:#c8cad2;--accent:#1f3a6b;--card:#fbfaf6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Sans 3",sans-serif;line-height:1.55}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:64px 40px 80px}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+  h1{font-family:"EB Garamond",serif;font-weight:500;font-size:44px;letter-spacing:-.6px;margin:0 0 16px;line-height:1.1}
+  .lede{font-size:18px;color:var(--ink2);max-width:620px;margin:0 0 12px}
+  .note{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mute);margin:0 0 48px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;transition:.16s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .swatch{height:118px;display:flex;align-items:flex-end;padding:14px;position:relative;overflow:hidden}
+  .s1{background:#f4f1ec}
+  .s1 .chip{background:#1f3a6b}
+  .s2{background:radial-gradient(120px 90px at 70% 20%,rgba(216,162,74,.35),transparent),#15130f}
+  .s2 .chip{background:#d8a24a}
+  .s3{background:linear-gradient(#eceff1 1px,transparent 1px),linear-gradient(90deg,#eceff1 1px,transparent 1px),#f6f7f8;background-size:20px 20px}
+  .s3 .chip{background:#1f43d8}
+  .swatch .chip{width:34px;height:34px}
+  .swatch .tag{position:absolute;top:12px;left:14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .s1 .tag{color:#6f7585}.s2 .tag{color:#d8a24a}.s3 .tag{color:#1f43d8}
+  .cbody{padding:20px;flex:1;display:flex;flex-direction:column}
+  .cbody h2{font-family:"EB Garamond",serif;font-weight:500;font-size:23px;margin:0 0 4px}
+  .cbody .sub{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+  .cbody p{font-size:14px;color:var(--ink2);margin:0 0 18px;flex:1}
+  .cbody .meta{font-size:12px;color:var(--mute);margin-bottom:16px;line-height:1.7}
+  .cbody .meta b{color:var(--ink2);font-weight:600}
+  .cbody a.open{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--ink);text-decoration:none;padding:11px 16px;text-align:center;transition:.16s}
+  .cbody a.open:hover{background:var(--accent)}
+  .foot{margin-top:44px;font-size:14px;color:var(--mute);border-top:1px solid var(--line);padding-top:20px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Design exploration · Home page</div>
+  <h1>Three directions for the Dissertation Database</h1>
+  <p class="lede">Same content, same sample data, three distinct aesthetic worlds — so they can be judged side by side. One evolves the current look; two depart from it.</p>
+  <p class="note">Open each in a new tab and compare. Nothing here touches the live site.</p>
+
+  <a href="current-plus-instrument.html" style="display:block;text-decoration:none;color:inherit;border:1px solid var(--accent);background:#eef1f6;padding:22px 24px;margin-bottom:40px;transition:.16s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+    <div class="kicker" style="margin-bottom:8px">✓ Selected direction · Keep Archive + borrow two elements</div>
+    <div style="font-family:'EB Garamond',serif;font-size:26px;margin-bottom:4px">Current design + Instrument search &amp; bar charts</div>
+    <div style="font-size:15px;color:var(--ink2);max-width:640px">The live bone + indigo look, with two pieces borrowed from direction 03: a search box with quick-link pills in the hero, and the browse-by-decade / browse-by-field rails rendered as horizontal bar charts. <b style="color:var(--accent)">Open direction →</b></div>
+  </a>
+
+  <div class="kicker" style="margin-bottom:14px;color:var(--mute)">The three original explorations</div>
+  <div class="grid">
+    <div class="card">
+      <div class="swatch s1"><span class="tag">01 · Safe</span><span class="chip"></span></div>
+      <div class="cbody">
+        <h2>Archive, refined</h2>
+        <div class="sub">Editorial · Library</div>
+        <p>An evolution of today's bone + indigo look: a true journal-of-record masthead, paper grain, confident hairlines, and the lineage tree promoted to a hero motif.</p>
+        <div class="meta"><b>Type:</b> EB Garamond · Source Sans 3 · JetBrains Mono<br><b>Mood:</b> Warm, printed, trustworthy</div>
+        <a class="open" href="direction-1-archive-refined.html">Open direction 01 →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="swatch s2"><span class="tag">02 · Bold</span><span class="chip"></span></div>
+      <div class="cbody">
+        <h2>Reading room after dark</h2>
+        <div class="sub">Nocturne · Museum vitrine</div>
+        <p>A dark, moody world — ink-charcoal ground, warm parchment text, one candlelit amber accent, and a genealogy tree that glows like a spotlit object.</p>
+        <div class="meta"><b>Type:</b> Fraunces · Spectral · JetBrains Mono<br><b>Mood:</b> Dramatic, atmospheric, rare-books</div>
+        <a class="open" href="direction-2-reading-room.html">Open direction 02 →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="swatch s3"><span class="tag">03 · Bold</span><span class="chip"></span></div>
+      <div class="cbody">
+        <h2>The instrument</h2>
+        <div class="sub">Technical · Data catalog</div>
+        <p>Reframes the site as a precise research tool: a coordinate grid, monospace labels, a condensed grotesque, dense tables, and one sharp signal accent.</p>
+        <div class="meta"><b>Type:</b> Archivo Expanded · Archivo · IBM Plex Mono<br><b>Mood:</b> Rigorous, tool-like, query-first</div>
+        <a class="open" href="direction-3-instrument.html">Open direction 03 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">All three are self-contained static HTML with Google Fonts only, and are realistically buildable in the existing Tailwind/Django setup. Pick a direction (or mix elements) and it becomes the basis for restyling the real templates.</div>
+</div>
+</body>
+</html>

@@ -11,7 +11,7 @@
     --paper3: #fbfaf6;
     --ink:    #141822;
     --ink2:   #313644;
-    --mute:   #6f7585;
+    --mute:   #5d6372;
     --line:   #c8cad2;
     --line2:  #e0e2e8;
     --accent: #1f3a6b;
@@ -31,6 +31,11 @@
 
   a:hover {
     color: var(--accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 }
 
@@ -163,6 +168,75 @@
     @apply font-mono text-xs text-mute;
     padding: 20px 64px 0;
   }
+
+  /* Hero search box (home) */
+  .hero-search {
+    @apply flex border border-ink bg-paper3;
+    max-width: 540px;
+  }
+  .hero-search input {
+    @apply flex-1 bg-transparent font-sans text-body text-ink;
+    border: 0;
+    padding: 14px 16px;
+    outline: none;
+  }
+  .hero-search input::placeholder {
+    color: var(--mute);
+  }
+  .hero-search button {
+    @apply kicker cursor-pointer;
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    padding: 0 22px;
+    transition: background 0.15s;
+  }
+  .hero-search button:hover {
+    background: var(--accent);
+  }
+
+  /* Quick-link pills (home hero) */
+  .pill-row {
+    @apply flex flex-wrap gap-2;
+  }
+  .pill {
+    @apply font-mono text-meta-sm font-medium uppercase tracking-[0.04em] text-ink2 border border-line bg-paper3;
+    padding: 7px 12px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .pill:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Horizontal bar chart (browse-by rails on home) */
+  .bar-row {
+    @apply block border-b border-line2;
+    padding: 11px 0;
+  }
+  .bar-head {
+    @apply flex items-baseline justify-between mb-2;
+  }
+  .bar-label {
+    @apply font-serif text-title;
+  }
+  .bar-count {
+    @apply font-mono text-meta text-mute;
+  }
+  .bar-track {
+    @apply block bg-line2;
+    height: 6px;
+  }
+  .bar-fill {
+    @apply block bg-accent;
+    height: 6px;
+  }
+  .bar-row:hover .bar-label {
+    color: var(--accent);
+  }
+  .bar-row:hover .bar-fill {
+    background: var(--ink);
+  }
 }
 
 /* ── Table (archive-table) ────────────────────────── */
@@ -193,6 +267,9 @@
 }
 .archive-table td a {
   color: var(--accent);
+}
+.table-wrapper {
+  max-width: 100%;
 }
 .empty-cell {
   @apply text-center text-mute font-serif italic;
@@ -245,5 +322,121 @@
   .breadcrumb {
     padding-left: 16px !important;
     padding-right: 16px !important;
+  }
+
+  .section-header > .flex {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-header .text-right {
+    text-align: left;
+  }
+
+  .filter-bar,
+  .filter-row {
+    align-items: stretch;
+  }
+
+  .filter-control {
+    width: 100%;
+  }
+
+  .filter-control input {
+    flex: 1;
+    min-width: 0;
+    width: 100% !important;
+  }
+
+  .emphasis-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .emphasis-row details {
+    width: 100%;
+  }
+
+  .emphasis-popover {
+    min-width: 0 !important;
+    width: calc(100vw - 32px);
+  }
+
+  .emphasis-popover-thematic > .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-table,
+  .archive-table tbody,
+  .archive-table tr,
+  .archive-table td {
+    display: block;
+    width: 100% !important;
+  }
+
+  .archive-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .archive-table tbody {
+    padding: 0 16px;
+  }
+
+  .archive-table tbody tr,
+  .archive-table tbody tr.even-row {
+    padding: 14px 0;
+    background: transparent;
+  }
+
+  .archive-table td {
+    position: relative;
+    max-width: none !important;
+    min-height: 30px;
+    padding: 4px 0 4px 104px !important;
+  }
+
+  .archive-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 88px;
+    color: var(--mute);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .archive-table td[colspan] {
+    min-height: 0;
+    padding: 40px 0 !important;
+  }
+
+  .archive-table td[colspan]::before {
+    content: none;
+  }
+
+  .table-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .page-links {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
 }
