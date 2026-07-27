@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --paper:  #f5efe1;
+    --paper:  #ffffff;
     --paper2: #e8ddc4;
     --paper3: #fffaf0;
     --ink:    #302b27;
@@ -16,7 +16,7 @@
     --line2:  #d8d0bf;
     --accent: #923b32;
     --catalogue-red: #923b32;
-    --catalogue-cream: #f5efe1;
+    --catalogue-cream: #ffffff;
   }
 
   [x-cloak] {
@@ -444,7 +444,7 @@
 .catalogue-home {
   --catalogue-red: #923b32;
   --catalogue-gold: #ddc66f;
-  --catalogue-cream: #f5efe1;
+  --catalogue-cream: #ffffff;
   --catalogue-panel: #e8ddc4;
   --catalogue-dark: #302b27;
   background: var(--catalogue-cream);
