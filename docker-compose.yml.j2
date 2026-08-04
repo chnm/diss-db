@@ -65,26 +65,6 @@ services:
 {% endfor %}
     {% endif %}
 
-  {% set service = (stack.services | selectattr('name', 'eq', 'autoheal') | first) %}
-
-  autoheal:
-    image: {{ service.image if service.image is defined else "willfarrell/autoheal:1.2.0" }}
-    restart: {{ service.restart }}
-    {% if service.environment is defined %}
-
-    environment:
-{% for env in service.environment %}
-      - {{ env.key }}={{ env.value }}
-{% endfor %}
-    {% endif %}
-    {% if service.volumes | default([]) | length > 0 %}
-
-    volumes:
-{% for vol in service.volumes %}
-    - {{ vol.host_path if vol.host_path is defined else vol.name }}:{{ vol.container_path }}
-{% endfor %}
-    {% endif %}
-
 volumes:
   {{ caddy_vols | indent(width=2, first=True ) }}
   {{ stack | get_all_named_volumes(compose_stack_name) | indent(width=2) }}
