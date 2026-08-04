@@ -1,83 +1,108 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>Contributing Guide - The History Dissertation Database</title>
+    <title>Contributing Guide - The History Dissertation Database</title>
 {% endblock title %}
 
 {% block main %}
-<div class="max-w-4xl mx-auto">
-    <div class="prose prose-lg max-w-none">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">Contributing to the Database</h1>
+    <section class="section-header">
+        <h1 class="font-serif text-display-lg font-medium tracking-tight m-0">Contributing</h1>
+    </section>
 
-        <div class="bg-blue-50 p-6 mb-8">
-            <p class="text-blue-900">
-                The History Dissertation Database is community-editable. Authenticated users can add new scholars and dissertations,
-                update existing records, and manage committee information. This guide walks you through how to contribute.
-            </p>
+    <section class="page-section py-12">
+        <div class="max-w-[720px]">
+            <div class="card-sm mb-10">
+                <div class="font-serif text-lg leading-relaxed text-ink">
+                    The History Dissertation Database is community-editable. Authenticated users can add new scholars and dissertations,
+                    update existing records, and manage committee information.
+                </div>
+            </div>
+
+            <div class="font-serif text-[17px] leading-[1.7] text-ink">
+
+			{# Adding a Scholar #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Adding a Scholar</h2>
+                </div>
+                <ol class="pl-6 mb-10">
+                    <li class="mb-2.5">Go to the <a href="{% url 'scholars' %}" class="text-accent">Scholars</a> page.</li>
+                    <li class="mb-2.5">Click the <strong>"+ Add Scholar"</strong> button.</li>
+                    <li class="mb-2.5">Fill in the name fields (first, middle, last, suffix) and any additional information such as affiliation or ORCID.</li>
+                    <li class="mb-2.5">Click <strong>Save</strong> to create the scholar record.</li>
+                </ol>
+
+			{# Adding a Dissertation #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Adding a Dissertation</h2>
+                </div>
+                <ol class="pl-6 mb-10">
+                    <li class="mb-2.5">Navigate to the scholar's profile page (search for them on the <a href="{% url 'scholars' %}" class="text-accent">Scholars</a> page and click their name).</li>
+                    <li class="mb-2.5">Click <strong>"Add Dissertation"</strong> on the scholar's profile.</li>
+                    <li class="mb-2.5">Fill in the dissertation title, completion year, school, and department.</li>
+                    <li class="mb-2.5">Click <strong>Save</strong> to create the dissertation.</li>
+                    <li class="mb-2.5">After saving, you can edit the dissertation to add links and committee members.</li>
+                </ol>
+
+			{# Editing #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Editing Records</h2>
+                </div>
+                <ol class="pl-6 mb-10">
+                    <li class="mb-2.5">Navigate to the scholar's profile or dissertation page.</li>
+                    <li class="mb-2.5">Click the <strong>Edit</strong> button.</li>
+                    <li class="mb-2.5">Modify the fields you want to update.</li>
+                    <li class="mb-2.5">Click <strong>Save</strong> to apply your changes.</li>
+                </ol>
+
+			{# Committee Members #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Managing Committee Members</h2>
+                </div>
+                <p class="mb-4 text-body font-sans text-ink2">
+                    Committee members link scholars to dissertations. The <strong>chair</strong> role represents the dissertation advisor
+                    and is used to build the scholarly genealogy tree.
+                </p>
+                <ol class="pl-6 mb-10">
+                    <li class="mb-2.5">Go to the dissertation's edit page.</li>
+                    <li class="mb-2.5">In the <strong>Committee Members</strong> section, use the autocomplete search to find an existing scholar.</li>
+                    <li class="mb-2.5">Select the role: <strong>Chair</strong> (advisor) or <strong>Reader</strong> (committee member).</li>
+                    <li class="mb-2.5">If the scholar doesn't exist yet, you can create a new scholar record using the modal that appears.</li>
+                    <li class="mb-2.5">Click <strong>Save</strong> to save the committee assignments.</li>
+                </ol>
+
+			{# Links #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Managing Links</h2>
+                </div>
+                <p class="mb-4 text-body font-sans text-ink2">
+                    You can attach links to a dissertation record for ProQuest, institutional repositories, or PDF copies.
+                </p>
+                <ol class="pl-6 mb-10">
+                    <li class="mb-2.5">Go to the dissertation's edit page.</li>
+                    <li class="mb-2.5">In the <strong>Links</strong> section, add the URL and select the link type.</li>
+                    <li class="mb-2.5">Click <strong>Save</strong> to store the links.</li>
+                </ol>
+
+			{# Tips #}
+                <div class="rule-heavy">
+                    <h2 class="font-serif text-heading font-medium tracking-tight m-0">Tips</h2>
+                </div>
+                <ul class="pl-6 mb-10">
+                    <li class="mb-2.5"><strong>Search before adding:</strong> Use the <a href="{% url 'scholars' %}" class="text-accent">Scholars</a> page to check if a person already exists before creating a new record.</li>
+                    <li class="mb-2.5"><strong>Fuzzy search:</strong> The search is fuzzy, so minor typos or variations in spelling will still return results.</li>
+                    <li class="mb-2.5"><strong>Login required:</strong> You must be logged in to add or edit records. If you don't have an account, contact the project team.</li>
+                </ul>
+
+            </div>
+
+		{# Contact #}
+            <div class="card-callout">
+                <div class="font-mono text-sm font-medium uppercase tracking-wide text-accent mb-2.5">Questions?</div>
+                <div class="font-serif text-[17px] leading-normal">
+                    If you have questions about contributing or encounter any issues, please contact the
+                    <a href="https://rrchnm.org" class="text-accent">RRCHNM team</a>.
+                </div>
+            </div>
         </div>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Adding a Scholar</h2>
-        <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-            <li>Go to the <a href="{% url 'scholars' %}" class="text-blue-600 hover:text-blue-800 font-medium">Scholars</a> page.</li>
-            <li>Click the <strong>"+ Add Scholar"</strong> button.</li>
-            <li>Fill in the name fields (first, middle, last, suffix) and any additional information such as affiliation or ORCID.</li>
-            <li>Click <strong>Save</strong> to create the scholar record.</li>
-        </ol>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Adding a Dissertation</h2>
-        <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-            <li>Navigate to the scholar's profile page (search for them on the <a href="{% url 'scholars' %}" class="text-blue-600 hover:text-blue-800 font-medium">Scholars</a> page and click their name).</li>
-            <li>Click <strong>"Add Dissertation"</strong> on the scholar's profile.</li>
-            <li>Fill in the dissertation title, completion year, school, and department.</li>
-            <li>Click <strong>Save</strong> to create the dissertation.</li>
-            <li>After saving, you can edit the dissertation to add links and committee members (see below).</li>
-        </ol>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Editing a Scholar or Dissertation</h2>
-        <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-            <li>Navigate to the scholar's profile or dissertation page.</li>
-            <li>Click the <strong>Edit</strong> button.</li>
-            <li>Modify the fields you want to update.</li>
-            <li>Click <strong>Save</strong> to apply your changes.</li>
-        </ol>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Managing Committee Members</h2>
-        <p class="text-gray-700 mb-4">
-            Committee members link scholars to dissertations. The <strong>chair</strong> role represents the dissertation advisor
-            and is used to build the scholarly genealogy tree.
-        </p>
-        <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-            <li>Go to the dissertation's edit page.</li>
-            <li>In the <strong>Committee Members</strong> section, use the autocomplete search to find an existing scholar.</li>
-            <li>Select the role: <strong>Chair</strong> (advisor) or <strong>Reader</strong> (committee member).</li>
-            <li>If the scholar doesn't exist yet, you can create a new scholar record using the modal that appears.</li>
-            <li>Click <strong>Save</strong> to save the committee assignments.</li>
-        </ol>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Managing Links</h2>
-        <p class="text-gray-700 mb-4">
-            You can attach links to a dissertation record for ProQuest, institutional repositories, or PDF copies.
-        </p>
-        <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-            <li>Go to the dissertation's edit page.</li>
-            <li>In the <strong>Links</strong> section, add the URL and select the link type.</li>
-            <li>Click <strong>Save</strong> to store the links.</li>
-        </ol>
-
-        <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Tips</h2>
-        <ul class="list-disc pl-6 mb-8 text-gray-700 space-y-2">
-            <li><strong>Search before adding:</strong> Use the <a href="{% url 'scholars' %}" class="text-blue-600 hover:text-blue-800 font-medium">Scholars</a> page to check if a person already exists before creating a new record.</li>
-            <li><strong>Fuzzy search:</strong> The search is fuzzy, so minor typos or variations in spelling will still return results.</li>
-            <li><strong>Login required:</strong> You must be logged in to add or edit records. If you don't have an account, contact the project team.</li>
-        </ul>
-
-        <div class="bg-gray-50 p-6 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 mb-3">Questions?</h3>
-            <p class="text-gray-700">
-                If you have questions about contributing or encounter any issues, please contact the
-                <a href="https://rrchnm.org" class="text-blue-600 hover:text-blue-800 font-medium">RRCHNM team</a>.
-            </p>
-        </div>
-    </div>
-</div>
+    </section>
 {% endblock main %}

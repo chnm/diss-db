@@ -1,85 +1,164 @@
 {% extends "base.html" %}
+{% load dissdb_tags %}
+
+{% block title %}
+    <title>The History Dissertation Database</title>
+{% endblock title %}
 
 {% block main %}
-<div class="max-w-4xl mx-auto">
-    <!-- Hero Section -->
-    <div class="text-center mb-12">
-        <p class="text-xl text-gray-600 mb-8">
-            Explore the landscape of history dissertations and the scholarly networks that shaped them.
-        </p>
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8 text-center">
-            <p class="text-green-800 font-medium mb-2">Help us build a more complete picture of historical scholarship.</p>
-            <p class="text-sm text-green-700 mb-4">Add new scholars, dissertations, and committee information or update existing records.</p>
-            <a href="{% url 'contributing' %}" class="inline-flex items-center px-4 py-2 bg-green-700 text-white text-sm font-medium rounded-md hover:bg-green-800">
-                Learn how to contribute →
-            </a>
-        </div>
-    </div>
-
-    <!-- Navigation Cards -->
-    <div class="grid md:grid-cols-2 gap-6 mb-12">
-        <div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center mb-4">
-                <div class="flex-shrink-0">
-                    <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <h2 class="ml-3 text-lg font-semibold text-gray-900">Browse Dissertations</h2>
+    <div class="catalogue-home">
+        <section class="catalogue-home-hero">
+            <div class="catalogue-home-intro">
+                <h1>Follow the people,<br>ideas, and institutions<br>behind the discipline.</h1>
+                <p>Discover doctoral work and trace the advisor relationships that connect generations of historians.</p>
             </div>
-            <p class="text-gray-600 mb-4">
-                Search and filter through a comprehensive collection of history dissertations by title, author, institution, or year.
-            </p>
-            <a href="{% url 'dissertations' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
-                Explore Dissertations
-                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+
+            <div class="catalogue-home-search">
+                <p class="catalogue-home-search-scope">Search everything</p>
+                <form method="get" action="{% url 'search' %}" role="search">
+                    <label for="catalogue-query">What are you looking for?</label>
+                    <div>
+                        <input id="catalogue-query" type="search" name="q" placeholder="Try a name, title, institution, or field">
+                        <button type="submit">Look it up</button>
+                    </div>
+                </form>
+                <p class="catalogue-home-examples">
+                    Popular starting points:
+                    <a href="{% url 'search' %}?q=Atlantic+World">Atlantic World</a> ·
+                    <a href="{% url 'search' %}?q=Eric+Foner">Eric Foner</a> ·
+                    <a href="{% url 'search' %}?q=Columbia+University">Columbia University</a>
+                </p>
+                <a href="{% url 'dissertations' %}" class="catalogue-home-advanced">Advanced dissertation filters →</a>
+            </div>
+        </section>
+
+        <section class="catalogue-home-stats" aria-label="Collection statistics">
+            <div>
+                <strong>{{ diss_count|intcomma_plain }}</strong>
+                <span>Dissertations</span>
+            </div>
+            <div>
+                <strong>{{ scholar_count|intcomma_plain }}</strong>
+                <span>Scholars</span>
+            </div>
+            <div>
+                <strong>{{ advisor_count|intcomma_plain }}</strong>
+                <span>Recorded advisors</span>
+            </div>
+            <div>
+                <strong>{{ institution_count|intcomma_plain }}</strong>
+                <span>Institutions</span>
+            </div>
+        </section>
+
+        <section class="catalogue-home-lineage">
+            <div class="catalogue-home-lineage-copy">
+                <p class="catalogue-home-kicker">A database of relationships</p>
+                <h2>Trace scholarly<br>lineages.</h2>
+                <p>Committee records reveal connections between advisors and students, allowing researchers to follow intellectual lineages across generations and institutions.</p>
+                <a href="{% url 'scholars' %}">Find a scholar to begin →</a>
+            </div>
+
+			{# Abstract genealogy motif — decorative, deterministic, and dependency-free #}
+            <div class="catalogue-home-tree" aria-hidden="true">
+                <svg viewBox="0 0 480 340" role="presentation">
+                    <g class="tree-branches">
+                        <path d="M240 22V62M240 62H82V102M240 62V102M240 62H398V102"></path>
+                        <path d="M82 102V142M82 142H38V188M82 142H126V188"></path>
+                        <path d="M38 188V226M38 226H18V282M38 226H64V282"></path>
+                        <path d="M126 188V232M126 232H104V288M126 232H150V288"></path>
+                        <path d="M240 102V150M240 150H188V196M240 150H292V196"></path>
+                        <path d="M188 196V240M188 240H168V292M188 240H212V292"></path>
+                        <path d="M292 196V234M292 234H262V286M292 234H326V286"></path>
+                        <path d="M398 102V146M398 146H362V194M398 146H438V194"></path>
+                        <path d="M362 194V238M362 238H346V292M362 238H382V292"></path>
+                        <path d="M438 194V244M438 244H420V292M438 244H458V292"></path>
+                    </g>
+                    <path class="tree-highlight" d="M240 22V150H292V234H326V286"></path>
+                    <g class="tree-nodes">
+                        <circle cx="82" cy="102" r="2.5"></circle>
+                        <circle cx="38" cy="188" r="2"></circle>
+                        <circle cx="126" cy="188" r="2"></circle>
+                        <circle cx="188" cy="196" r="2"></circle>
+                        <circle cx="398" cy="102" r="2.5"></circle>
+                        <circle cx="362" cy="194" r="2"></circle>
+                        <circle cx="438" cy="194" r="2"></circle>
+                        <circle cx="18" cy="282" r="1.5"></circle>
+                        <circle cx="64" cy="282" r="1.5"></circle>
+                        <circle cx="104" cy="288" r="1.5"></circle>
+                        <circle cx="150" cy="288" r="1.5"></circle>
+                        <circle cx="168" cy="292" r="1.5"></circle>
+                        <circle cx="212" cy="292" r="1.5"></circle>
+                        <circle cx="262" cy="286" r="1.5"></circle>
+                        <circle cx="346" cy="292" r="1.5"></circle>
+                        <circle cx="382" cy="292" r="1.5"></circle>
+                        <circle cx="420" cy="292" r="1.5"></circle>
+                        <circle cx="458" cy="292" r="1.5"></circle>
+                    </g>
+                    <g class="tree-highlight-nodes">
+                        <circle cx="240" cy="22" r="4.5"></circle>
+                        <circle cx="240" cy="102" r="3.2"></circle>
+                        <circle cx="240" cy="150" r="3.2"></circle>
+                        <circle cx="292" cy="196" r="3.2"></circle>
+                        <circle cx="292" cy="234" r="3.2"></circle>
+                        <circle cx="326" cy="286" r="4"></circle>
+                    </g>
                 </svg>
-            </a>
-        </div>
+            </div>
+        </section>
 
-        <div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center mb-4">
-                <div class="flex-shrink-0">
-                    <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
+        <section class="catalogue-home-record-browser">
+            <div class="catalogue-home-recent">
+                <div class="catalogue-home-section-head">
+                    <div>
+                        <p class="catalogue-home-kicker">From the catalogue</p>
+                        <h2>Most recent records</h2>
+                    </div>
+                    <a href="{% url 'dissertations' %}">Browse all {{ diss_count|intcomma_plain }} →</a>
                 </div>
-                <h2 class="ml-3 text-lg font-semibold text-gray-900">Committee Members</h2>
-            </div>
-            <p class="text-gray-600 mb-4">
-                Discover the scholars who served as dissertation advisors and committee members, exploring academic networks and mentorship relationships.
-            </p>
-            <a href="{% url 'committeemembers' %}" class="inline-flex items-center px-4 py-2 bg-green-700 text-white text-sm font-medium rounded-md hover:bg-green-800 transition-colors">
-                Browse Advisors
-                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </a>
-        </div>
-    </div>
 
-    <!-- Features Section -->
-    <div class="bg-gray-50 rounded-lg p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">What You Can Do</h2>
-        <div class="grid md:grid-cols-2 gap-x-12 gap-y-6">
-            <div class="text-center">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Advanced Search</h3>
-                <p class="text-gray-600">Filter dissertations by multiple criteria including author, institution, year, and title.</p>
+                {% for item in recent_dissertations %}
+                    <a href="{{ item.dissertation.author.get_absolute_url }}" class="catalogue-home-record">
+                        <time>{{ item.dissertation.year }}</time>
+                        <div>
+                            <h3>{{ item.dissertation.title }}</h3>
+                            <p>{{ item.dissertation.author.name_full }} · {{ item.dissertation.school }}</p>
+                        </div>
+                        {% if item.advisor %}
+                            <p class="catalogue-home-advisor">
+                                <span>Advised by</span>
+                                {{ item.advisor.name_full }}
+                            </p>
+                        {% endif %}
+                    </a>
+                {% endfor %}
             </div>
-            <div class="text-center">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Academic Networks</h3>
-                <p class="text-gray-600">Explore connections between scholars through advisor-advisee relationships and committee service.</p>
-            </div>
-            <div class="text-center">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Interactive Visualizations</h3>
-                <p class="text-gray-600">View scholarly genealogies and academic family trees through detailed visualizations.</p>
-            </div>
-            <div class="text-center">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Edit or Add Data</h3>
-                <p class="text-gray-600">Contribute to the database by adding new scholars, dissertations, and committee information or updating existing records.</p>
-            </div>
-        </div>
+
+            <aside class="catalogue-home-decades">
+                <div class="catalogue-home-section-head">
+                    <div>
+                        <p class="catalogue-home-kicker">Shape of the collection</p>
+                        <h2>Records by decade</h2>
+                    </div>
+                </div>
+                <div class="catalogue-home-decade-list">
+                    {% for decade in decades %}
+                        <a href="{% url 'dissertations' %}?year_min={{ decade.decade }}&year_max={{ decade.decade|add:9 }}">
+                            <span>{{ decade.label }}</span>
+                            <i style="--decade-width: {% widthratio decade.count diss_count 500 %}%"></i>
+                            <b>{{ decade.count|intcomma_plain }}</b>
+                        </a>
+                    {% endfor %}
+                </div>
+                <p>Coverage reflects available records and varies by institution and period. <a href="{% url 'about' %}">About the data →</a></p>
+            </aside>
+        </section>
+
+        <section class="catalogue-home-contribute">
+            <p class="catalogue-home-kicker">A collaboratively maintained resource</p>
+            <h2>Help improve the catalogue.</h2>
+            <p>Corrections and new records are reviewed by the editorial team.</p>
+            <a href="{% url 'contributing' %}">Read the contributor guide →</a>
+        </section>
     </div>
-</div>
 {% endblock main %}

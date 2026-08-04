@@ -7,53 +7,55 @@
 
 module.exports = {
     content: [
-        /**
-         * HTML. Paths to Django template files that will contain Tailwind CSS classes.
-         */
-
-        /*  Templates within theme app (<tailwind_app_name>/templates), e.g. base.html. */
         '../templates/**/*.html',
-
-        /*
-         * Main templates directory of the project (BASE_DIR/templates).
-         * Adjust the following line to match your project structure.
-         */
         '../../templates/**/*.html',
-
-        /*
-         * Templates in other django apps (BASE_DIR/<any_app_name>/templates).
-         * Adjust the following line to match your project structure.
-         */
         '../../**/templates/**/*.html',
-
-        /**
-         * JS: If you use Tailwind CSS in JavaScript, uncomment the following lines and make sure
-         * patterns match your project structure.
-         */
-        /* JS 1: Ignore any JavaScript in node_modules folder. */
-        // '!../../**/node_modules',
-        /* JS 2: Process all JavaScript files in the project. */
-        // '../../**/*.js',
-
-        /**
-         * Python: If you use Tailwind CSS classes in Python, uncomment the following line
-         * and make sure the pattern below matches your project structure.
-         */
-        // '../../**/*.py'
     ],
     theme: {
         extend: {
+            colors: {
+                paper:  'var(--paper)',
+                paper2: 'var(--paper2)',
+                paper3: 'var(--paper3)',
+                ink:    'var(--ink)',
+                ink2:   'var(--ink2)',
+                mute:   'var(--mute)',
+                line:   'var(--line)',
+                line2:  'var(--line2)',
+                accent: 'var(--accent)',
+                avatar: 'var(--avatar)',
+            },
             fontFamily: {
-                mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+                serif: ['"EB Garamond"', '"Source Serif 4"', 'Georgia', 'serif'],
+                sans:  ['"Source Sans 3"', '-apple-system', 'sans-serif'],
+                mono:  ['"JetBrains Mono"', 'ui-monospace', 'Menlo', 'monospace'],
+            },
+            fontSize: {
+                'display-xl': ['60px', { lineHeight: '1.05', letterSpacing: '-1.2px', fontWeight: '500' }],
+                'display-lg': ['48px', { lineHeight: '1.1', letterSpacing: '-0.6px', fontWeight: '500' }],
+                'display-md': ['38px', { lineHeight: '1.1', letterSpacing: '-0.5px', fontWeight: '500' }],
+                'display-sm': ['30px', { lineHeight: '1.2', letterSpacing: '-0.4px', fontWeight: '500' }],
+                'heading':    ['28px', { lineHeight: '1.2', letterSpacing: '-0.3px', fontWeight: '500' }],
+                'title-lg':   ['22px', { lineHeight: '1.25', letterSpacing: '-0.2px', fontWeight: '500' }],
+                'title':      ['19px', { lineHeight: '1.3', fontWeight: '500' }],
+                'body-lg':    ['19px', { lineHeight: '1.65' }],
+                'body':       ['15px', { lineHeight: '1.55' }],
+                'meta':       ['13px', { lineHeight: '1.4' }],
+                'meta-sm':    ['11px', { lineHeight: '1.4' }],
+            },
+            spacing: {
+                'page': '64px',
+                'page-tablet': '24px',
+                'page-mobile': '16px',
+                '18': '4.5rem',
+                '22': '5.5rem',
+            },
+            borderRadius: {
+                none: '0',
             },
         },
     },
     plugins: [
-        /**
-         * '@tailwindcss/forms' is the forms plugin that provides a minimal styling
-         * for forms. If you don't like it or have own styling for forms,
-         * comment the line below to disable '@tailwindcss/forms'.
-         */
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
         require('@tailwindcss/aspect-ratio'),

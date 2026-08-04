@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A · Archive — dissdb redesign</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ── Palette ──────────────────────────────────────────────
+       Bone + indigo. Cooler, whiter base; reads like a current
+       university-press journal rather than an old library. All
+       component colors come from these tokens so any future palette
+       swap touches only this block.
+       ──────────────────────────────────────────────────────── */
+    :root {
+      --paper:  #f4f1ec;  /* main page bg                         */
+      --paper2: #e9e5dd;  /* deeper panel bg (footer, filter bar) */
+      --paper3: #fbfaf6;  /* lightest tint (cards, chips, inputs) */
+      --ink:    #141822;  /* primary text                         */
+      --ink2:   #313644;  /* secondary text                       */
+      --mute:   #6f7585;  /* tertiary / caption                   */
+      --line:   #c8cad2;  /* hairline                             */
+      --line2:  #e0e2e8;  /* softer hairline                      */
+      --accent: #1f3a6b;  /* deep indigo                          */
+      --avatar: #d8dbe2;  /* avatar/seal placeholder              */
+      --canvas: #ecebe5;  /* design-canvas grid bg                */
+    }
+
+    html, body { margin: 0; background: var(--canvas); }
+    *, *::before, *::after { box-sizing: border-box; }
+    .back {
+      position: fixed; top: 16px; left: 16px; z-index: 50;
+      background: rgba(255,255,255,0.92); border: 1px solid var(--line);
+      padding: 8px 14px; text-decoration: none; color: var(--ink);
+      font-family: "IBM Plex Mono", monospace; font-size: 12px;
+      backdrop-filter: blur(8px);
+    }
+    .back:hover { background: #fff; border-color: var(--accent); color: var(--accent); }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <a class="back" href="index.html">← All directions</a>
+  <div id="root"></div>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="archive.jsx"></script>
+  <script type="text/babel">
+
+    function App() {
+      return (
+        <DesignCanvas>
+          <DCSection id="archive" title="A · Archive" subtitle="Scholarly / library-coded. EB Garamond + JetBrains Mono. Bone + indigo palette.">
+            <DCArtboard id="a-home" label="Home / landing" width={1280} height={1700}><window.A.Home /></DCArtboard>
+            <DCArtboard id="a-diss-table" label="Dissertations · table" width={1280} height={1300}><window.A.DissTable /></DCArtboard>
+            <DCArtboard id="a-scholars" label="Scholars · table" width={1280} height={1100}><window.A.Scholars /></DCArtboard>
+            <DCArtboard id="a-committee" label="Committee · table" width={1280} height={1100}><window.A.Committee /></DCArtboard>
+            <DCArtboard id="a-diss" label="Single dissertation" width={1280} height={1500}><window.A.Diss /></DCArtboard>
+            <DCArtboard id="a-scholar" label="Scholar profile" width={1280} height={1400}><window.A.Scholar /></DCArtboard>
+          </DCSection>
+        </DesignCanvas>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

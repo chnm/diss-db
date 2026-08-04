@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 3 — The Instrument</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Expanded:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7f8; --panel:#ffffff; --panel2:#f0f2f4;
+    --ink:#0f1317; --ink2:#3c444c; --mute:#79828b;
+    --line:#d9dee2; --line2:#e7eaed; --grid:#eceff1;
+    --accent:#1f43d8; --accent2:#dfe4fb; --sig:#e6402b;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",sans-serif;font-size:15px;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .exp{font-family:"Archivo Expanded",sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px;position:relative}
+  .lbl{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+
+  /* utility bar */
+  .util{background:var(--ink);color:#c4ccd4}
+  .util .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:7px;padding-bottom:7px;
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em}
+  .util .dot{width:6px;height:6px;background:var(--sig);border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+  .util .r{color:#7f8994}
+
+  header.top{background:var(--panel);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:20px;padding-bottom:20px}
+  .brand{display:flex;align-items:baseline;gap:12px}
+  .brand .mark{font-family:"Archivo Expanded",sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;text-transform:uppercase}
+  .brand .mark b{color:var(--accent)}
+  .brand .id{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mute);border:1px solid var(--line);padding:2px 6px}
+  header nav{display:flex;gap:4px}
+  header nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);padding:7px 12px;border:1px solid transparent}
+  header nav a.active{color:var(--accent);border-color:var(--line);background:var(--panel2)}
+  header nav a:hover{color:var(--accent)}
+
+  /* hero */
+  .hero{background:var(--panel);border-bottom:1px solid var(--line);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px;background-position:-1px -1px}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:0}
+  .hero .left{padding:56px 48px 56px 0;border-right:1px solid var(--line)}
+  .hero .right{padding:36px 0 36px 48px}
+  .tag{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px}
+  .tag .sq{width:8px;height:8px;background:var(--accent)}
+  .hero h1{font-family:"Archivo Expanded",sans-serif;font-weight:700;font-size:47px;line-height:1.02;letter-spacing:-.5px;margin:0 0 22px;text-transform:uppercase}
+  .hero h1 .u{color:var(--accent)}
+  .hero p{font-size:16.5px;line-height:1.6;color:var(--ink2);max-width:480px;margin:0 0 30px}
+  .query{display:flex;border:1.5px solid var(--ink);background:var(--panel)}
+  .query .qf{flex:1;padding:13px 15px;font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--mute)}
+  .query .qb{background:var(--ink);color:#fff;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:0 22px;display:flex;align-items:center}
+  .query .qb:hover{background:var(--accent)}
+  .quick{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .quick a{font-family:"IBM Plex Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);border:1px solid var(--line);padding:5px 10px;background:var(--panel)}
+  .quick a:hover{border-color:var(--accent);color:var(--accent)}
+
+  .readout{background:var(--panel);border:1px solid var(--line)}
+  .readout .rh{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .readout .rh .live{color:var(--sig)}
+  .readout .body{padding:6px 8px}
+  .node-svg{display:block;width:100%;height:auto}
+
+  /* stats readout strip */
+  .stripe{background:var(--ink);color:#e6eaee}
+  .stripe .wrap{display:grid;grid-template-columns:repeat(6,1fr);padding:0}
+  .stripe .cell{padding:20px 22px;border-right:1px solid #23292f}
+  .stripe .cell:last-child{border-right:0}
+  .stripe .n{font-family:"Archivo Expanded",sans-serif;font-weight:600;font-size:28px;letter-spacing:-.5px}
+  .stripe .n .accent{color:#7f97ff}
+  .stripe .l{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#8b949d;margin-top:6px}
+
+  /* main grid */
+  .main{display:grid;grid-template-columns:1fr 340px;gap:0;padding-top:0}
+  .main .col-l{border-right:1px solid var(--line);padding:40px 44px 48px 0}
+  .main .col-r{padding:40px 0 48px 40px}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:2px solid var(--ink);margin-bottom:0}
+  .sec-head h2{font-family:"Archivo Expanded",sans-serif;font-weight:600;font-size:20px;letter-spacing:.01em;text-transform:uppercase;margin:0}
+  .sec-head a{font-family:"IBM Plex Mono",monospace;font-size:11px;text-transform:uppercase;color:var(--accent)}
+
+  table.tbl{width:100%;border-collapse:collapse}
+  table.tbl thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-align:left;padding:12px 10px 10px 0;border-bottom:1px solid var(--line);font-weight:500}
+  table.tbl td{padding:15px 10px 15px 0;border-bottom:1px solid var(--line2);vertical-align:top}
+  table.tbl tr:hover td{background:var(--panel2)}
+  .c-idx{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--mute);width:34px}
+  .c-yr{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--accent);width:52px}
+  .c-title{font-family:"Archivo",sans-serif;font-weight:600;font-size:15px;line-height:1.32;letter-spacing:-.1px}
+  .c-title .sub{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;color:var(--mute);margin-top:4px;text-transform:none;letter-spacing:0}
+  .c-adv{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2);text-align:right;width:150px}
+  .c-adv .t{color:var(--mute);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:3px}
+
+  .panel{border:1px solid var(--line);background:var(--panel);margin-bottom:26px}
+  .panel .ph{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding:11px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+  .panel .pb{padding:6px 14px 12px}
+  .facet{display:block;padding:9px 0;border-bottom:1px solid var(--line2)}
+  .facet:last-child{border-bottom:0}
+  .facet .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .facet .fl{font-family:"Archivo",sans-serif;font-weight:500;font-size:14px}
+  .facet .fc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--mute)}
+  .facet:hover .fl{color:var(--accent)}
+  .bar{height:3px;background:var(--line2)}
+  .bar i{display:block;height:3px;background:var(--accent)}
+  .adv-p{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line2)}
+  .adv-p:last-child{border-bottom:0}
+  .adv-p .l{display:flex;align-items:baseline;gap:10px}
+  .adv-p .rk{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent)}
+  .adv-p .nm{font-family:"Archivo",sans-serif;font-weight:600;font-size:14px}
+  .adv-p .ct{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2)}
+  .adv-p:hover .nm{color:var(--accent)}
+  .cta{border:1px solid var(--ink);background:var(--ink);color:#fff}
+  .cta .ph{color:#8b949d;border-color:#23292f}
+  .cta .pb{padding:18px 16px}
+  .cta h3{font-family:"Archivo Expanded",sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;letter-spacing:.01em;margin:0 0 10px;line-height:1.2}
+  .cta p{font-size:13px;color:#aab2ba;margin:0 0 16px;line-height:1.5}
+  .cta a.go{font-family:"IBM Plex Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#fff;border:1px solid #3a4149;padding:9px 14px;display:inline-block}
+  .cta a.go:hover{background:var(--accent);border-color:var(--accent)}
+
+  footer{background:var(--panel);border-top:1px solid var(--line);margin-top:0}
+  footer .wrap{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-top:40px;padding-bottom:48px}
+  footer .fn{font-family:"Archivo Expanded",sans-serif;font-weight:600;font-size:15px;text-transform:uppercase;margin-bottom:12px}
+  footer p{font-size:13px;color:var(--ink2);max-width:340px;margin:0;line-height:1.55}
+  footer .fh{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+  footer .fl2{display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--ink2)}
+  footer .fl2 a:hover{color:var(--accent)}
+
+  @media(max-width:960px){
+    .hero .wrap,.main{grid-template-columns:1fr}
+    .hero .left{border-right:0;padding-right:0;border-bottom:1px solid var(--line)}
+    .hero .right{padding-left:0}
+    .main .col-l{border-right:0;padding-right:0}
+    .main .col-r{padding-left:0}
+    .stripe .wrap{grid-template-columns:repeat(3,1fr)}
+    footer .wrap{grid-template-columns:1fr}
+    .hero h1{font-size:34px}
+  }
+</style>
+</head>
+<body>
+
+<div class="util"><div class="wrap">
+  <span><span class="dot"></span>DATASET: HISTORY-DISS · REV 2024.11 · <span class="r">AHA + DEPT CONTRIBUTIONS</span></span>
+  <span class="r">SYNC 2024-11-18 · CC-BY 4.0</span>
+</div></div>
+
+<header class="top"><div class="wrap">
+  <div class="brand">
+    <span class="mark">History<b>·</b>Dissertation<b>·</b>DB</span>
+    <span class="id">RRCHNM / GMU</span>
+  </div>
+  <nav>
+    <a class="active" href="#">Dissertations</a>
+    <a href="#">Scholars</a>
+    <a href="#">Committee</a>
+    <a href="#">About</a>
+    <a href="#">Contribute</a>
+  </nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="left">
+    <div class="tag"><span class="sq"></span><span class="lbl">Advisor–advisee graph · 12,847 records</span></div>
+    <h1>Query a century of <span class="u">doctoral history</span></h1>
+    <p>A structured, sourced index of history dissertations and the scholarly genealogies that connect them. Search authors, advisors, committees, and institutions.</p>
+    <div class="query">
+      <div class="qf">search titles, scholars, advisors…</div>
+      <div class="qb">Run ↵</div>
+    </div>
+    <div class="quick">
+      <a href="#">Browse catalogue</a>
+      <a href="#">Scholars index</a>
+      <a href="#">Committee graph</a>
+      <a href="#">API</a>
+    </div>
+  </div>
+  <div class="right">
+    <div class="readout">
+      <div class="rh"><span>Lineage · node graph</span><span class="live">● traversing</span></div>
+      <div class="body">
+        <svg class="node-svg" viewBox="0 0 440 330">
+          <g fill="none" stroke="var(--line)" stroke-width="1">
+            <path d="M220,34 V66 H90 V96 M220,66 V96 M220,66 H350 V96"/>
+            <path d="M90,96 V126 H52 V156 M90,126 H132 V156"/>
+            <path d="M220,96 V126 H196 V156 M220,126 H262 V156"/>
+            <path d="M350,96 V126 H316 V156 M350,126 H386 V156"/>
+            <path d="M262,156 V186 H244 V216 M262,186 H288 V216"/>
+          </g>
+          <g stroke="var(--accent)" stroke-width="1.5" fill="none">
+            <path d="M220,34 V66 H350 V96 M350,96 V126 H316 V156"/>
+          </g>
+          <g fill="var(--mute)" font-family="'IBM Plex Mono',monospace" font-size="8">
+            <rect x="205" y="26" width="30" height="16" fill="var(--accent)"/><text x="220" y="37" text-anchor="middle" fill="#fff">G0</text>
+            <g fill="var(--ink2)">
+              <rect x="78" y="88" width="24" height="16" fill="var(--panel2)" stroke="var(--line)"/><text x="90" y="99" text-anchor="middle">G1</text>
+              <rect x="208" y="88" width="24" height="16" fill="var(--panel2)" stroke="var(--line)"/><text x="220" y="99" text-anchor="middle">G1</text>
+              <rect x="338" y="88" width="24" height="16" fill="var(--accent)"/><text x="350" y="99" text-anchor="middle" fill="#fff">G1</text>
+            </g>
+          </g>
+          <g fill="var(--mute)">
+            <circle cx="52" cy="156" r="2.5"/><circle cx="132" cy="156" r="2.5"/><circle cx="196" cy="156" r="2.5"/><circle cx="386" cy="156" r="2.5"/>
+            <circle cx="244" cy="216" r="2.5"/><circle cx="288" cy="216" r="2.5"/>
+          </g>
+          <g fill="var(--accent)"><circle cx="316" cy="156" r="4"/></g>
+          <g stroke="var(--line2)" stroke-width="1">
+            <line x1="8" y1="66" x2="432" y2="66"/><line x1="8" y1="126" x2="432" y2="126"/><line x1="8" y1="186" x2="432" y2="186"/>
+          </g>
+          <g fill="var(--mute)" font-family="'IBM Plex Mono',monospace" font-size="7.5" text-anchor="start">
+            <text x="10" y="62">y=0</text><text x="10" y="122">y=1</text><text x="10" y="182">y=2</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="stripe"><div class="wrap">
+  <div class="cell"><div class="n">12,<span class="accent">847</span></div><div class="l">dissertations</div></div>
+  <div class="cell"><div class="n">9,214</div><div class="l">scholars</div></div>
+  <div class="cell"><div class="n">1,506</div><div class="l">advisors</div></div>
+  <div class="cell"><div class="n">214</div><div class="l">institutions</div></div>
+  <div class="cell"><div class="n">1883</div><div class="l">first record</div></div>
+  <div class="cell"><div class="n">2024</div><div class="l">most recent</div></div>
+</div></section>
+
+<div class="wrap"><div class="main">
+  <div class="col-l">
+    <div class="sec-head"><h2>Recently catalogued</h2><a href="#">See all →</a></div>
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Year</th><th>Title / Author · Institution</th><th style="text-align:right">Advisor</th></tr></thead>
+      <tbody>
+        <tr><td class="c-idx">001</td><td class="c-yr">2024</td>
+          <td class="c-title">Cartographies of Dissent: Mapping Radical Print Culture in the Antebellum North<span class="sub">Miriam Okafor · Yale University</span></td>
+          <td class="c-adv"><span class="t">Chair</span>Jill Lepore</td></tr>
+        <tr><td class="c-idx">002</td><td class="c-yr">2023</td>
+          <td class="c-title">The Ledger and the Lash: Accounting Practices on Caribbean Plantations, 1780–1834<span class="sub">David Reyes · Harvard University</span></td>
+          <td class="c-adv"><span class="t">Chair</span>Vincent Brown</td></tr>
+        <tr><td class="c-idx">003</td><td class="c-yr">2023</td>
+          <td class="c-title">Steam, Smoke, and Sovereignty: Railroads and the Osage Nation<span class="sub">Anna Whitcomb · University of Chicago</span></td>
+          <td class="c-adv"><span class="t">Chair</span>Pekka Hämäläinen</td></tr>
+        <tr><td class="c-idx">004</td><td class="c-yr">2022</td>
+          <td class="c-title">Kitchen Debates: Domestic Labor and Cold War Diplomacy<span class="sub">Lena Fischer · Columbia University</span></td>
+          <td class="c-adv"><span class="t">Chair</span>Elizabeth Cohen</td></tr>
+        <tr><td class="c-idx">005</td><td class="c-yr">2022</td>
+          <td class="c-title">Salt and Empire: The Political Ecology of the Sahel, 1890–1960<span class="sub">Kwame Mensah · Princeton University</span></td>
+          <td class="c-adv"><span class="t">Chair</span>Emmanuel Akyeampong</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-r">
+    <div class="panel">
+      <div class="ph"><span>Browse · decade</span><span>N=12,847</span></div>
+      <div class="pb">
+        <a class="facet" href="#"><div class="row"><span class="fl">2020s</span><span class="fc">1,204</span></div><div class="bar"><i style="width:31%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">2010s</span><span class="fc">3,891</span></div><div class="bar"><i style="width:100%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">2000s</span><span class="fc">2,760</span></div><div class="bar"><i style="width:71%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">1990s</span><span class="fc">1,845</span></div><div class="bar"><i style="width:47%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">1980s</span><span class="fc">1,102</span></div><div class="bar"><i style="width:28%"></i></div></a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><span>Browse · field</span><span>geo</span></div>
+      <div class="pb">
+        <a class="facet" href="#"><div class="row"><span class="fl">North America</span><span class="fc">4,210</span></div><div class="bar"><i style="width:100%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">Europe</span><span class="fc">3,102</span></div><div class="bar"><i style="width:74%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">Asia</span><span class="fc">1,689</span></div><div class="bar"><i style="width:40%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">Latin America</span><span class="fc">1,411</span></div><div class="bar"><i style="width:34%"></i></div></a>
+        <a class="facet" href="#"><div class="row"><span class="fl">Africa</span><span class="fc">1,204</span></div><div class="bar"><i style="width:29%"></i></div></a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><span>Most prolific advisors</span><span>top 5</span></div>
+      <div class="pb">
+        <a class="adv-p" href="#"><span class="l"><span class="rk">01</span><span class="nm">Jill Lepore</span></span><span class="ct">34</span></a>
+        <a class="adv-p" href="#"><span class="l"><span class="rk">02</span><span class="nm">Eric Foner</span></span><span class="ct">31</span></a>
+        <a class="adv-p" href="#"><span class="l"><span class="rk">03</span><span class="nm">Pekka Hämäläinen</span></span><span class="ct">28</span></a>
+        <a class="adv-p" href="#"><span class="l"><span class="rk">04</span><span class="nm">Vincent Brown</span></span><span class="ct">24</span></a>
+        <a class="adv-p" href="#"><span class="l"><span class="rk">05</span><span class="nm">Drew Gilpin Faust</span></span><span class="ct">22</span></a>
+      </div>
+    </div>
+
+    <div class="panel cta">
+      <div class="ph"><span>Contribute</span><span>editorial</span></div>
+      <div class="pb">
+        <h3>Fill a gap in the record</h3>
+        <p>Add a dissertation, correct an advisor, or submit a scholar. Every edit is reviewed before it enters the dataset.</p>
+        <a class="go" href="#">Read the guide →</a>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<footer><div class="wrap">
+  <div>
+    <div class="fn">History·Dissertation·DB</div>
+    <p>A working catalogue of doctoral dissertations in history. Data contributed by departments and the American Historical Association. Built by the Roy Rosenzweig Center for History and New Media at George Mason University.</p>
+  </div>
+  <div><div class="fh">Explore</div><div class="fl2"><a href="#">Dissertations</a><a href="#">Scholars</a><a href="#">Committee</a></div></div>
+  <div><div class="fh">About</div><div class="fl2"><a href="#">About</a><a href="#">Contributing</a><a href="#">API</a></div></div>
+  <div><div class="fh">Access</div><div class="fl2"><a href="#">Log in</a></div></div>
+</div></footer>
+
+</body>
+</html>

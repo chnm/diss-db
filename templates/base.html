@@ -3,103 +3,131 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	{% block title %}
-	<title>The History Dissertation DB</title>
-	{% endblock title %}
-	{% tailwind_css %}
-	<meta name="description" content="Explore history dissertations and scholarly genealogies from data provided by the American Historical Association.">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block title %}
+            <title>The History Dissertation Database</title>
+        {% endblock title %}
+        {% tailwind_css %}
+        <meta name="description" content="Explore history dissertations and scholarly genealogies from data provided by the American Historical Association.">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
+        {% block extra_head %}{% endblock %}
+    </head>
 
-<body>
+    <body>
 
-	<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-center text-sm py-2 px-4">
-		This site is currently in beta. Data may be incomplete or contain errors.
-	</div>
+        <div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-center text-sm py-2 px-4">
+            This site is currently in beta. Data may be incomplete or contain errors.
+        </div>
 
-	<div class="container mx-auto px-4 max-w-6xl" id="all-container">
+        {% block header %}
+            <header class="catalogue-site-header" x-data="{ mobileOpen: false }">
+                <div class="catalogue-site-masthead">
+                    <a href="{% url 'index' %}" class="catalogue-site-brand" aria-label="The History Dissertation Database home">
+                        <span class="catalogue-site-mark" aria-hidden="true">
+                            <svg viewBox="0 0 36 42" focusable="false">
+                                <path class="catalogue-mark-branch" d="M18 5v8M18 13 7 23M18 13l11 10M18 13v24M7 23v9M29 23v9"></path>
+                                <path class="catalogue-mark-lineage" d="M18 5v32"></path>
+                                <g class="catalogue-mark-nodes">
+                                    <circle cx="18" cy="5" r="2.5"></circle>
+                                    <circle cx="18" cy="13" r="2.5"></circle>
+                                    <circle cx="7" cy="23" r="2.5"></circle>
+                                    <circle cx="29" cy="23" r="2.5"></circle>
+                                    <circle cx="7" cy="32" r="2.5"></circle>
+                                    <circle cx="29" cy="32" r="2.5"></circle>
+                                </g>
+                                <g class="catalogue-mark-highlight-nodes">
+                                    <circle cx="18" cy="5" r="2.75"></circle>
+                                    <circle cx="18" cy="13" r="2.75"></circle>
+                                    <circle cx="18" cy="37" r="2.75"></circle>
+                                </g>
+                            </svg>
+                        </span>
+                        <span>The History<br>Dissertation Database</span>
+                    </a>
 
-		<header class="py-6 mb-8 border-b border-gray-200" x-data="{ mobileOpen: false }">
-			<div class="flex items-center justify-between">
-				<h1 class="text-3xl font-bold text-gray-900"><a href="{% url 'index' %}" class="text-blue-600 hover:text-blue-800">The History Dissertation Database</a></h1>
-				<nav class="hidden md:flex items-center" aria-label="Main navigation">
-					<ul class="flex items-center space-x-6 list-none">
-						<li><a href="{% url 'dissertations' %}" class="text-gray-600 hover:text-gray-900 font-medium">Dissertations</a></li>
-						<li><a href="{% url 'scholars' %}" class="text-gray-600 hover:text-gray-900 font-medium">Scholars</a></li>
-						<li><a href="{% url 'committeemembers' %}" class="text-gray-600 hover:text-gray-900 font-medium">Committee Members</a></li>
-						<li><a href="{% url 'about' %}" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
-					</ul>
-				</nav>
-				<button type="button" class="md:hidden text-gray-500 hover:text-gray-600" aria-label="Toggle mobile menu" :aria-expanded="mobileOpen" @click="mobileOpen = !mobileOpen">
-					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-					</svg>
-				</button>
-			</div>
-			<nav class="md:hidden mt-4" x-show="mobileOpen" x-transition @click.outside="mobileOpen = false" aria-label="Mobile navigation">
-				<ul class="space-y-2 list-none">
-					<li><a href="{% url 'dissertations' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Dissertations</a></li>
-					<li><a href="{% url 'scholars' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Scholars</a></li>
-					<li><a href="{% url 'committeemembers' %}" class="block text-gray-600 hover:text-gray-900 font-medium">Committee Members</a></li>
-					<li><a href="{% url 'about' %}" class="block text-gray-600 hover:text-gray-900 font-medium">About</a></li>
-				</ul>
-			</nav>
-		</header>
+                    <nav class="catalogue-site-nav" aria-label="Primary navigation">
+                        {% with active_nav=active_nav|default:"" %}
+                            <a href="{% url 'search' %}" {% if active_nav == 'search' %}aria-current="page"{% endif %}>Search</a>
+                            <a href="{% url 'dissertations' %}" {% if active_nav == 'dissertations' %}aria-current="page"{% endif %}>Dissertations</a>
+                            <a href="{% url 'scholars' %}" {% if active_nav == 'scholars' %}aria-current="page"{% endif %}>Scholars</a>
+                            <a href="{% url 'committeemembers' %}" {% if active_nav == 'committee' %}aria-current="page"{% endif %}>Committee members</a>
+                            <a href="{% url 'about' %}" {% if active_nav == 'about' %}aria-current="page"{% endif %}>About</a>
+                            <a href="{% url 'contributing' %}" {% if active_nav == 'contribute' %}aria-current="page"{% endif %}>Contribute</a>
+                        {% endwith %}
+                    </nav>
 
-		<main>
-			{% block main %}
-			{% endblock main %}
-		</main>
+                    <button type="button" class="catalogue-site-menu" :aria-expanded="mobileOpen" @click="mobileOpen = !mobileOpen" aria-controls="mobile-navigation">
+                        <span>Menu</span>
+                        <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h16"></path>
+                        </svg>
+                    </button>
+                </div>
 
-		<footer class="pt-8 my-8 border-t border-gray-200">
-			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<div>
-					<a href="https://rrchnm.org">
-						<img class="h-10 w-auto mb-3" src="{% static 'dissertations/rrchnm-logo.svg' %}" alt="Roy Rosenzweig Center for History and New Media">
-					</a>
-					<p class="text-sm text-gray-500">Original dissertation data provided by the <a href="https://historians.org" class="text-gray-600 hover:text-gray-800">American Historical Association</a>.</p>
-				</div>
-				<nav aria-label="Explore">
-					<h2 class="text-sm font-semibold text-gray-900 mb-3">Explore</h2>
-					<ul class="space-y-2 text-sm">
-						<li><a href="{% url 'dissertations' %}" class="text-gray-500 hover:text-gray-700">Dissertations</a></li>
-						<li><a href="{% url 'scholars' %}" class="text-gray-500 hover:text-gray-700">Scholars</a></li>
-						<li><a href="{% url 'committeemembers' %}" class="text-gray-500 hover:text-gray-700">Committee Members</a></li>
-						{% if request.user.is_authenticated %}
-						<li><a href="{% url 'network_viz' %}" class="text-gray-500 hover:text-gray-700">Committee Networks</a></li>
-						{% endif %}
-					</ul>
-				</nav>
-				<nav aria-label="About">
-					<h2 class="text-sm font-semibold text-gray-900 mb-3">About</h2>
-					<ul class="space-y-2 text-sm">
-						<li><a href="{% url 'about' %}" class="text-gray-500 hover:text-gray-700">About</a></li>
-						<li><a href="{% url 'contributing' %}" class="text-gray-500 hover:text-gray-700">Contributing</a></li>
-					</ul>
-				</nav>
-				<div class="text-sm md:text-right">
-					{% if request.user.is_authenticated %}
-					<span class="text-gray-400 mr-3">{{ request.user.username }}</span>
-					<a href="{% url 'admin:index' %}" class="text-gray-500 hover:text-gray-700 mr-3">Admin</a>
-					<form method="post" action="{% url 'admin:logout' %}" class="inline">
-						{% csrf_token %}
-						<button type="submit" class="text-gray-500 hover:text-gray-700 cursor-pointer">Log out</button>
-					</form>
-					{% else %}
-					<a href="{% url 'admin:login' %}?next={{ request.path }}" class="text-gray-500 hover:text-gray-700">Log in</a>
-					{% endif %}
-				</div>
-			</div>
-		</footer>
+                <nav id="mobile-navigation" class="catalogue-site-mobile-nav" x-cloak x-show="mobileOpen" x-transition @click.outside="mobileOpen = false" aria-label="Mobile navigation">
+                    <a href="{% url 'search' %}">Search</a>
+                    <a href="{% url 'dissertations' %}">Dissertations</a>
+                    <a href="{% url 'scholars' %}">Scholars</a>
+                    <a href="{% url 'committeemembers' %}">Committee members</a>
+                    <a href="{% url 'about' %}">About</a>
+                    <a href="{% url 'contributing' %}">Contribute</a>
+                </nav>
+            </header>
+        {% endblock header %}
 
-	</div>
+        <main>
+            {% block main %}
+            {% endblock main %}
+        </main>
 
-</body>
+        <footer class="page-section border-t border-line mt-16 pt-10 pb-14 bg-paper2">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 items-start">
+                <div>
+                    <div class="font-serif text-xl font-medium mb-2">The History Dissertation Database</div>
+                    <div class="text-base text-ink2 max-w-sm">
+                        A working catalogue of doctoral dissertations in history. Data contributed by departments and the <a href="https://historians.org" class="text-ink2">American Historical Association</a>.
+                        Created by the <a href="https://rrchnm.org" class="text-ink2">Roy Rosenzweig Center for History and New Media</a> at <a href="https://gmu.edu" class="text-ink2">George Mason University</a>
+                    </div>
+                </div>
+                <nav>
+                    <div class="font-mono text-sm font-medium uppercase tracking-wide text-mute mb-3">Explore</div>
+                    <div class="flex flex-col gap-1 text-base text-ink2">
+                        <a href="{% url 'dissertations' %}" class="text-ink2">Dissertations</a>
+                        <a href="{% url 'scholars' %}" class="text-ink2">Scholars</a>
+                        <a href="{% url 'committeemembers' %}" class="text-ink2">Committee Members</a>
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url 'network_viz' %}" class="text-ink2">Committee Networks</a>
+                        {% endif %}
+                    </div>
+                </nav>
+                <nav>
+                    <div class="font-mono text-sm font-medium uppercase tracking-wide text-mute mb-3">About</div>
+                    <div class="flex flex-col gap-1 text-base text-ink2">
+                        <a href="{% url 'about' %}" class="text-ink2">About</a>
+                        <a href="{% url 'contributing' %}" class="text-ink2">Contributing</a>
+                        <a href="{% url 'api' %}" class="text-ink2">API</a>
+                    </div>
+                </nav>
+                <div class="text-base md:text-right">
+                    {% if request.user.is_authenticated %}
+                        <span class="text-mute mr-2">{{ request.user.username }}</span>
+                        <a href="{% url 'admin:index' %}" class="text-ink2 mr-2">Admin</a>
+                        <form method="post" action="{% url 'admin:logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="cursor-pointer text-ink2 bg-transparent border-none font-sans">Log out</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'admin:login' %}?next={{ request.path }}" class="text-ink2">Log in</a>
+                    {% endif %}
+                </div>
+            </div>
+        </footer>
+
+    </body>
 
 </html>

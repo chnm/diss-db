@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
@@ -114,6 +115,11 @@ class GeographicEmphasis(models.Model):
     class Meta:
         ordering = ["name"]
         verbose_name_plural = "geographic emphases"
+
+    @property
+    def display_name(self):
+        """Return the public label without an imported taxonomy code prefix."""
+        return re.sub(r"^\d+\s+", "", self.name)
 
     def __str__(self):
         return self.name

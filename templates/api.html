@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>API · The History Dissertation Database</title>
+{% endblock title %}
+
+{% block main %}
+  <div class="page-section pt-14 pb-20 max-w-[900px]">
+
+  {# ── Header ── #}
+    <div class="kicker text-accent mb-4">Developer API · v1</div>
+    <h1 class="font-serif font-medium text-display-lg tracking-[-0.6px] leading-[1.05] m-0 mb-5">
+      Query the catalogue directly.
+    </h1>
+    <p class="text-body-lg text-ink2 max-w-[640px] m-0">
+      A read-only, public HTTP API over the dissertation and scholar records. Every response is
+      JSON, every list is paginated, and no key is required. Use it to build tools, run analyses,
+      or trace scholarly genealogies programmatically.
+    </p>
+
+  {# ── At a glance ── #}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-line border border-line mt-10">
+      <div class="bg-paper3 p-4">
+        <div class="kicker text-mute mb-2">Base URL</div>
+        <div class="font-mono text-[13px] text-ink break-all">/api/v1/</div>
+      </div>
+      <div class="bg-paper3 p-4">
+        <div class="kicker text-mute mb-2">Format</div>
+        <div class="font-mono text-[13px] text-ink">JSON</div>
+      </div>
+      <div class="bg-paper3 p-4">
+        <div class="kicker text-mute mb-2">Auth</div>
+        <div class="font-mono text-[13px] text-ink">None (read-only)</div>
+      </div>
+      <div class="bg-paper3 p-4">
+        <div class="kicker text-mute mb-2">Rate limit</div>
+        <div class="font-mono text-[13px] text-ink">120 req / min</div>
+      </div>
+    </div>
+
+  {# ── Endpoints overview ── #}
+    <h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] rule-heavy mt-14">Endpoints</h2>
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="border-b border-line">
+          <th class="kicker text-mute font-medium py-3 pr-4">Method</th>
+          <th class="kicker text-mute font-medium py-3 pr-4">Path</th>
+          <th class="kicker text-mute font-medium py-3">Description</th>
+        </tr>
+      </thead>
+      <tbody class="font-mono text-[13px]">
+        <tr class="border-b border-line2">
+          <td class="py-3 pr-4 text-accent">GET</td>
+          <td class="py-3 pr-4"><a href="/api/v1/dissertations/" class="text-ink hover:text-accent">/dissertations/</a></td>
+          <td class="py-3 font-sans text-ink2">Paginated, filterable dissertation list</td>
+        </tr>
+        <tr class="border-b border-line2">
+          <td class="py-3 pr-4 text-accent">GET</td>
+          <td class="py-3 pr-4"><a href="/api/v1/dissertations/{{ example_diss_id }}/" class="text-ink hover:text-accent">/dissertations/{id}/</a></td>
+          <td class="py-3 font-sans text-ink2">A single dissertation with committee, abstract, emphases, links</td>
+        </tr>
+        <tr class="border-b border-line2">
+          <td class="py-3 pr-4 text-accent">GET</td>
+          <td class="py-3 pr-4"><a href="/api/v1/scholars/" class="text-ink hover:text-accent">/scholars/</a></td>
+          <td class="py-3 font-sans text-ink2">Paginated, filterable scholar list</td>
+        </tr>
+        <tr class="border-b border-line2">
+          <td class="py-3 pr-4 text-accent">GET</td>
+          <td class="py-3 pr-4"><a href="/api/v1/scholars/{{ example_scholar_id }}/" class="text-ink hover:text-accent">/scholars/{id}/</a></td>
+          <td class="py-3 font-sans text-ink2">A single scholar with authored & advised dissertations</td>
+        </tr>
+      </tbody>
+    </table>
+
+  {# ── Dissertations ── #}
+    <h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] rule-heavy mt-14">Dissertations</h2>
+
+    <div class="kicker text-mute mb-3">Query parameters · <span class="text-ink">/dissertations/</span></div>
+    <dl class="border-t border-line2">
+      {% include "api/_param.html" with name="q" desc="Fuzzy title search (trigram + substring)." %}
+      {% include "api/_param.html" with name="year" desc="Exact publication year, e.g. 2018." %}
+      {% include "api/_param.html" with name="year_min / year_max" desc="Inclusive year range bounds." %}
+      {% include "api/_param.html" with name="school" desc="School id — all dissertations from an institution." %}
+      {% include "api/_param.html" with name="author" desc="Scholar id of the dissertation's author." %}
+      {% include "api/_param.html" with name="advisor" desc="Scholar id of the committee chair (advisor)." %}
+      {% include "api/_param.html" with name="thematic_emphasis / geographic_emphasis" desc="Emphasis id to filter by field." %}
+      {% include "api/_param.html" with name="ordering" desc="year, -year, title, id (prefix - to reverse)." %}
+      {% include "api/_param.html" with name="page / page_size" desc="Page number and size (default 25, max 100)." %}
+    </dl>
+
+    <div class="kicker text-mute mt-8 mb-3">Example request</div>
+  <pre class="bg-ink text-paper3 font-mono text-[13px] leading-relaxed p-4 overflow-x-auto"><code>curl "{{ request.scheme }}://{{ request.get_host }}/api/v1/dissertations/?year_min=2015&geographic_emphasis=1&ordering=-year"</code></pre>
+
+    <div class="kicker text-mute mt-8 mb-3">Example response · list item</div>
+  <pre class="bg-ink text-paper3 font-mono text-[13px] leading-relaxed p-4 overflow-x-auto"><code>{
+  "count": 58683,
+  "next": ".../api/v1/dissertations/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 57669,
+      "title": "A Test of Conscience…",
+      "year": 2022,
+      "author":  { "id": 29319, "name_full": "Steven Server",  "api_url": ".../scholars/29319/" },
+      "school":  { "id": 165,   "name": "University of Chicago" },
+      "advisor": { "id": 1668,  "name_full": "Emilio Kouri",   "api_url": ".../scholars/1668/" },
+      "site_url": ".../dissertations/57669/",
+      "api_url":  ".../api/v1/dissertations/57669/"
+    }
+  ]
+}</code></pre>
+
+    <p class="text-body text-ink2 mt-4">
+      The <span class="font-mono text-[13px] text-accent">/dissertations/{id}/</span> detail response adds
+      <span class="font-mono text-[13px]">abstract</span>, <span class="font-mono text-[13px]">department</span>,
+      the full <span class="font-mono text-[13px]">committee</span> (chair first, then readers),
+      <span class="font-mono text-[13px]">thematic_emphases</span>, <span class="font-mono text-[13px]">geographic_emphases</span>,
+      and <span class="font-mono text-[13px]">links</span>.
+    </p>
+
+  {# ── Scholars ── #}
+    <h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] rule-heavy mt-14">Scholars</h2>
+
+    <div class="kicker text-mute mb-3">Query parameters · <span class="text-ink">/scholars/</span></div>
+    <dl class="border-t border-line2">
+      {% include "api/_param.html" with name="q" desc="Fuzzy name search across first, middle, and last name." %}
+      {% include "api/_param.html" with name="orcid" desc="Exact ORCID identifier match." %}
+      {% include "api/_param.html" with name="has_orcid" desc="true / false — only scholars with (or without) an ORCID." %}
+      {% include "api/_param.html" with name="ordering" desc="name_last, name_first, id (prefix - to reverse)." %}
+      {% include "api/_param.html" with name="page / page_size" desc="Page number and size (default 25, max 100)." %}
+    </dl>
+
+    <div class="kicker text-mute mt-8 mb-3">Example response · scholar detail</div>
+  <pre class="bg-ink text-paper3 font-mono text-[13px] leading-relaxed p-4 overflow-x-auto"><code>{
+  "id": 1668,
+  "name_full": "Emilio Kouri",
+  "orcid": null,
+  "orcid_url": null,
+  "affiliation": "University of Chicago",
+  "websites": [],
+  "dissertations_authored": [ { "id": …, "title": "…", "year": …, "api_url": "…" } ],
+  "dissertations_advised":  [ { "id": 57669, "title": "…", "year": 2022, "api_url": "…" } ],
+  "site_url": ".../scholar/1668/kouri-emilio/",
+  "api_url":  ".../api/v1/scholars/1668/"
+}</code></pre>
+
+  {# ── Conventions ── #}
+    <h2 class="font-serif text-display-sm font-medium tracking-[-0.4px] rule-heavy mt-14">Conventions</h2>
+    <dl class="border-t border-line2">
+      {% include "api/_param.html" with name="Pagination" desc="Page-number style. Responses include count, next, previous, and results. Use ?page= and ?page_size= (max 100)." %}
+      {% include "api/_param.html" with name="Rate limiting" desc="120 requests per minute per client. Exceeding it returns 429 Too Many Requests with a Retry-After header." %}
+      {% include "api/_param.html" with name="Errors" desc="Standard HTTP status codes. 404 for unknown ids, 400 for malformed parameters." %}
+      {% include "api/_param.html" with name="Stability" desc="Response shapes are versioned under /api/v1/. Breaking changes will ship as a new version." %}
+      {% include "api/_param.html" with name="site_url vs api_url" desc="site_url points to the human-facing page; api_url points to the machine-readable record." %}
+    </dl>
+
+    <div class="card-callout mt-12">
+      <div class="kicker text-accent mb-[10px]">Try it</div>
+      <div class="font-serif text-body-lg leading-[1.4] font-medium mb-3">
+        Browse the API live in your browser — DRF renders each endpoint with clickable links.
+      </div>
+      <a href="/api/v1/" class="font-mono text-sm font-medium text-ink underline underline-offset-4">Open /api/v1/ →</a>
+    </div>
+
+  </div>
+{% endblock main %}

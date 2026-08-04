@@ -3,14 +3,14 @@
 {{ selected_geographic_ids|json_script:"selected-geographic-ids" }}
 {{ selected_thematic_ids|json_script:"selected-thematic-ids" }}
 
-<div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">Areas of Emphasis</h2>
+<div class="bg-paper3 border border-line p-6 mb-6">
+    <h2 class="font-serif text-[22px] font-medium text-ink mb-4">Areas of Emphasis</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {# Geographic Emphasis #}
         <div>
-            <details class="border border-gray-200 rounded-md">
-                <summary class="cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 select-none hover:bg-gray-50">
+            <details class="border border-line">
+                <summary class="cursor-pointer px-4 py-3 text-sm font-semibold text-ink2 select-none hover:bg-paper2">
                     Geographic Emphasis
                 </summary>
                 <div class="px-4 pb-4 max-h-72 overflow-y-auto"
@@ -24,18 +24,18 @@
                                 <button type="button"
                                         x-show="node.children && node.children.length"
                                         @click="open = !open"
-                                        class="text-gray-400 hover:text-gray-600 w-4 h-4 flex items-center justify-center flex-shrink-0">
+                                        class="text-mute hover:text-accent w-4 h-4 flex items-center justify-center flex-shrink-0">
                                     <svg class="w-3 h-3 transition-transform" :class="open && 'rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
                                 <span x-show="!node.children || !node.children.length" class="w-4 flex-shrink-0"></span>
-                                <label class="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+                                <label class="flex items-center gap-1.5 text-sm text-ink2 cursor-pointer">
                                     <input type="checkbox"
                                            name="geographic_emphases"
                                            :value="node.id"
                                            :checked="selected.includes(String(node.id))"
-                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                           class="border-line accent-accent">
                                     <span x-text="node.name"></span>
                                 </label>
                             </div>
@@ -46,30 +46,30 @@
                                             <button type="button"
                                                     x-show="child.children && child.children.length"
                                                     @click="childOpen = !childOpen"
-                                                    class="text-gray-400 hover:text-gray-600 w-4 h-4 flex items-center justify-center flex-shrink-0">
+                                                    class="text-mute hover:text-accent w-4 h-4 flex items-center justify-center flex-shrink-0">
                                                 <svg class="w-3 h-3 transition-transform" :class="childOpen && 'rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                                 </svg>
                                             </button>
                                             <span x-show="!child.children || !child.children.length" class="w-4 flex-shrink-0"></span>
-                                            <label class="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+                                            <label class="flex items-center gap-1.5 text-sm text-ink2 cursor-pointer">
                                                 <input type="checkbox"
                                                        name="geographic_emphases"
                                                        :value="child.id"
                                                        :checked="selected.includes(String(child.id))"
-                                                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                                       class="border-line accent-accent">
                                                 <span x-text="child.name"></span>
                                             </label>
                                         </div>
                                         <div x-show="childOpen" class="ml-5">
                                             <template x-for="leaf in child.children" :key="leaf.id">
                                                 <div class="mt-1">
-                                                    <label class="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer ml-5">
+                                                    <label class="flex items-center gap-1.5 text-sm text-ink2 cursor-pointer ml-5">
                                                         <input type="checkbox"
                                                                name="geographic_emphases"
                                                                :value="leaf.id"
                                                                :checked="selected.includes(String(leaf.id))"
-                                                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                                               class="border-line accent-accent">
                                                         <span x-text="leaf.name"></span>
                                                     </label>
                                                 </div>
@@ -86,8 +86,8 @@
 
         {# Thematic Emphasis #}
         <div>
-            <details class="border border-gray-200 rounded-md">
-                <summary class="cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 select-none hover:bg-gray-50">
+            <details class="border border-line">
+                <summary class="cursor-pointer px-4 py-3 text-sm font-semibold text-ink2 select-none hover:bg-paper2">
                     Thematic Emphasis
                 </summary>
                 <div class="px-4 pb-4 max-h-72 overflow-y-auto"
@@ -98,12 +98,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
                         <template x-for="item in items" :key="item.id">
                             <div class="mt-1">
-                                <label class="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+                                <label class="flex items-center gap-1.5 text-sm text-ink2 cursor-pointer">
                                     <input type="checkbox"
                                            name="thematic_emphases"
                                            :value="item.id"
                                            :checked="selected.includes(String(item.id))"
-                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                           class="border-line accent-accent">
                                     <span x-text="item.name"></span>
                                 </label>
                             </div>
